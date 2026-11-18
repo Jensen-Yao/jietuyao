@@ -1,0 +1,181 @@
+using System.Drawing;
+using System.IO;
+using System.Windows;
+using System.Windows.Threading;
+using STranslate.Helpers;
+
+namespace STranslate.Core;
+
+/// <summary>
+/// 截图编辑器编排：冻结屏幕 → 打开各显示器编辑窗口 → 等待用户完成动作
+/// </summary>
+public sealed class ScreenshotEditorService(Settings settings, PinnedWindowController pinnedWindowController)
+{
+    private static bool _editing;
+
+    /// <summary>编辑器是否进行中</summary>
+    public static bool IsEditing => _editing;
+
+    public async Task<ScreenshotEditorResult?> EditAsync(ScreenshotEditOptions? options = null)
+    {
+        if (_editing)
+            return null;
+        _editing = true;
+        try
+        {
+            options ??= new ScreenshotEditOptions();
+
+            // 隐藏主窗口与贴图翻译窗口
+            IAsyncDisposable? captureScope = null;
+            if (options.HideAppWindows)
+            {
+                captureScope = await pinnedWindowController.BeginCaptureAsync();
+                if (captureScope == null)
+                    return null;
+            }
+
+            var mainWindow = App.Current.MainWindow;
+            var mainWindowHidden = false;
+            if (options.HideAppWindows &&
+                mainWindow.Visibility == Visibility.Visible &&
+                !mainWindow.Topmost)
+            {
+                mainWindow.Visibility = Visibility.Collapsed;
+                mainWindowHidden = true;
+            }
+
+            try
+            {
+                // 等待界面刷新后冻结
+                await Task.Delay(120);
+
+                var monitors = ScreenshotCapturer.GetMonitors();
+                var virtualBounds = ScreenshotCapturer.GetVirtualBounds(monitors);
+
+                var finder = new ScreenshotWindowFinder();
+                finder.Snapshot(virtualBounds);
+
+                var frozen = ScreenshotCapturer.CaptureVirtualDesktop(virtualBounds);
+                var source = ScreenshotCapturer.ToBitmapSource(frozen);
+
+                var session = new ScreenshotEditorSession(frozen, source, virtualBounds, monitors, finder, options);
+                session.ToolStyles = settings.ScreenshotToolStyles;
+
+                // 每个显示器一个全屏编辑窗口
+                var windows = monitors
+                    .Select(m => new Views.ScreenshotEditorWindow(session, m))
+                    .ToList();
+
+                foreach (var window in windows)
+                    window.ShowNoActivate();
+
+                // 激活光标所在显示器的窗口
+                var cursorMonitor = MonitorInfo.GetCursorDisplayMonitor();
+                var focusWindow = windows.FirstOrDefault(w => w.Monitor.DeviceName == cursorMonitor.Name) ?? windows[0];
+                focusWindow.ActivateCanvas();
+
+                var result = await session.Task;
+
+                foreach (var window in windows)
+                    window.CloseEditor();
+
+                session.Dispose();
+                settings.ScreenshotToolStyles = session.ToolStyles;
+
+                // 保存/贴图属于 UI 动作，TCS 延续可能在线程池，调度回 UI 线程
+                if (result != null && result.Action is ScreenshotEditorAction.Save or ScreenshotEditorAction.Pin or ScreenshotEditorAction.Copy)
+                {
+                    await App.Current.Dispatcher.InvokeAsync(() =>
+                    {
+                        switch (result.Action)
+                        {
+                            case ScreenshotEditorAction.Save:
+                            {
+                                var path = ScreenshotOutput.SaveToFile(result.EditedImage, settings.LastScreenshotSaveDir);
+                                if (path != null)
+                                {
+                                    result.SavedFilePath = path;
+                                    settings.LastScreenshotSaveDir = Path.GetDirectoryName(path) ?? string.Empty;
+                                }
+                                break;
+                            }
+                            case ScreenshotEditorAction.Pin:
+                                PinImageManager.Instance.Pin(result.EditedImage, result.PhysicalBounds, settings.PinDefaultOpacity);
+                                break;
+                            case ScreenshotEditorAction.Copy:
+                                ScreenshotOutput.CopyToClipboard(result.EditedImage);
+                                break;
+                        }
+                    });
+                }
+                return result;
+            }
+            finally
+            {
+                if (mainWindowHidden)
+                    mainWindow.Visibility = Visibility.Visible;
+                if (captureScope != null)
+                    await captureScope.DisposeAsync();
+            }
+        }
+        finally
+        {
+            _editing = false;
+        }
+    }
+}
+
+/// <summary>
+/// jietuyao 截图编辑器实现 STranslate 的截图接口。
+/// 所有走 IScreenshot 的流程（截图翻译/OCR/图片翻译/二维码）自动升级为编辑器体验。
+/// </summary>
+public sealed class JietuyaoScreenshot(ScreenshotEditorService editorService) : IScreenshot
+{
+    public Bitmap? GetScreenshot()
+    {
+        // 无调用方，但接口要求：泵消息等待编辑器完成
+        if (Application.Current?.Dispatcher.CheckAccess() == true)
+        {
+            var task = CaptureBitmapAsync();
+            var frame = new DispatcherFrame();
+            task.ContinueWith(_ => frame.Continue = false, TaskScheduler.Default);
+            Dispatcher.PushFrame(frame);
+            return task.Result;
+        }
+        return CaptureBitmapAsync().GetAwaiter().GetResult();
+    }
+
+    public async Task<Bitmap?> GetScreenshotAsync() => await CaptureBitmapAsync();
+
+    private async Task<Bitmap?> CaptureBitmapAsync()
+    {
+        var result = await editorService.EditAsync(new ScreenshotEditOptions());
+        return result?.DetachEditedOrNull();
+    }
+
+    public async Task<ScreenshotCaptureResult?> GetScreenshotCaptureAsync()
+    {
+        var result = await CaptureAsyncCore();
+        if (result == null) return null;
+        var bitmap = result.TakeEdited();
+        var bounds = System.Drawing.Rectangle.Round(new RectangleF(
+            (float)result.PhysicalBounds.X, (float)result.PhysicalBounds.Y,
+            (float)result.PhysicalBounds.Width, (float)result.PhysicalBounds.Height));
+        result.Dispose();
+        return new ScreenshotCaptureResult(bitmap, bounds);
+    }
+
+    private Task<ScreenshotEditorResult?> CaptureAsyncCore() =>
+        editorService.EditAsync(new ScreenshotEditOptions());
+}
+
+file static class ScreenshotResultExtensions
+{
+    public static Bitmap? DetachEditedOrNull(this ScreenshotEditorResult result)
+    {
+        if (result == null) return null;
+        var bitmap = result.TakeEdited();
+        result.Dispose();
+        return bitmap;
+    }
+}

@@ -87,6 +87,12 @@
                                                 ToolTip="{DynamicResource General_ScreenshotTranslate}"
                                                 Visibility="Collapsed" />
                                             <control:IconButton
+                                                x:Name="ScreenshotButton"
+                                                Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type control:HeaderControl}}, Path=ScreenshotCommand}"
+                                                Icon="{x:Static ui:FluentSystemIcons.Camera_20_Regular}"
+                                                ToolTip="{DynamicResource Hotkey_Screenshot}"
+                                                Visibility="Collapsed" />
+                                            <control:IconButton
                                                 x:Name="MouseSelectionTranslationButton"
                                                 Icon="{x:Static ui:FluentSystemIcons.KeyboardMouse_16_Regular}"
                                                 IsOn="{Binding RelativeSource={RelativeSource AncestorType={x:Type control:HeaderControl}}, Path=IsMouseSelectionTranslationEnabled}"
@@ -259,6 +265,9 @@
                                             </DataTrigger>
                                             <DataTrigger Binding="{Binding}" Value="{x:Static core:MainHeaderActions.ScreenshotTranslate}">
                                                 <Setter TargetName="ScreenshotTranslateButton" Property="Visibility" Value="Visible" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding}" Value="{x:Static core:MainHeaderActions.Screenshot}">
+                                                <Setter TargetName="ScreenshotButton" Property="Visibility" Value="Visible" />
                                             </DataTrigger>
                                             <DataTrigger Binding="{Binding}" Value="{x:Static core:MainHeaderActions.MouseSelectionTranslation}">
                                                 <Setter TargetName="MouseSelectionTranslationButton" Property="Visibility" Value="Visible" />

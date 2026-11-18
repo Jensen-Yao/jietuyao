@@ -244,6 +244,22 @@ public class HeaderControl : Control
 
     #endregion
 
+    #region Screenshot
+
+    public ICommand? ScreenshotCommand
+    {
+        get => (ICommand?)GetValue(ScreenshotCommandProperty);
+        set => SetValue(ScreenshotCommandProperty, value);
+    }
+
+    public static readonly DependencyProperty ScreenshotCommandProperty =
+        DependencyProperty.Register(
+            nameof(ScreenshotCommand),
+            typeof(ICommand),
+            typeof(HeaderControl));
+
+    #endregion
+
     #region ColorScheme
 
     public bool IsColorSchemeVisible

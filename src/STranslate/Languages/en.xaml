@@ -193,6 +193,8 @@
     <sys:String x:Key="Hotkey_MouseSelectionTranslationDescription">Enable or disable immediate mouse selection translation.</sys:String>
     <sys:String x:Key="Hotkey_ReplaceTranslate">Replace Translation</sys:String>
     <sys:String x:Key="Hotkey_ReplaceTranslateDescription">Shortcut key to translate the selected text and replace the original text.</sys:String>
+    <sys:String x:Key="Hotkey_Screenshot">Screenshot</sys:String>
+    <sys:String x:Key="Hotkey_ScreenshotDescription">Hotkey to open the screenshot editor (annotate/pin/OCR/translate).</sys:String>
     <sys:String x:Key="Hotkey_ScreenshotTranslate">Screenshot Translation</sys:String>
     <sys:String x:Key="Hotkey_ScreenshotTranslateDescription">Hotkey for capturing a selected screen area, recognizing the text, and translating it.</sys:String>
     <sys:String x:Key="Hotkey_ImageTranslate">Image Translation</sys:String>

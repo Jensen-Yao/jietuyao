@@ -7,6 +7,7 @@ public static class MainHeaderActions
     public const string Ocr = "ocr";
     public const string ImageTranslate = "image_translate";
     public const string ScreenshotTranslate = "screenshot_translate";
+    public const string Screenshot = "screenshot";
     public const string MouseSelectionTranslation = "mouse_selection_translation";
     public const string ColorScheme = "color_scheme";
     public const string HideInput = "hide_input";
@@ -19,6 +20,7 @@ public static class MainHeaderActions
         AutoTranslate,
         Ocr,
         ImageTranslate,
+        Screenshot,
         ScreenshotTranslate,
         MouseSelectionTranslation,
         ColorScheme,

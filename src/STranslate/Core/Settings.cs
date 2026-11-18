@@ -67,6 +67,21 @@ public partial class Settings : ObservableObject
     /// </summary>
     [ObservableProperty] public partial bool ShowScreenshotAuxiliaryLines { get; set; } = true;
 
+    /// <summary>
+    /// jietuyao 截图编辑器各工具样式（键为 ScreenshotTool 枚举名）
+    /// </summary>
+    [ObservableProperty] public partial Dictionary<string, ScreenshotToolStyle> ScreenshotToolStyles { get; set; } = [];
+
+    /// <summary>
+    /// 截图保存对话框上次目录
+    /// </summary>
+    [ObservableProperty] public partial string LastScreenshotSaveDir { get; set; } = string.Empty;
+
+    /// <summary>
+    /// 贴图默认不透明度（0.1 - 1.0）
+    /// </summary>
+    [ObservableProperty] public partial double PinDefaultOpacity { get; set; } = 1.0;
+
     [ObservableProperty] public partial bool HideInput { get; set; } = false;
 
     [ObservableProperty] public partial bool HideInputWithLangSelectControl { get; set; } = false;

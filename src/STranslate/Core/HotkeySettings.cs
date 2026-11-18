@@ -34,6 +34,7 @@ public partial class HotkeySettings : ObservableObject, IDisposable
     public GlobalHotkey InputTranslateHotkey { get; set; } = new(Constant.EmptyHotkey);
     public GlobalHotkey CrosswordTranslateHotkey { get; set; } = new("Alt + D");
     public GlobalHotkey ScreenshotTranslateHotkey { get; set; } = new("Alt + S");
+    public GlobalHotkey ScreenshotHotkey { get; set; } = new("Alt + X");
     public GlobalHotkey ImageTranslateHotkey { get; set; } = new("Alt + Shift + X");
     public GlobalHotkey ReplaceTranslateHotkey { get; set; } = new(Constant.EmptyHotkey);
     public GlobalHotkey MouseSelectionTranslationHotkey { get; set; } = new(Constant.EmptyHotkey);
@@ -87,6 +88,7 @@ public partial class HotkeySettings : ObservableObject, IDisposable
         CreateGlobalHotkeyData(MouseSelectionTranslationHotkey.Key, "Hotkey_MouseSelectionTranslation", () => MouseSelectionTranslationHotkey.Key = Constant.EmptyHotkey),
         CreateGlobalHotkeyData(ReplaceTranslateHotkey.Key, "Hotkey_ReplaceTranslate", () => ReplaceTranslateHotkey.Key = Constant.EmptyHotkey),
         CreateGlobalHotkeyData(ScreenshotTranslateHotkey.Key, "Hotkey_ScreenshotTranslate", () => ScreenshotTranslateHotkey.Key = Constant.EmptyHotkey),
+        CreateGlobalHotkeyData(ScreenshotHotkey.Key, "Hotkey_Screenshot", () => ScreenshotHotkey.Key = Constant.EmptyHotkey),
         CreateGlobalHotkeyData(ImageTranslateHotkey.Key, "Hotkey_ImageTranslate", () => ImageTranslateHotkey.Key = Constant.EmptyHotkey),
         CreateGlobalHotkeyData(SilentOcrHotkey.Key, "Hotkey_SilentOcr", () => SilentOcrHotkey.Key = Constant.EmptyHotkey),
         CreateGlobalHotkeyData(SilentTtsHotkey.Key, "Hotkey_SilentTts", () => SilentTtsHotkey.Key = Constant.EmptyHotkey),
@@ -194,6 +196,7 @@ public partial class HotkeySettings : ObservableObject, IDisposable
             [nameof(InputTranslateHotkey)] = "Alt + A",
             [nameof(CrosswordTranslateHotkey)] = "Alt + D",
             [nameof(ScreenshotTranslateHotkey)] = "Alt + S",
+            [nameof(ScreenshotHotkey)] = "Alt + X",
             [nameof(ImageTranslateHotkey)] = "Alt + Shift + X",
             [nameof(ReplaceTranslateHotkey)] = "Alt + F",
             [nameof(MouseSelectionTranslationHotkey)] = "Alt + Shift + D",
@@ -369,6 +372,7 @@ public partial class HotkeySettings : ObservableObject, IDisposable
         HandleGlobalLogic(nameof(MouseSelectionTranslationHotkey), retryOnConflict: true);
         HandleGlobalLogic(nameof(ReplaceTranslateHotkey), retryOnConflict: true);
         HandleGlobalLogic(nameof(ScreenshotTranslateHotkey), retryOnConflict: true);
+        HandleGlobalLogic(nameof(ScreenshotHotkey), retryOnConflict: true);
         HandleGlobalLogic(nameof(ImageTranslateHotkey), retryOnConflict: true);
         HandleGlobalLogic(nameof(SilentOcrHotkey), retryOnConflict: true);
         HandleGlobalLogic(nameof(SilentTtsHotkey), retryOnConflict: true);
@@ -384,6 +388,7 @@ public partial class HotkeySettings : ObservableObject, IDisposable
         HotkeyMapper.RemoveHotkey(MouseSelectionTranslationHotkey.Key);
         HotkeyMapper.RemoveHotkey(ReplaceTranslateHotkey.Key);
         HotkeyMapper.RemoveHotkey(ScreenshotTranslateHotkey.Key);
+        HotkeyMapper.RemoveHotkey(ScreenshotHotkey.Key);
         HotkeyMapper.RemoveHotkey(ImageTranslateHotkey.Key);
         HotkeyMapper.RemoveHotkey(SilentOcrHotkey.Key);
         HotkeyMapper.RemoveHotkey(SilentTtsHotkey.Key);
@@ -415,6 +420,9 @@ public partial class HotkeySettings : ObservableObject, IDisposable
                 break;
             case nameof(ScreenshotTranslateHotkey):
                 RegisterHotkey(ScreenshotTranslateHotkey, WithFullscreenCheck(() => MainWindowViewModel.ScreenshotTranslateCommand.Execute(null)), retryOnConflict);
+                break;
+            case nameof(ScreenshotHotkey):
+                RegisterHotkey(ScreenshotHotkey, WithFullscreenCheck(() => MainWindowViewModel.ScreenshotEditorCommand.Execute(null)), retryOnConflict);
                 break;
             case nameof(ImageTranslateHotkey):
                 RegisterHotkey(ImageTranslateHotkey, WithFullscreenCheck(() => MainWindowViewModel.ImageTranslateCommand.Execute(null)), retryOnConflict);
@@ -519,6 +527,7 @@ public partial class HotkeySettings : ObservableObject, IDisposable
             case nameof(MouseSelectionTranslationHotkey): MouseSelectionTranslationHotkey.IsConflict = isConflict; break;
             case nameof(ReplaceTranslateHotkey): ReplaceTranslateHotkey.IsConflict = isConflict; break;
             case nameof(ScreenshotTranslateHotkey): ScreenshotTranslateHotkey.IsConflict = isConflict; break;
+            case nameof(ScreenshotHotkey): ScreenshotHotkey.IsConflict = isConflict; break;
             case nameof(ImageTranslateHotkey): ImageTranslateHotkey.IsConflict = isConflict; break;
             case nameof(SilentOcrHotkey): SilentOcrHotkey.IsConflict = isConflict; break;
             case nameof(SilentTtsHotkey): SilentTtsHotkey.IsConflict = isConflict; break;

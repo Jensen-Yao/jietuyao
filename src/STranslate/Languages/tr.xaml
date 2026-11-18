@@ -193,6 +193,8 @@
     <sys:String x:Key="Hotkey_MouseSelectionTranslationDescription">Fare seçimi anında çeviriyi etkinleştirir veya devre dışı bırakır.</sys:String>
     <sys:String x:Key="Hotkey_ReplaceTranslate">Değiştirerek Çeviri</sys:String>
     <sys:String x:Key="Hotkey_ReplaceTranslateDescription">Seçili metni çevirip orijinal metinle değiştirmek için kısayol tuşu.</sys:String>
+    <sys:String x:Key="Hotkey_Screenshot">Ekran görüntüsü</sys:String>
+    <sys:String x:Key="Hotkey_ScreenshotDescription">Ekran görüntüsü düzenleyicisini (ek açıklama/sabitleme/OCR/çeviri) açan kısayol.</sys:String>
     <sys:String x:Key="Hotkey_ScreenshotTranslate">Ekran Görüntüsü Çevirisi</sys:String>
     <sys:String x:Key="Hotkey_ScreenshotTranslateDescription">Seçili ekran alanını yakalamak, metni tanımak ve çevirmek için kısayol.</sys:String>
     <sys:String x:Key="Hotkey_ImageTranslate">Görsel Çeviri</sys:String>

@@ -193,6 +193,8 @@
     <sys:String x:Key="Hotkey_MouseSelectionTranslationDescription">Увімкнути або вимкнути негайний переклад тексту, виділеного мишею.</sys:String>
     <sys:String x:Key="Hotkey_ReplaceTranslate">Переклад із заміною</sys:String>
     <sys:String x:Key="Hotkey_ReplaceTranslateDescription">Перекласти виділений текст і замінити ним початковий.</sys:String>
+    <sys:String x:Key="Hotkey_Screenshot">Знімок екрана</sys:String>
+    <sys:String x:Key="Hotkey_ScreenshotDescription">Гаряча клавіша відкриття редактора знімків екрана (анотації/закріплення/OCR/переклад).</sys:String>
     <sys:String x:Key="Hotkey_ScreenshotTranslate">Переклад знімка екрана</sys:String>
     <sys:String x:Key="Hotkey_ScreenshotTranslateDescription">Виділити область екрана, розпізнати текст і перекласти його.</sys:String>
     <sys:String x:Key="Hotkey_ImageTranslate">Переклад зображення</sys:String>

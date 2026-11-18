@@ -3,6 +3,7 @@ using System.Windows;
 using Windows.Win32;
 using Windows.Win32.Foundation;
 using Windows.Win32.Graphics.Gdi;
+using Windows.Win32.UI.HiDpi;
 using Windows.Win32.UI.WindowsAndMessaging;
 
 namespace STranslate.Helpers;
@@ -139,6 +140,21 @@ public class MonitorInfo
             new Rect(new Point(info.monitorInfo.rcWork.left, info.monitorInfo.rcWork.top),
             new Point(info.monitorInfo.rcWork.right, info.monitorInfo.rcWork.bottom));
         Name = new string(info.szDevice.AsSpan()).Replace("\0", "").Trim();
+        DpiScale = GetDpiScale(monitor);
+    }
+
+    private static double GetDpiScale(HMONITOR monitor)
+    {
+        try
+        {
+            if (PInvoke.GetDpiForMonitor(monitor, MONITOR_DPI_TYPE.MDT_EFFECTIVE_DPI, out var dpiX, out var _) == 0)
+                return dpiX / 96.0;
+        }
+        catch
+        {
+            // shcore 不可用时回退系统 DPI
+        }
+        return 1.0;
     }
 
     /// <summary>
@@ -166,6 +182,11 @@ public class MonitorInfo
     /// Gets if the monitor is the primary display monitor.
     /// </summary>
     public bool IsPrimary => _monitor == PInvoke.MonitorFromWindow(new(nint.Zero), MONITOR_FROM_FLAGS.MONITOR_DEFAULTTOPRIMARY);
+
+    /// <summary>
+    /// Gets the effective DPI scale (96-based) of this monitor.
+    /// </summary>
+    public double DpiScale { get; }
 
     /// <inheritdoc />
     public override string ToString() => $"{Name} {Bounds.Width}x{Bounds.Height}";

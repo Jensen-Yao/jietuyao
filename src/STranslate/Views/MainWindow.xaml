@@ -122,6 +122,7 @@
             IsTopmost="{Binding IsTopmost}"
             OcrCommand="{Binding OcrCommand}"
             QuickServiceItems="{Binding QuickServiceItems}"
+            ScreenshotCommand="{Binding ScreenshotEditorCommand}"
             ScreenshotTranslateCommand="{Binding ScreenshotTranslateCommand}"
             SettingCommand="{Binding OpenSettingsCommand}"
             ToggleQuickServiceCommand="{Binding ToggleQuickServiceCommand}"

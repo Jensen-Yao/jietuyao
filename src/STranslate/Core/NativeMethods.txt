@@ -97,3 +97,10 @@ CreateRoundRectRgn
 SetWindowRgn
 DWM_TNP_*
 SetLayeredWindowAttributes
+GetDpiForMonitor
+MONITOR_DPI_TYPE
+DwmGetWindowAttribute
+EnumWindows
+IsWindowVisible
+SetWindowPos
+GetWindowThreadProcessId

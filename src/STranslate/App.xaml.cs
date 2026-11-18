@@ -131,7 +131,8 @@ public partial class App : ISingleInstanceApp, INavigation, IDisposable
                     // 注册应用程序服务
                     services.AddSingleton<INotification, Notification>();
                     services.AddSingleton<IAudioPlayer, AudioPlayer>();
-                    services.AddSingleton<IScreenshot, Screenshot>();
+                    services.AddSingleton<ScreenshotEditorService>();
+                    services.AddSingleton<IScreenshot, JietuyaoScreenshot>();
                     services.AddSingleton<ISnackbar, Snackbar>();
                     services.AddSingleton<PinnedWindowController>();
 

@@ -189,6 +189,8 @@
     <sys:String x:Key="Hotkey_MouseSelectionTranslationDescription">マウス選択の直接翻訳を有効または無効にします。</sys:String>
     <sys:String x:Key="Hotkey_ReplaceTranslate">置換翻訳</sys:String>
     <sys:String x:Key="Hotkey_ReplaceTranslateDescription">選択したテキストを翻訳し、元のテキストを置換するホットキー。</sys:String>
+    <sys:String x:Key="Hotkey_Screenshot">スクリーンショット</sys:String>
+    <sys:String x:Key="Hotkey_ScreenshotDescription">スクリーンショットエディター（注釈/ピン留め/OCR/翻訳）を開くショートカット。</sys:String>
     <sys:String x:Key="Hotkey_ScreenshotTranslate">スクショ翻訳</sys:String>
     <sys:String x:Key="Hotkey_ScreenshotTranslateDescription">スクリーンショットで領域を選択後、テキストを識別して翻訳します。</sys:String>
     <sys:String x:Key="Hotkey_ImageTranslate">画像翻訳</sys:String>

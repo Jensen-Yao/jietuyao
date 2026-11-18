@@ -193,6 +193,8 @@
     <sys:String x:Key="Hotkey_MouseSelectionTranslationDescription">Включить или выключить немедленный перевод текста, выделенного мышью.</sys:String>
     <sys:String x:Key="Hotkey_ReplaceTranslate">Перевод с заменой</sys:String>
     <sys:String x:Key="Hotkey_ReplaceTranslateDescription">Перевести выделенный текст и заменить им исходный.</sys:String>
+    <sys:String x:Key="Hotkey_Screenshot">Скриншот</sys:String>
+    <sys:String x:Key="Hotkey_ScreenshotDescription">Горячая клавиша открытия редактора скриншотов (аннотации/закрепление/OCR/перевод).</sys:String>
     <sys:String x:Key="Hotkey_ScreenshotTranslate">Перевод скриншота</sys:String>
     <sys:String x:Key="Hotkey_ScreenshotTranslateDescription">Выделить область экрана, распознать текст и перевести его.</sys:String>
     <sys:String x:Key="Hotkey_ImageTranslate">Перевод изображения</sys:String>

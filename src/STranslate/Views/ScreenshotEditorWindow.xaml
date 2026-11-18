@@ -1,0 +1,17 @@
+<Window x:Class="STranslate.Views.ScreenshotEditorWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        ShowInTaskbar="False"
+        ShowActivated="False"
+        Topmost="True"
+        Background="Black"
+        WindowStartupLocation="Manual"
+        Focusable="True"
+        UseLayoutRounding="True">
+    <Grid>
+        <Grid x:Name="CanvasHost" />
+        <Canvas x:Name="OverlayPanel" IsHitTestVisible="False" />
+    </Grid>
+</Window>

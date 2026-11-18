@@ -1,4 +1,5 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
 using iNKORE.UI.WPF.Modern;
 using Microsoft.Extensions.Logging;
@@ -1261,6 +1262,37 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
     #endregion
 
     #region OCR & Screenshot Commands
+
+    /// <summary>
+    /// jietuyao 截图编辑器（独立入口，热键 Alt+X）。
+    /// 复制/保存/贴图已在编辑器服务内完成，这里只路由 OCR/翻译。
+    /// </summary>
+    [RelayCommand]
+    private async Task ScreenshotEditorAsync()
+    {
+        var editor = Ioc.Default.GetRequiredService<ScreenshotEditorService>();
+        using var result = await editor.EditAsync(new ScreenshotEditOptions());
+        if (result == null)
+            return;
+
+        switch (result.Action)
+        {
+            case ScreenshotEditorAction.Ocr:
+            {
+                var bitmap = result.TakeClean();
+                result.Dispose();
+                await OcrHandlerAsync(bitmap);
+                break;
+            }
+            case ScreenshotEditorAction.Translate:
+            {
+                var bitmap = result.TakeClean();
+                result.Dispose();
+                await ScreenshotTranslateHandlerAsync(bitmap);
+                break;
+            }
+        }
+    }
 
     [RelayCommand(IncludeCancelCommand = true)]
     private async Task ScreenshotTranslateAsync(CancellationToken cancellationToken)
