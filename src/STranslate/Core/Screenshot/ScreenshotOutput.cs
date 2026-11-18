@@ -133,6 +133,110 @@ public static class ScreenshotOutput
         buffer[offset + 3] = (byte)(value >> 24);
     }
 
+    #region PDF 导出（最小 PDF 写入器）
+
+    /// <summary>
+    /// 位图导出为单页 PDF（RGB FlateDecode 嵌入，300 视觉无损）
+    /// </summary>
+    public static void SaveToPdf(Bitmap bitmap, string path)
+    {
+        var width = bitmap.Width;
+        var height = bitmap.Height;
+
+        // 提取 RGB 字节
+        var data = bitmap.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.ReadOnly, PixelFormat.Format24bppRgb);
+        byte[] rgb;
+        try
+        {
+            rgb = new byte[width * height * 3];
+            var stride = Math.Abs(data.Stride);
+            for (var y = 0; y < height; y++)
+            {
+                Marshal.Copy(data.Scan0 + y * stride, rgb, y * width * 3, width * 3);
+            }
+        }
+        finally
+        {
+            bitmap.UnlockBits(data);
+        }
+
+        var compressed = ZlibCompress(rgb);
+
+        using var output = new MemoryStream();
+        var offsets = new long[6];
+
+        void Write(string s)
+        {
+            var bytes = Encoding.ASCII.GetBytes(s);
+            output.Write(bytes);
+        }
+
+        Write("%PDF-1.4\n%\xE2\xE3\xCF\xD3\n");
+
+        offsets[1] = output.Length;
+        Write("1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n");
+
+        offsets[2] = output.Length;
+        Write("2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n");
+
+        offsets[3] = output.Length;
+        Write($"3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 {width} {height}] " +
+              $"/Resources << /XObject << /Im0 4 0 R >> >> /Contents 5 0 R >>\nendobj\n");
+
+        offsets[4] = output.Length;
+        Write($"4 0 obj\n<< /Type /XObject /Subtype /Image /Width {width} /Height {height} " +
+              $"/ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /FlateDecode /Length {compressed.Length} >>\nstream\n");
+        output.Write(compressed);
+        Write("\nendstream\nendobj\n");
+
+        var content = $"q {width} 0 0 {height} 0 0 cm /Im0 Do Q";
+        offsets[5] = output.Length;
+        Write($"5 0 obj\n<< /Length {content.Length} >>\nstream\n{content}\nendstream\nendobj\n");
+
+        var xrefPos = output.Length;
+        Write($"xref\n0 6\n0000000000 65535 f \n");
+        for (var i = 1; i <= 5; i++)
+            Write($"{offsets[i]:D10} 00000 n \n");
+        Write($"trailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n{xrefPos}\n%%EOF");
+
+        File.WriteAllBytes(path, output.ToArray());
+    }
+
+    /// <summary>zlib 格式压缩（PDF FlateDecode 要求 zlib 头 + Adler32）</summary>
+    private static byte[] ZlibCompress(byte[] data)
+    {
+        using var deflate = new MemoryStream();
+        using (var compressor = new System.IO.Compression.DeflateStream(deflate, System.IO.Compression.CompressionLevel.Optimal, leaveOpen: true))
+        {
+            compressor.Write(data);
+        }
+        var deflated = deflate.ToArray();
+
+        var result = new byte[deflated.Length + 6];
+        result[0] = 0x78;
+        result[1] = 0x9C;
+        deflated.CopyTo(result, 2);
+        var adler = Adler32(data);
+        result[^4] = (byte)(adler >> 24);
+        result[^3] = (byte)(adler >> 16);
+        result[^2] = (byte)(adler >> 8);
+        result[^1] = (byte)adler;
+        return result;
+    }
+
+    private static uint Adler32(byte[] data)
+    {
+        uint a = 1, b = 0;
+        foreach (var x in data)
+        {
+            a = (a + x) % 65521;
+            b = (b + a) % 65521;
+        }
+        return (b << 16) | a;
+    }
+
+    #endregion
+
     private static void WriteInt16(byte[] buffer, int offset, short value)
     {
         buffer[offset] = (byte)value;
@@ -164,7 +268,7 @@ public static class ScreenshotOutput
         var dialog = new SaveFileDialog
         {
             Title = "保存截图",
-            Filter = "PNG 图像 (*.png)|*.png|JPEG 图像 (*.jpg)|*.jpg|位图 (*.bmp)|*.bmp",
+            Filter = "PNG 图像 (*.png)|*.png|JPEG 图像 (*.jpg)|*.jpg|位图 (*.bmp)|*.bmp|PDF 文档 (*.pdf)|*.pdf",
             FileName = suggestedName ?? $"jietuyao_{DateTime.Now:yyyyMMdd_HHmmss}.png",
             AddExtension = true,
         };
@@ -173,6 +277,12 @@ public static class ScreenshotOutput
 
         if (dialog.ShowDialog() != true)
             return null;
+
+        if (dialog.FileName.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase))
+        {
+            SaveToPdf(bitmap, dialog.FileName);
+            return dialog.FileName;
+        }
 
         var encoder = Path.GetExtension(dialog.FileName).ToLowerInvariant() switch
         {

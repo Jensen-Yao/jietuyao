@@ -28,6 +28,9 @@
 
     <!-- API 翻译插件 -->
     <Project Path="Plugins/STranslate.Plugin.Translate.Baidu/STranslate.Plugin.Translate.Baidu.csproj" />
+    <!-- jietuyao v2 补齐：v1 引擎承诺 -->
+    <Project Path="Plugins/STranslate.Plugin.Translate.Azure/STranslate.Plugin.Translate.Azure.csproj" />
+    <Project Path="Plugins/STranslate.Plugin.Translate.Amazon/STranslate.Plugin.Translate.Amazon.csproj" />
     <Project Path="Plugins/STranslate.Plugin.Translate.BigModel/STranslate.Plugin.Translate.BigModel.csproj" />
     <Project Path="Plugins/STranslate.Plugin.Translate.DeepL/STranslate.Plugin.Translate.DeepL.csproj" />
     <Project Path="Plugins/STranslate.Plugin.Translate.MTranServer/STranslate.Plugin.Translate.MTranServer.csproj" />

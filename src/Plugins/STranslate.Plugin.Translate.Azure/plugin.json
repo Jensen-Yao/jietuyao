@@ -1,0 +1,10 @@
+{
+  "PluginID": "7c2f9a41d8b64c0e9a1f5d3b2e8a4701",
+  "Name": "Azure",
+  "Description": "Azure plugin for jietuyao (ported from jietuyao v1)",
+  "Author": "Jensen-Yao",
+  "Version": "1.0.0",
+  "Website": "https://github.com/Jensen-Yao/jietuyao",
+  "ExecuteFileName": "STranslate.Plugin.Translate.Azure.dll",
+  "IconPath": "icon.png"
+}

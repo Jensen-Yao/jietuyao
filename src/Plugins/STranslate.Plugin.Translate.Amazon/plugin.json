@@ -1,0 +1,10 @@
+{
+  "PluginID": "3e8a5b7c1d9f4062ac7b5e0f8d2c6149",
+  "Name": "Amazon",
+  "Description": "Amazon plugin for jietuyao (ported from jietuyao v1)",
+  "Author": "Jensen-Yao",
+  "Version": "1.0.0",
+  "Website": "https://github.com/Jensen-Yao/jietuyao",
+  "ExecuteFileName": "STranslate.Plugin.Translate.Amazon.dll",
+  "IconPath": "icon.png"
+}
