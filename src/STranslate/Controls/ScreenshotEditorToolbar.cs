@@ -303,6 +303,7 @@ public sealed class ScreenshotEditorToolbar : Border
     private void BuildActionRow()
     {
         _actionRow.Children.Add(CreateActionButton("长截图（滚动连拍）", JietuyaoIconRenderer.Create(JietuyaoIcons.LongScreenshot, ForegroundBrush, 15), () => ActionRequested?.Invoke(ScreenshotEditorAction.LongScreenshot)));
+        _actionRow.Children.Add(CreateActionButton("GIF 录屏", JietuyaoIconRenderer.Create(JietuyaoIcons.Gif, ForegroundBrush, 15), () => ActionRequested?.Invoke(ScreenshotEditorAction.GifRecord)));
         _actionRow.Children.Add(CreateActionButton("OCR (O)", JietuyaoIconRenderer.Create(JietuyaoIcons.Ocr, ForegroundBrush, 15), () => ActionRequested?.Invoke(ScreenshotEditorAction.Ocr)));
         _actionRow.Children.Add(CreateActionButton("翻译 (F)", JietuyaoIconRenderer.Create(JietuyaoIcons.Translate, ForegroundBrush, 15), () => ActionRequested?.Invoke(ScreenshotEditorAction.Translate)));
         _actionRow.Children.Add(CreateActionButton("贴图 (T)", JietuyaoIconRenderer.Create(JietuyaoIcons.Pin, ForegroundBrush, 15), () => ActionRequested?.Invoke(ScreenshotEditorAction.Pin)));

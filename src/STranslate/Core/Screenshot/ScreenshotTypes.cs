@@ -68,6 +68,9 @@ public enum ScreenshotEditorAction
     /// <summary>滚动长截图</summary>
     LongScreenshot,
 
+    /// <summary>GIF 录屏</summary>
+    GifRecord,
+
     /// <summary>直接关闭（已保存等场景）</summary>
     Close,
 }

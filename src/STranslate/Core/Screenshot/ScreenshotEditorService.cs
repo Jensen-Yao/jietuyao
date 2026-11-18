@@ -178,7 +178,7 @@ public sealed class ScreenshotEditorService(Settings settings, PinnedWindowContr
     {
         if (result == null)
             return;
-        if (result.Action is not (ScreenshotEditorAction.Save or ScreenshotEditorAction.Pin or ScreenshotEditorAction.Copy or ScreenshotEditorAction.LongScreenshot))
+        if (result.Action is not (ScreenshotEditorAction.Save or ScreenshotEditorAction.Pin or ScreenshotEditorAction.Copy or ScreenshotEditorAction.LongScreenshot or ScreenshotEditorAction.GifRecord))
             return;
 
         await App.Current.Dispatcher.InvokeAsync(() =>
@@ -204,6 +204,9 @@ public sealed class ScreenshotEditorService(Settings settings, PinnedWindowContr
                 case ScreenshotEditorAction.LongScreenshot:
                     // 编辑器窗口已关闭，选区位置开启滚动连拍
                     ScrollCaptureController.Instance.Begin(result.PhysicalBounds);
+                    break;
+                case ScreenshotEditorAction.GifRecord:
+                    GifRecorderController.Instance.Begin(result.PhysicalBounds);
                     break;
             }
         });

@@ -140,6 +140,23 @@ public static class ScreenshotOutput
     }
 
     /// <summary>
+    /// GIF 保存对话框（录制完成用），返回路径或 null
+    /// </summary>
+    public static string? SaveGifFile(string suggestedName, string? initialDirectory = null)
+    {
+        var dialog = new SaveFileDialog
+        {
+            Title = "保存 GIF",
+            Filter = "GIF 动画 (*.gif)|*.gif",
+            FileName = suggestedName,
+            AddExtension = true,
+        };
+        if (!string.IsNullOrEmpty(initialDirectory) && Directory.Exists(initialDirectory))
+            dialog.InitialDirectory = initialDirectory;
+        return dialog.ShowDialog() == true ? dialog.FileName : null;
+    }
+
+    /// <summary>
     /// 弹出保存对话框并保存。返回保存路径，取消返回 null。
     /// </summary>
     public static string? SaveToFile(Bitmap bitmap, string? initialDirectory = null, string? suggestedName = null)
