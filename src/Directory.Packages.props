@@ -11,6 +11,7 @@
     <PackageVersion Include="H.InputSimulator" Version="1.5.0" />
     <PackageVersion Include="Hardcodet.NotifyIcon.Wpf" Version="2.0.1" />
     <PackageVersion Include="Microsoft.ML.OnnxRuntime" Version="1.20.1" />
+    <PackageVersion Include="SixLabors.ImageSharp" Version="3.1.7" />
     <PackageVersion Include="iNKORE.UI.WPF.Modern" Version="0.10.2.1" />
     <PackageVersion Include="Markdig.Wpf" Version="0.5.0.1" />
     <PackageVersion Include="Microsoft.Data.Sqlite" Version="10.0.9" />

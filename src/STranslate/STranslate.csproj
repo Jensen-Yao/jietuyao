@@ -102,6 +102,7 @@
         <PackageReference Include="ScreenGrab" />
         <PackageReference Include="SemanticVersioning" />
         <PackageReference Include="Serilog.Extensions.Logging" />
+        <PackageReference Include="SixLabors.ImageSharp" />
         <PackageReference Include="Serilog.Sinks.File" />
         <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />

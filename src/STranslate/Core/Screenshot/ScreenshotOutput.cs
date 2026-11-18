@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows;
 using Microsoft.Win32;
+using SixLabors.ImageSharp.Formats.Webp;
 
 namespace STranslate.Core;
 
@@ -131,6 +132,37 @@ public static class ScreenshotOutput
         buffer[offset + 1] = (byte)(value >> 8);
         buffer[offset + 2] = (byte)(value >> 16);
         buffer[offset + 3] = (byte)(value >> 24);
+    }
+
+    /// <summary>
+    /// 保存为 WEBP（纯托管 ImageSharp 编码，质量 90）
+    /// </summary>
+    public static void SaveAsWebp(Bitmap bitmap, string path)
+    {
+        // GDI 32bppPArgb → BGRA 托管像素 → ImageSharp
+        var rect = new Rectangle(0, 0, bitmap.Width, bitmap.Height);
+        var data = bitmap.LockBits(rect, ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+        byte[] bgra;
+        try
+        {
+            bgra = new byte[data.Stride * data.Height];
+            Marshal.Copy(data.Scan0, bgra, 0, bgra.Length);
+        }
+        finally
+        {
+            bitmap.UnlockBits(data);
+        }
+        var rgba = new byte[bgra.Length];
+        for (var i = 0; i < bgra.Length; i += 4)
+        {
+            rgba[i] = bgra[i + 2];
+            rgba[i + 1] = bgra[i + 1];
+            rgba[i + 2] = bgra[i];
+            rgba[i + 3] = bgra[i + 3];
+        }
+        using var image = SixLabors.ImageSharp.Image.LoadPixelData<SixLabors.ImageSharp.PixelFormats.Rgba32>(rgba, bitmap.Width, bitmap.Height);
+        using var stream = File.Create(path);
+        image.Save(stream, new WebpEncoder { Quality = 90 });
     }
 
     #region PDF 导出（最小 PDF 写入器）
@@ -268,7 +300,7 @@ public static class ScreenshotOutput
         var dialog = new SaveFileDialog
         {
             Title = "保存截图",
-            Filter = "PNG 图像 (*.png)|*.png|JPEG 图像 (*.jpg)|*.jpg|位图 (*.bmp)|*.bmp|PDF 文档 (*.pdf)|*.pdf",
+            Filter = "PNG 图像 (*.png)|*.png|JPEG 图像 (*.jpg)|*.jpg|位图 (*.bmp)|*.bmp|WEBP 图像 (*.webp)|*.webp|PDF 文档 (*.pdf)|*.pdf",
             FileName = suggestedName ?? $"jietuyao_{DateTime.Now:yyyyMMdd_HHmmss}.png",
             AddExtension = true,
         };
@@ -281,6 +313,12 @@ public static class ScreenshotOutput
         if (dialog.FileName.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase))
         {
             SaveToPdf(bitmap, dialog.FileName);
+            return dialog.FileName;
+        }
+
+        if (dialog.FileName.EndsWith(".webp", StringComparison.OrdinalIgnoreCase))
+        {
+            SaveAsWebp(bitmap, dialog.FileName);
             return dialog.FileName;
         }
 
