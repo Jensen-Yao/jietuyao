@@ -1274,6 +1274,20 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
     }
 
     /// <summary>
+    /// 截图即译图（Ctrl+Shift+2）：框选后自动执行 译图，直达 SnipTrans 式体验
+    /// </summary>
+    [RelayCommand]
+    private async Task QuickImageOverlayAsync()
+    {
+        var editor = Ioc.Default.GetRequiredService<ScreenshotEditorService>();
+        using var result = await editor.EditAsync(new ScreenshotEditOptions
+        {
+            QuickAction = ScreenshotEditorAction.ImageOverlay,
+        });
+        result?.Dispose();
+    }
+
+    /// <summary>
     /// 剪贴板图片贴屏（Ctrl+Shift+3，吸收自 SnipTrans）：读剪贴板图片贴到光标附近
     /// </summary>
     [RelayCommand]

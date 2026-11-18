@@ -189,6 +189,8 @@
     <sys:String x:Key="Hotkey_MouseSelectionTranslationDescription">마우스 선택 즉시 번역을 켜거나 끕니다.</sys:String>
     <sys:String x:Key="Hotkey_ReplaceTranslate">치환 번역</sys:String>
     <sys:String x:Key="Hotkey_ReplaceTranslateDescription">마우스로 선택한 텍스트를 번역하고 원본 텍스트를 치환하는 단축키입니다.</sys:String>
+    <sys:String x:Key="Hotkey_QuickOverlay">캡처 즉시 번역이미지</sys:String>
+    <sys:String x:Key="Hotkey_QuickOverlayDescription">영역 선택 후 자동으로 번역 이미지 생성(편집기 경유 없음)</sys:String>
     <sys:String x:Key="Hotkey_ClipboardPin">클립보드 이미지 고정</sys:String>
     <sys:String x:Key="Hotkey_ClipboardPinDescription">클립보드의 이미지를 화면에 고정(커서 근처)</sys:String>
     <sys:String x:Key="Hotkey_ClipboardHistory">클립보드 기록</sys:String>
@@ -209,6 +211,13 @@
     <sys:String x:Key="Jy_PinGroup">Pin to Screen</sys:String>
     <sys:String x:Key="Jy_PinOpacity">Default opacity</sys:String>
     <sys:String x:Key="Jy_PinOpacityDesc">Initial opacity of new pins (Ctrl+Wheel to adjust anytime)</sys:String>
+    <sys:String x:Key="Jy_SmartGroup">스마트 세부</sys:String>
+    <sys:String x:Key="Jy_RememberTool">마지막 도구 기억</sys:String>
+    <sys:String x:Key="Jy_RememberToolDesc">다음 캡처를 마지막 주석 도구로 시작</sys:String>
+    <sys:String x:Key="Jy_GifFps">GIF 기본 프레임</sys:String>
+    <sys:String x:Key="Jy_GifFpsDesc">새 녹화의 초기 fps(도구 모음에서 임시 변경 가능)</sys:String>
+    <sys:String x:Key="Jy_OverlayTarget">번역이미지 대상 언어</sys:String>
+    <sys:String x:Key="Jy_OverlayTargetDesc">기본은 원문에서 자동 추론</sys:String>
     <sys:String x:Key="Jy_EditorGroup">Screenshot Editor</sys:String>
     <sys:String x:Key="Jy_EditorEffects">Rounded / Border / Shadow / Lock ratio</sys:String>
     <sys:String x:Key="Jy_EditorEffectsDesc">Adjust live in the editor toolbar</sys:String>

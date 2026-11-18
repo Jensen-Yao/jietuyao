@@ -53,10 +53,11 @@ public sealed partial class ScreenshotEditorWindow : Window
                 _session.Finish(action);
         };
 
+        _canvas.SelectionStabilized += OnSelectionStabilizedForQuick;
         _canvas.BeginTextEditRequested += ShowTextEditor;
         _canvas.ContextMenuRequested += ShowContextMenu;
         _canvas.SelectionStabilized += UpdateToolbarPosition;
-        _canvas.InteractionStarted += HideToolbar;
+        _canvas.InteractionStarted += () => { _quickTimer?.Stop(); HideToolbar(); };
         _canvas.InteractionEnded += UpdateToolbarPosition;
         _canvas.DefaultActionRequested += () => _session.Finish(ScreenshotEditorAction.Copy);
         session.SessionClosing += CloseEditor;
@@ -100,10 +101,29 @@ public sealed partial class ScreenshotEditorWindow : Window
         PositionPhysical();
     }
 
+    /// <summary>QuickAction：选区稳定后短暂停顿即自动执行（拖动/改手柄会取消）</summary>
+    private void OnSelectionStabilizedForQuick()
+    {
+        if (_session.Options.QuickAction is not { } action)
+            return;
+        _quickTimer?.Stop();
+        _quickTimer = new System.Windows.Threading.DispatcherTimer { Interval = TimeSpan.FromMilliseconds(320) };
+        _quickTimer.Tick += (_, _) =>
+        {
+            _quickTimer?.Stop();
+            if (_session.Selection is { Width: >= 8 })
+                _session.Finish(action);
+        };
+        _quickTimer.Start();
+    }
+
+    private System.Windows.Threading.DispatcherTimer? _quickTimer;
+
     public void CloseEditor()
     {
         if (_closed) return;
         _closed = true;
+        _quickTimer?.Stop();
         _session.SessionClosing -= CloseEditor;
         Close();
     }
@@ -126,7 +146,11 @@ public sealed partial class ScreenshotEditorWindow : Window
         switch (e.Key)
         {
             case Key.Escape:
-                _session.Cancel();
+                // 分级退出：有选区且无标注 → 先清空选区；再次 Esc 才退出
+                if (_session.Selection is { } && _session.Annotations.Count == 0)
+                    _session.Selection = null;
+                else
+                    _session.Cancel();
                 e.Handled = true;
                 break;
 

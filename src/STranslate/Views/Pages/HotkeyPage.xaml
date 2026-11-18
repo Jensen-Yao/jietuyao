@@ -177,6 +177,17 @@
                             WindowTitle="{DynamicResource Hotkey_ScreenshotTranslate}" />
                     </ui:SettingsCard>
 
+                    <ui:SettingsCard Description="{DynamicResource Hotkey_QuickOverlayDescription}" Header="{DynamicResource Hotkey_QuickOverlay}">
+                        <ui:SettingsCard.HeaderIcon>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Glasses_24_Regular}" />
+                        </ui:SettingsCard.HeaderIcon>
+                        <control:HotkeyControl
+                            DefaultHotkey="{Binding HotkeySettings.QuickOverlayHotkey.Default}"
+                            Hotkey="{Binding HotkeySettings.QuickOverlayHotkey.Key}"
+                            IsRegistered="{Binding HotkeySettings.QuickOverlayHotkey.IsConflict}"
+                            WindowTitle="{DynamicResource Hotkey_QuickOverlay}" />
+                    </ui:SettingsCard>
+
                     <ui:SettingsCard Description="{DynamicResource Hotkey_ClipboardPinDescription}" Header="{DynamicResource Hotkey_ClipboardPin}">
                         <ui:SettingsCard.HeaderIcon>
                             <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.ImageMultiple_24_Regular}" />

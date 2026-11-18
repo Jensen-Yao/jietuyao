@@ -141,6 +141,9 @@ public sealed class ScreenshotEditOptions
 
     /// <summary>是否隐藏主窗口与贴图翻译窗口后再截图</summary>
     public bool HideAppWindows { get; init; } = true;
+
+    /// <summary>选区确定后自动执行的动作（如截图即译图直达键）；空 = 停留编辑器</summary>
+    public ScreenshotEditorAction? QuickAction { get; init; }
 }
 
 /// <summary>

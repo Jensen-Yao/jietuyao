@@ -189,6 +189,8 @@
     <sys:String x:Key="Hotkey_MouseSelectionTranslationDescription">マウス選択の直接翻訳を有効または無効にします。</sys:String>
     <sys:String x:Key="Hotkey_ReplaceTranslate">置換翻訳</sys:String>
     <sys:String x:Key="Hotkey_ReplaceTranslateDescription">選択したテキストを翻訳し、元のテキストを置換するホットキー。</sys:String>
+    <sys:String x:Key="Hotkey_QuickOverlay">スクショ即訳図</sys:String>
+    <sys:String x:Key="Hotkey_QuickOverlayDescription">範囲選択後に自動で訳画を実行（エディタ停留なし）</sys:String>
     <sys:String x:Key="Hotkey_ClipboardPin">クリップボード画像を貼る</sys:String>
     <sys:String x:Key="Hotkey_ClipboardPinDescription">クリップボード内の画像を画面に貼り付け（カーソル近く）</sys:String>
     <sys:String x:Key="Hotkey_ClipboardHistory">クリップボード履歴</sys:String>
@@ -209,6 +211,13 @@
     <sys:String x:Key="Jy_PinGroup">Pin to Screen</sys:String>
     <sys:String x:Key="Jy_PinOpacity">Default opacity</sys:String>
     <sys:String x:Key="Jy_PinOpacityDesc">Initial opacity of new pins (Ctrl+Wheel to adjust anytime)</sys:String>
+    <sys:String x:Key="Jy_SmartGroup">気の利いた詳細</sys:String>
+    <sys:String x:Key="Jy_RememberTool">前回のツールを記憶</sys:String>
+    <sys:String x:Key="Jy_RememberToolDesc">次回のスクショは前回の注釈ツールで開始</sys:String>
+    <sys:String x:Key="Jy_GifFps">GIF 既定フレームレート</sys:String>
+    <sys:String x:Key="Jy_GifFpsDesc">新規録画の初期 fps（ツールバーで一時変更可）</sys:String>
+    <sys:String x:Key="Jy_OverlayTarget">訳図の対象言語</sys:String>
+    <sys:String x:Key="Jy_OverlayTargetDesc">原文から自動推定（既定）または指定言語</sys:String>
     <sys:String x:Key="Jy_EditorGroup">Screenshot Editor</sys:String>
     <sys:String x:Key="Jy_EditorEffects">Rounded / Border / Shadow / Lock ratio</sys:String>
     <sys:String x:Key="Jy_EditorEffectsDesc">Adjust live in the editor toolbar</sys:String>

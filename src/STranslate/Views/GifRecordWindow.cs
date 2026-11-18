@@ -69,7 +69,10 @@ public sealed class GifToolbarWindow : Window
         };
         foreach (var fps in new[] { 5, 10, 15, 24 })
             _fpsBox.Items.Add(new ComboBoxItem { Content = $"{fps} fps", Tag = fps });
-        _fpsBox.SelectedIndex = 2;
+        for (var i = 0; i < _fpsBox.Items.Count; i++)
+            if (_fpsBox.Items[i] is ComboBoxItem { Tag: int f } && f == controller.Fps)
+                _fpsBox.SelectedIndex = i;
+        if (_fpsBox.SelectedIndex < 0) _fpsBox.SelectedIndex = 2;
         _fpsBox.SelectionChanged += (_, _) =>
         {
             if (_fpsBox.SelectedItem is ComboBoxItem { Tag: int f })

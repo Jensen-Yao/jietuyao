@@ -15,6 +15,23 @@ public partial class ScreenshotPage
 
         InitializeComponent();
 
+        OverlayTargetBox.Items.Clear();
+        OverlayTargetBox.Items.Add(new System.Collections.Generic.KeyValuePair<string, string>("自动推断", ""));
+        var targets = new (string Label, string Tag)[]
+        {
+            ("中文(简体)", "zh-Hans"),
+            ("中文(繁體)", "zh-Hant"),
+            ("English", "en"),
+            ("日本語", "ja"),
+            ("한국어", "ko"),
+            ("Français", "fr"),
+            ("Deutsch", "de"),
+            ("Español", "es"),
+            ("Русский", "ru"),
+        };
+        foreach (var item in targets)
+            OverlayTargetBox.Items.Add(new System.Collections.Generic.KeyValuePair<string, string>(item.Label, item.Tag));
+
         // 剪贴板监听开关即时生效（设置页切换 ↔ 服务启停）
         ViewModel.Settings.PropertyChanged += OnSettingsChanged;
         Unloaded += (_, _) => ViewModel.Settings.PropertyChanged -= OnSettingsChanged;

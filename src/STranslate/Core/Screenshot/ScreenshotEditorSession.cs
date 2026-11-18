@@ -139,6 +139,9 @@ public sealed class ScreenshotEditorSession : IDisposable
         ToolChanged?.Invoke();
     }
 
+    /// <summary>工具样式（粗细等）外部变更通知：刷新工具栏面板</summary>
+    public void NotifyToolStyleChanged() => ToolChanged?.Invoke();
+
     /// <summary>获取工具样式（带默认值）</summary>
     public ScreenshotToolStyle GetStyle(ScreenshotTool tool)
     {

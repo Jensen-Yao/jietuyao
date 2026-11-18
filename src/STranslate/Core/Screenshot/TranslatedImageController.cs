@@ -19,7 +19,10 @@ public static class TranslatedImageController
 
     public sealed record Result(Bitmap? Image, string Info, string Error);
 
-    public static async Task<Result> CreateAsync(Bitmap cleanImage, LangEnum? targetOverride = null)
+    public static Task<Result> CreateAsync(Bitmap cleanImage) =>
+        CreateAsync(cleanImage, ParseTarget(Ioc.Default.GetService<Settings>()?.ImageOverlayTargetLang));
+
+    public static async Task<Result> CreateAsync(Bitmap cleanImage, LangEnum? targetOverride)
     {
         // OCR：优先支持坐标的已启用服务
         var ocrService = Ioc.Default.GetService<OcrService>();
@@ -117,6 +120,22 @@ public static class TranslatedImageController
         var rect = RectangleF.FromLTRB(minX, minY, maxX, maxY);
         return rect.Width >= 4 && rect.Height >= 4 ? rect : null;
     }
+
+    /// <summary>设置字符串 → 目标语（空/未知 = null = 自动推断）</summary>
+    public static LangEnum? ParseTarget(string? tag) => (tag ?? "").Trim().ToLowerInvariant() switch
+    {
+        "" or "auto" => null,
+        "zh" or "zh-hans" or "zh-cn" => LangEnum.ChineseSimplified,
+        "zh-hant" or "zh-tw" => LangEnum.ChineseTraditional,
+        "en" => LangEnum.English,
+        "ja" or "jp" => LangEnum.Japanese,
+        "ko" or "kr" => LangEnum.Korean,
+        "fr" => LangEnum.French,
+        "de" => LangEnum.German,
+        "es" => LangEnum.Spanish,
+        "ru" => LangEnum.Russian,
+        _ => null,
+    };
 
     private static LangEnum InferTarget(string sample)
     {

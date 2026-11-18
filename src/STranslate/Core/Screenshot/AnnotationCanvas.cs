@@ -52,6 +52,19 @@ public sealed class AnnotationCanvas : FrameworkElement
         return p;
     }
 
+    /// <summary>Shift 约束：从锚点出发强制正方形（正选区/正圆/正方）</summary>
+    private static Point ShiftConstrain(Point anchor, Point current)
+    {
+        if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift))
+        {
+            var dx = current.X - anchor.X;
+            var dy = current.Y - anchor.Y;
+            var side = Math.Max(Math.Abs(dx), Math.Abs(dy));
+            return new Point(anchor.X + Math.Sign(dx) * side, anchor.Y + Math.Sign(dy) * side);
+        }
+        return current;
+    }
+
     private enum Interaction
     {
         None,
@@ -501,6 +514,32 @@ public sealed class AnnotationCanvas : FrameworkElement
     }
 
     // ===== 输入状态机 =====
+    protected override void OnMouseWheel(MouseWheelEventArgs e)
+    {
+        // 灵动细节：画笔/荧光笔/马赛克/橡皮激活时，滚轮直接调当前工具粗细
+        if (Session.ActiveTool is ScreenshotTool.Pen or ScreenshotTool.Highlighter
+            or ScreenshotTool.Mosaic or ScreenshotTool.Eraser)
+        {
+            var style = Session.GetStyle(Session.ActiveTool);
+            var (min, max, step) = Session.ActiveTool switch
+            {
+                ScreenshotTool.Eraser => (8, 80, 2.0),
+                ScreenshotTool.Mosaic => (4, 48, 2.0),
+                _ => (1, 30, 1.0),
+            };
+            var current = Session.ActiveTool == ScreenshotTool.Eraser ? style.EraserSize : style.StrokeWidth;
+            var next = Math.Clamp(current + Math.Sign(e.Delta) * step, min, max);
+            if (Session.ActiveTool == ScreenshotTool.Eraser)
+                style.EraserSize = next;
+            else
+                style.StrokeWidth = next;
+            Session.NotifyToolStyleChanged();
+            e.Handled = true;
+            return;
+        }
+        base.OnMouseWheel(e);
+    }
+
     protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
     {
         base.OnMouseLeftButtonDown(e);
@@ -702,7 +741,7 @@ public sealed class AnnotationCanvas : FrameworkElement
 
             case Interaction.CreatingSelection:
             {
-                var rect = Normalize(new Rect(_pressPoint, physical));
+                var rect = Normalize(new Rect(_pressPoint, ShiftConstrain(_pressPoint, physical)));
                 Session.Selection = ClampToVirtual(rect);
                 _magnifierVisible = true;
                 RenderMagnifier();
@@ -734,7 +773,7 @@ public sealed class AnnotationCanvas : FrameworkElement
                 }
                 else
                 {
-                    _previewShapeRect = new Rect(_pressPoint, physical);
+                    _previewShapeRect = new Rect(_pressPoint, ShiftConstrain(_pressPoint, physical));
                     RenderPreview();
                 }
                 break;
@@ -802,7 +841,7 @@ public sealed class AnnotationCanvas : FrameworkElement
         {
             case Interaction.CreatingSelection:
             {
-                var rect = Normalize(new Rect(_pressPoint, physical));
+                var rect = Normalize(new Rect(_pressPoint, ShiftConstrain(_pressPoint, physical)));
                 // 近似点击：尝试吸附智能窗口
                 if (rect.Width < MinSelectionSize || rect.Height < MinSelectionSize)
                 {

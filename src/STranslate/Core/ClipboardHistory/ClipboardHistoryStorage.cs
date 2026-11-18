@@ -162,6 +162,28 @@ public sealed class ClipboardHistoryStorage : IDisposable
     /// <summary>写入条目（重复内容置顶更新时间而非新增）</summary>
     public ClipboardItemRecord? Upsert(ClipboardItemRecord item, long limit)
     {
+        var isNew = UpsertCore(item);
+        if (!isNew)
+            return FindByHash(item.ContentHash);
+        if (BeyondLimit(limit))
+            Trim(limit);
+        return item;
+    }
+
+    /// <summary>廉价越界探测（索引走 limit+1 步即停），避免每次写入都触发全量裁剪扫描</summary>
+    private bool BeyondLimit(long limit)
+    {
+        if (limit <= 0)
+            return false;
+        using var cmd = _connection.CreateCommand();
+        cmd.CommandText = "SELECT EXISTS(SELECT 1 FROM items WHERE pinned = 0 ORDER BY created_at DESC LIMIT 1 OFFSET $limit)";
+        cmd.Parameters.AddWithValue("$limit", limit);
+        return (long)cmd.ExecuteScalar() == 1;
+    }
+
+    /// <summary>核心写入：存在同哈希→仅刷新时间并返回 false；否则插入返回 true</summary>
+    private bool UpsertCore(ClipboardItemRecord item)
+    {
         var existing = FindByHash(item.ContentHash);
         if (existing != null)
         {
@@ -173,7 +195,7 @@ public sealed class ClipboardHistoryStorage : IDisposable
                 cmd.ExecuteNonQuery();
             }
             existing.CreatedAt = DateTime.Now;
-            return existing;
+            return false;
         }
 
         using (var cmd = _connection.CreateCommand())
@@ -195,9 +217,28 @@ public sealed class ClipboardHistoryStorage : IDisposable
             cmd.Parameters.AddWithValue("$now", DateTime.Now.ToString("O"));
             item.Id = (long)(cmd.ExecuteScalar() ?? 0L);
         }
+        return true;
+    }
 
+    /// <summary>
+    /// 批量写入（单事务 + 命令复用）：导入/压测通道，万级条目秒级完成。
+    /// </summary>
+    public long UpsertRange(IEnumerable<ClipboardItemRecord> items, long limit)
+    {
+        var inserted = 0L;
+        using (var txn = _connection.BeginTransaction())
+        {
+            foreach (var item in items)
+            {
+                if (item.Type == ClipboardItemType.Image && item.ImageData != null && item.ImagePath == null)
+                    item.ImagePath = SaveImage(item.ImageData);
+                if (UpsertCore(item))
+                    inserted++;
+            }
+            txn.Commit();
+        }
         Trim(limit);
-        return item;
+        return inserted;
     }
 
     /// <summary>超限时裁剪（置顶豁免）</summary>
@@ -444,7 +485,7 @@ public sealed class ClipboardHistoryStorage : IDisposable
         var lines = File.ReadAllLines(path);
         if (lines.Length < 2)
             return 0;
-        var imported = 0L;
+        var batch = new List<ClipboardItemRecord>();
         foreach (var line in lines[1..])
         {
             var fields = ParseCsvLine(line);
@@ -453,7 +494,7 @@ public sealed class ClipboardHistoryStorage : IDisposable
             var text = fields[1];
             if (string.IsNullOrEmpty(text))
                 continue;
-            var item = new ClipboardItemRecord
+            batch.Add(new ClipboardItemRecord
             {
                 Type = type,
                 Text = text,
@@ -462,11 +503,9 @@ public sealed class ClipboardHistoryStorage : IDisposable
                 PasteCount = fields.Count > 4 && long.TryParse(fields[4], out var pc) ? pc : 0,
                 CreatedAt = fields.Count > 5 && DateTime.TryParse(fields[5], out var t) ? t : DateTime.Now,
                 ContentHash = ClipboardDataExchange.Hash(type + "\n" + text),
-            };
-            Upsert(item, 0);
-            imported++;
+            });
         }
-        return imported;
+        return UpsertRange(batch, 0);
     }
 
     private static string Csv(string value)

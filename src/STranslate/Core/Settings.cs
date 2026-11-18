@@ -137,6 +137,26 @@ public partial class Settings : ObservableObject
     /// </summary>
     [ObservableProperty] public partial int ScrollIgnoreTopPx { get; set; } = 0;
 
+    /// <summary>
+    /// GIF 录制默认帧率（5-24）
+    /// </summary>
+    [ObservableProperty] public partial int GifDefaultFps { get; set; } = 15;
+
+    /// <summary>
+    /// 译图目标语言（空=自动推断；zh-Hans/en/ja/ko…）
+    /// </summary>
+    [ObservableProperty] public partial string ImageOverlayTargetLang { get; set; } = string.Empty;
+
+    /// <summary>
+    /// 截图编辑器记住上次使用的工具
+    /// </summary>
+    [ObservableProperty] public partial bool RememberScreenshotTool { get; set; } = true;
+
+    /// <summary>
+    /// 上次使用的截图工具（枚举名）
+    /// </summary>
+    [ObservableProperty] public partial string LastScreenshotTool { get; set; } = "Select";
+
     [ObservableProperty] public partial bool HideInput { get; set; } = false;
 
     [ObservableProperty] public partial bool HideInputWithLangSelectControl { get; set; } = false;

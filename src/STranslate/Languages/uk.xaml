@@ -193,6 +193,8 @@
     <sys:String x:Key="Hotkey_MouseSelectionTranslationDescription">Увімкнути або вимкнути негайний переклад тексту, виділеного мишею.</sys:String>
     <sys:String x:Key="Hotkey_ReplaceTranslate">Переклад із заміною</sys:String>
     <sys:String x:Key="Hotkey_ReplaceTranslateDescription">Перекласти виділений текст і замінити ним початковий.</sys:String>
+    <sys:String x:Key="Hotkey_QuickOverlay">Знімок → переклад-зображення</sys:String>
+    <sys:String x:Key="Hotkey_QuickOverlayDescription">Одразу після виділення будує перекладене зображення</sys:String>
     <sys:String x:Key="Hotkey_ClipboardPin">Закріпити зображення з буфера</sys:String>
     <sys:String x:Key="Hotkey_ClipboardPinDescription">Закріплює зображення з буфера біля курсора</sys:String>
     <sys:String x:Key="Hotkey_ClipboardHistory">Історія буфера</sys:String>
@@ -213,6 +215,13 @@
     <sys:String x:Key="Jy_PinGroup">Pin to Screen</sys:String>
     <sys:String x:Key="Jy_PinOpacity">Default opacity</sys:String>
     <sys:String x:Key="Jy_PinOpacityDesc">Initial opacity of new pins (Ctrl+Wheel to adjust anytime)</sys:String>
+    <sys:String x:Key="Jy_SmartGroup">Розумні деталі</sys:String>
+    <sys:String x:Key="Jy_RememberTool">Пам'ятати інструмент</sys:String>
+    <sys:String x:Key="Jy_RememberToolDesc">Наступний знімок відкривається минулим інструментом</sys:String>
+    <sys:String x:Key="Jy_GifFps">FPS GIF за замовчуванням</sys:String>
+    <sys:String x:Key="Jy_GifFpsDesc">Початковий fps нових записів</sys:String>
+    <sys:String x:Key="Jy_OverlayTarget">Цільова мова перекладу</sys:String>
+    <sys:String x:Key="Jy_OverlayTargetDesc">Типово — автовизначення</sys:String>
     <sys:String x:Key="Jy_EditorGroup">Screenshot Editor</sys:String>
     <sys:String x:Key="Jy_EditorEffects">Rounded / Border / Shadow / Lock ratio</sys:String>
     <sys:String x:Key="Jy_EditorEffectsDesc">Adjust live in the editor toolbar</sys:String>

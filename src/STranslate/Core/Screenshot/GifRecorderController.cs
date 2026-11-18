@@ -73,14 +73,14 @@ public sealed class GifRecorderController : IDisposable
         _settings = settings;
     }
 
-    public void Begin(Rect physicalRegion, int fps = 15)
+    public void Begin(Rect physicalRegion, int fps = 0)
     {
         if (_running)
             return;
         _running = true;
         _paused = false;
         _region = physicalRegion;
-        _fps = Math.Clamp(fps, 5, 24);
+        _fps = Math.Clamp(fps > 0 ? fps : _settings.GifDefaultFps, 5, 24);
         _startTime = DateTime.Now;
         _pausedTotal = TimeSpan.Zero;
         _mouseEvents.Clear();
@@ -114,7 +114,6 @@ public sealed class GifRecorderController : IDisposable
 
     private void CaptureLoop()
     {
-        var interval = 1000.0 / _fps;
         var width = Math.Max(1, (int)Math.Round(_region.Width));
         var height = Math.Max(1, (int)Math.Round(_region.Height));
 
@@ -141,7 +140,8 @@ public sealed class GifRecorderController : IDisposable
                 }
             }
             var elapsed = (DateTime.UtcNow - tick).TotalMilliseconds;
-            var sleep = (int)Math.Max(5, interval - elapsed);
+            // interval 每帧重算：工具条实时改帧率即刻生效
+            var sleep = (int)Math.Max(5, 1000.0 / _fps - elapsed);
             Thread.Sleep(sleep);
         }
     }

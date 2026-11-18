@@ -99,7 +99,41 @@
                 </control:CardGroup>
 
                 <!-- 编辑器效果说明 -->
-                <TextBlock Margin="2,14,0,2" Style="{DynamicResource {x:Static ui:ThemeKeys.SubtitleTextBlockStyleKey}}" Text="{DynamicResource Jy_EditorGroup}" />
+                <TextBlock Margin="2,14,0,2" Style="{DynamicResource {x:Static ui:ThemeKeys.SubtitleTextBlockStyleKey}}" Text="{DynamicResource Jy_SmartGroup}" />
+                <control:CardGroup xmlns:control="clr-namespace:STranslate.Controls">
+                    <ui:SettingsCard Description="{DynamicResource Jy_RememberToolDesc}" Header="{DynamicResource Jy_RememberTool}">
+                        <ui:SettingsCard.HeaderIcon>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.History_24_Regular}" />
+                        </ui:SettingsCard.HeaderIcon>
+                        <ui:ToggleSwitch IsOn="{Binding Settings.RememberScreenshotTool, Mode=TwoWay}" />
+                    </ui:SettingsCard>
+                    <ui:SettingsCard Description="{DynamicResource Jy_GifFpsDesc}" Header="{DynamicResource Jy_GifFps}">
+                        <ui:SettingsCard.HeaderIcon>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Gauge_24_Regular}" />
+                        </ui:SettingsCard.HeaderIcon>
+                        <ui:NumberBox
+                            MinWidth="140"
+                            LargeChange="5"
+                            Maximum="24"
+                            Minimum="5"
+                            SmallChange="1"
+                            SpinButtonPlacementMode="Compact"
+                            Value="{Binding Settings.GifDefaultFps, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    </ui:SettingsCard>
+                    <ui:SettingsCard Description="{DynamicResource Jy_OverlayTargetDesc}" Header="{DynamicResource Jy_OverlayTarget}">
+                        <ui:SettingsCard.HeaderIcon>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Globe_24_Regular}" />
+                        </ui:SettingsCard.HeaderIcon>
+                        <ComboBox
+                            x:Name="OverlayTargetBox"
+                            MinWidth="150"
+                            DisplayMemberPath="Key"
+                            SelectedValuePath="Value"
+                            SelectedValue="{Binding Settings.ImageOverlayTargetLang, Mode=TwoWay}" />
+                    </ui:SettingsCard>
+                </control:CardGroup>
+
+<TextBlock Margin="2,14,0,2" Style="{DynamicResource {x:Static ui:ThemeKeys.SubtitleTextBlockStyleKey}}" Text="{DynamicResource Jy_EditorGroup}" />
                 <control:CardGroup xmlns:control="clr-namespace:STranslate.Controls">
                     <ui:SettingsCard Description="{DynamicResource Jy_EditorEffectsDesc}" Header="{DynamicResource Jy_EditorEffects}">
                         <ui:SettingsCard.HeaderIcon>

@@ -354,6 +354,13 @@
                         <MenuItem Click="OnPinCloseAll" Header="{DynamicResource Pin_CloseAll}" />
                     </MenuItem>
                     <MenuItem
+                        Command="{Binding Source={StaticResource ViewModel}, Path=Data.QuickImageOverlayCommand}"
+                        Header="{DynamicResource Hotkey_QuickOverlay}">
+                        <MenuItem.Icon>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Glasses_20_Regular}" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem
                         Command="{Binding Source={StaticResource ViewModel}, Path=Data.PinClipboardImageCommand}"
                         Header="{DynamicResource Hotkey_ClipboardPin}">
                         <MenuItem.Icon>

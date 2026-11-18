@@ -193,6 +193,8 @@
     <sys:String x:Key="Hotkey_MouseSelectionTranslationDescription">开启或关闭鼠标划词直接翻译。</sys:String>
     <sys:String x:Key="Hotkey_ReplaceTranslate">替换翻译</sys:String>
     <sys:String x:Key="Hotkey_ReplaceTranslateDescription">鼠标选中文本触发翻译并替换原文本的快捷键。</sys:String>
+    <sys:String x:Key="Hotkey_QuickOverlay">截图即译图</sys:String>
+    <sys:String x:Key="Hotkey_QuickOverlayDescription">框选后自动执行译图（跳过编辑器停留）</sys:String>
     <sys:String x:Key="Hotkey_ClipboardPin">贴出剪贴板图片</sys:String>
     <sys:String x:Key="Hotkey_ClipboardPinDescription">把剪贴板中的图片贴到屏幕（光标附近）</sys:String>
     <sys:String x:Key="Hotkey_ClipboardHistory">剪贴板历史</sys:String>
@@ -213,6 +215,13 @@
     <sys:String x:Key="Jy_PinGroup">贴图</sys:String>
     <sys:String x:Key="Jy_PinOpacity">默认不透明度</sys:String>
     <sys:String x:Key="Jy_PinOpacityDesc">新贴图的初始不透明度（Ctrl+滚轮随时调）</sys:String>
+    <sys:String x:Key="Jy_SmartGroup">灵动细节</sys:String>
+    <sys:String x:Key="Jy_RememberTool">记住上次工具</sys:String>
+    <sys:String x:Key="Jy_RememberToolDesc">下次截图直接进入上次使用的标注工具</sys:String>
+    <sys:String x:Key="Jy_GifFps">GIF 默认帧率</sys:String>
+    <sys:String x:Key="Jy_GifFpsDesc">新录制任务的初始帧率（工具条可临时改）</sys:String>
+    <sys:String x:Key="Jy_OverlayTarget">译图目标语言</sys:String>
+    <sys:String x:Key="Jy_OverlayTargetDesc">译文回填原图的目标语言，默认按原文自动推断</sys:String>
     <sys:String x:Key="Jy_EditorGroup">截图编辑器</sys:String>
     <sys:String x:Key="Jy_EditorEffects">圆角 / 描边 / 阴影 / 锁定比例</sys:String>
     <sys:String x:Key="Jy_EditorEffectsDesc">在编辑器工具栏即时调整</sys:String>

@@ -394,6 +394,18 @@ public sealed class PinImageWindow : Window
     {
         _ocrLayer.Children.Clear();
         _ocrBoxes.Clear();
+        // 归一：仅 OcrContents（如 PP-OCR）的引擎 → 组装出 Regions 结构复用同一渲染路径
+        if (result.Regions.Count == 0 && result.OcrContents.Count > 0)
+        {
+            var region = new STranslate.Plugin.OcrRegion();
+            foreach (var content in result.OcrContents)
+            {
+                var paragraph = new STranslate.Plugin.OcrParagraph();
+                paragraph.Lines.Add(content);
+                region.Paragraphs.Add(paragraph);
+            }
+            result.Regions.Add(region);
+        }
         var scaleX = _image.ActualWidth / Math.Max(1, _source.PixelWidth);
         var scaleY = _image.ActualHeight / Math.Max(1, _source.PixelHeight);
 

@@ -193,6 +193,8 @@
     <sys:String x:Key="Hotkey_MouseSelectionTranslationDescription">Enable or disable immediate mouse selection translation.</sys:String>
     <sys:String x:Key="Hotkey_ReplaceTranslate">Replace Translation</sys:String>
     <sys:String x:Key="Hotkey_ReplaceTranslateDescription">Shortcut key to translate the selected text and replace the original text.</sys:String>
+    <sys:String x:Key="Hotkey_QuickOverlay">Snip → translated image</sys:String>
+    <sys:String x:Key="Hotkey_QuickOverlayDescription">Runs the image-translate overlay right after selection</sys:String>
     <sys:String x:Key="Hotkey_ClipboardPin">Pin clipboard image</sys:String>
     <sys:String x:Key="Hotkey_ClipboardPinDescription">Pin the image in your clipboard to the screen (near cursor)</sys:String>
     <sys:String x:Key="Hotkey_ClipboardHistory">Clipboard History</sys:String>
@@ -213,6 +215,13 @@
     <sys:String x:Key="Jy_PinGroup">Pin to Screen</sys:String>
     <sys:String x:Key="Jy_PinOpacity">Default opacity</sys:String>
     <sys:String x:Key="Jy_PinOpacityDesc">Initial opacity of new pins (Ctrl+Wheel to adjust anytime)</sys:String>
+    <sys:String x:Key="Jy_SmartGroup">Smart touches</sys:String>
+    <sys:String x:Key="Jy_RememberTool">Remember last tool</sys:String>
+    <sys:String x:Key="Jy_RememberToolDesc">Next capture starts with your previous annotation tool</sys:String>
+    <sys:String x:Key="Jy_GifFps">Default GIF fps</sys:String>
+    <sys:String x:Key="Jy_GifFpsDesc">Initial fps for new recordings (changeable on the toolbar)</sys:String>
+    <sys:String x:Key="Jy_OverlayTarget">Overlay target language</sys:String>
+    <sys:String x:Key="Jy_OverlayTargetDesc">Target language for translated overlay; auto-detected by default</sys:String>
     <sys:String x:Key="Jy_EditorGroup">Screenshot Editor</sys:String>
     <sys:String x:Key="Jy_EditorEffects">Rounded / Border / Shadow / Lock ratio</sys:String>
     <sys:String x:Key="Jy_EditorEffectsDesc">Adjust live in the editor toolbar</sys:String>

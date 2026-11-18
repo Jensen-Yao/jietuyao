@@ -62,6 +62,11 @@ public sealed class ScreenshotEditorService(Settings settings, PinnedWindowContr
                 var session = new ScreenshotEditorSession(frozen, source, virtualBounds, monitors, finder, options);
                 session.BuildPixelCache();
                 session.ToolStyles = settings.ScreenshotToolStyles;
+                if (settings.RememberScreenshotTool &&
+                    Enum.TryParse<ScreenshotTool>(settings.LastScreenshotTool, out var lastTool))
+                {
+                    session.SetTool(lastTool);
+                }
                 session.SelectionStyle = new SelectionStyleState
                 {
                     RoundedEnabled = settings.ScreenshotRoundedRadius > 0,
@@ -173,6 +178,8 @@ public sealed class ScreenshotEditorService(Settings settings, PinnedWindowContr
         settings.ScreenshotBorderMode = style.BorderMode;
         settings.ScreenshotBorderSize = style.BorderSize;
         settings.ScreenshotLockRatio = style.LockRatio;
+        if (settings.RememberScreenshotTool)
+            settings.LastScreenshotTool = session.ActiveTool.ToString();
     }
 
     /// <summary>保存/贴图/复制等 UI 动作后处理（TCS 延续可能在线程池，调度回 UI 线程）</summary>
@@ -221,11 +228,11 @@ public sealed class ScreenshotEditorService(Settings settings, PinnedWindowContr
         });
     }
 
-    private static async Task RunImageOverlayAsync(System.Drawing.Bitmap clean)
+    private async Task RunImageOverlayAsync(System.Drawing.Bitmap clean)
     {
         try
         {
-            var outcome = await TranslatedImageController.CreateAsync(clean);
+            var outcome = await TranslatedImageController.CreateAsync(clean, TranslatedImageController.ParseTarget(settings.ImageOverlayTargetLang));
             clean.Dispose();
             if (outcome.Image is { } image)
             {
