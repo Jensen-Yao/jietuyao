@@ -1,0 +1,173 @@
+<Window x:Class="STranslate.Views.ClipboardHistoryWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="jietuyao 剪贴板历史"
+        Width="480" Height="580"
+        WindowStartupLocation="Manual"
+        WindowStyle="ToolWindow"
+        ResizeMode="CanResize"
+        ShowInTaskbar="False"
+        Topmost="True"
+        Background="#F0282828"
+        Foreground="#EBEBEB"
+        UseLayoutRounding="True">
+    <Window.Resources>
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="#EBEBEB" />
+            <Setter Property="BorderBrush" Value="#50FFFFFF" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Padding" Value="8,3" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#33FFFFFF" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="Background" Value="#33333333" />
+            <Setter Property="Foreground" Value="#EBEBEB" />
+            <Setter Property="CaretBrush" Value="#EBEBEB" />
+            <Setter Property="BorderBrush" Value="#50FFFFFF" />
+            <Setter Property="Padding" Value="6,4" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+        </Style>
+        <Style TargetType="CheckBox">
+            <Setter Property="Foreground" Value="#EBEBEB" />
+        </Style>
+        <Style TargetType="ComboBox">
+            <Setter Property="Foreground" Value="#EBEBEB" />
+            <Setter Property="MinWidth" Value="120" />
+        </Style>
+
+        <!-- 类型筛选 ToggleButton -->
+        <Style x:Key="FilterToggle" TargetType="RadioButton">
+            <Setter Property="Foreground" Value="#BBBBBB" />
+            <Setter Property="Padding" Value="8,3" />
+            <Setter Property="Margin" Value="0,0,4,0" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RadioButton">
+                        <Border x:Name="bd" Background="Transparent" BorderBrush="#40FFFFFF" BorderThickness="1"
+                                CornerRadius="4" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="#0078D7" />
+                                <Setter TargetName="bd" Property="BorderBrush" Value="#0078D7" />
+                                <Setter Property="Foreground" Value="White" />
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="#25FFFFFF" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- 历史条目模板 -->
+        <DataTemplate x:Key="ItemTemplate">
+            <Border Padding="8,6" CornerRadius="4" Margin="0,1">
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <Setter Property="Background" Value="Transparent" />
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#22FFFFFF" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="{Binding Icon}" FontSize="18" VerticalAlignment="Center" Margin="0,0,8,0" />
+                    <StackPanel Grid.Column="1">
+                        <TextBlock Text="{Binding Preview}" TextTrimming="CharacterEllipsis" Foreground="#EBEBEB"
+                                   FontSize="13" MaxHeight="36" TextWrapping="Wrap" />
+                        <StackPanel Orientation="Horizontal" Margin="0,2,0,0">
+                            <TextBlock Text="{Binding TimeText}" FontSize="11" Foreground="#888888" />
+                            <TextBlock Text="{Binding GroupBadge}" FontSize="11" Foreground="#5AA0E8" Margin="8,0,0,0" />
+                            <TextBlock FontSize="11" Foreground="#666666" Margin="8,0,0,0"
+                                       Text="{Binding PasteText}" />
+                        </StackPanel>
+                    </StackPanel>
+                    <TextBlock Grid.Column="2" Text="📌" FontSize="12" VerticalAlignment="Center"
+                               Visibility="{Binding PinnedVisibility}" />
+                </Grid>
+            </Border>
+        </DataTemplate>
+    </Window.Resources>
+
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- 搜索 + 分组 -->
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <TextBox x:Name="SearchBox" Grid.Column="0" Margin="0,0,8,0"
+                     TextChanged="OnSearchChanged" KeyDown="OnSearchKeyDown" />
+            <ComboBox x:Name="GroupFilterBox" Grid.Column="1" SelectionChanged="OnGroupFilterChanged" />
+        </Grid>
+
+        <!-- 类型筛选 -->
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,8,0,8">
+            <RadioButton Style="{StaticResource FilterToggle}" GroupName="type" IsChecked="True" Content="全部" Checked="OnTypeFilterChanged" Tag="" />
+            <RadioButton Style="{StaticResource FilterToggle}" GroupName="type" Content="📄 文本" Checked="OnTypeFilterChanged" Tag="Text" />
+            <RadioButton Style="{StaticResource FilterToggle}" GroupName="type" Content="🖼 图片" Checked="OnTypeFilterChanged" Tag="Image" />
+            <RadioButton Style="{StaticResource FilterToggle}" GroupName="type" Content="📁 文件" Checked="OnTypeFilterChanged" Tag="Files" />
+            <RadioButton Style="{StaticResource FilterToggle}" GroupName="type" Content="🌐 网页" Checked="OnTypeFilterChanged" Tag="Html" />
+            <RadioButton Style="{StaticResource FilterToggle}" GroupName="type" Content="📌 置顶" Checked="OnTypeFilterChanged" Tag="pinned" />
+        </StackPanel>
+
+        <!-- 列表 -->
+        <ListBox x:Name="HistoryList" Grid.Row="2"
+                 Background="Transparent" BorderThickness="0"
+                 ItemTemplate="{StaticResource ItemTemplate}"
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                 VirtualizingPanel.IsVirtualizing="True"
+                 MouseDoubleClick="OnItemDoubleClick"
+                 PreviewKeyDown="OnListKeyDown"
+                 PreviewMouseRightButtonUp="OnItemRightClick" />
+
+        <!-- 加载更多 -->
+        <Button x:Name="LoadMoreButton" Grid.Row="3" Content="加载更多 ▾" Margin="0,6,0,0"
+                Visibility="Collapsed" Click="OnLoadMore" />
+
+        <!-- 底栏 -->
+        <Grid Grid.Row="4" Margin="0,8,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <CheckBox x:Name="AutoPasteCheck" Grid.Column="0" Content="自动粘贴" Margin="0,0,10,0"
+                      Checked="OnAutoPasteChanged" Unchecked="OnAutoPasteChanged" />
+            <CheckBox x:Name="MonitorCheck" Grid.Column="1" Content="监听剪贴板"
+                      Checked="OnMonitorChanged" Unchecked="OnMonitorChanged" />
+            <TextBlock x:Name="CountText" Grid.Column="2" Foreground="#888888" FontSize="12"
+                       HorizontalAlignment="Center" VerticalAlignment="Center" />
+            <StackPanel Grid.Column="3" Orientation="Horizontal">
+                <Button Content="清空" Margin="0,0,6,0" Click="OnClearAll" />
+                <Button Content="关闭" Click="OnClose" />
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>

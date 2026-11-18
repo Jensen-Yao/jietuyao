@@ -1264,6 +1264,16 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
     #region OCR & Screenshot Commands
 
     /// <summary>
+    /// 剪贴板历史窗口（Ctrl+Alt+V）
+    /// </summary>
+    [RelayCommand]
+    private void ToggleClipboardHistory()
+    {
+        var service = Ioc.Default.GetRequiredService<Core.ClipboardHistory.ClipboardHistoryService>();
+        service.ToggleWindow();
+    }
+
+    /// <summary>
     /// jietuyao 截图编辑器（独立入口，热键 Alt+X）。
     /// 复制/保存/贴图已在编辑器服务内完成，这里只路由 OCR/翻译。
     /// </summary>

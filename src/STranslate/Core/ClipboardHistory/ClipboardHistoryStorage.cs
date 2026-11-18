@@ -1,5 +1,6 @@
 using System.IO;
 using System.Text.Json;
+using System.Windows;
 using Microsoft.Data.Sqlite;
 
 namespace STranslate.Core.ClipboardHistory;
@@ -32,6 +33,9 @@ public sealed class ClipboardItemRecord
     /// <summary>文件路径 JSON 数组（仅 Files 类型）</summary>
     public List<string> Files { get; set; } = [];
 
+    /// <summary>图片 PNG 字节（入库前临时承载，不持久化到此字段之外的存储）</summary>
+    public byte[]? ImageData { get; init; }
+
     public bool Pinned { get; set; }
 
     public long PasteCount { get; set; }
@@ -55,6 +59,29 @@ public sealed class ClipboardItemRecord
         ClipboardItemType.Html => $"[网页] {OneLine(Text, 120)}",
         _ => OneLine(Text, 200),
     };
+
+    /// <summary>类型图标</summary>
+    public string Icon => Type switch
+    {
+        ClipboardItemType.Image => "🖼",
+        ClipboardItemType.Files => "📁",
+        ClipboardItemType.Html => "🌐",
+        _ => "📄",
+    };
+
+    /// <summary>时间显示</summary>
+    public string TimeText => CreatedAt.Date == DateTime.Today
+        ? CreatedAt.ToString("HH:mm:ss")
+        : CreatedAt.ToString("MM-dd HH:mm");
+
+    /// <summary>分组徽标</summary>
+    public string GroupBadge => string.IsNullOrEmpty(GroupName) ? string.Empty : $"{GroupEmoji}{GroupName}";
+
+    /// <summary>粘贴次数显示</summary>
+    public string PasteText => PasteCount > 0 ? $"粘贴×{PasteCount}" : string.Empty;
+
+    /// <summary>置顶可见性</summary>
+    public Visibility PinnedVisibility => Pinned ? Visibility.Visible : Visibility.Collapsed;
 
     private string ImageSizeHint => ImagePath is null ? string.Empty : Path.GetFileName(ImagePath);
 
@@ -200,7 +227,8 @@ public sealed class ClipboardHistoryStorage : IDisposable
     {
         var where = new List<string>();
         if (type != null) where.Add("i.type = $type");
-        if (groupId != null) where.Add("i.group_id = $gid");
+        if (groupId == -1) where.Add("i.group_id IS NULL");
+        else if (groupId != null) where.Add("i.group_id = $gid");
         if (pinnedOnly) where.Add("i.pinned = 1");
         if (!string.IsNullOrWhiteSpace(search)) where.Add("i.text LIKE $search");
         var whereSql = where.Count > 0 ? "WHERE " + string.Join(" AND ", where) : string.Empty;
@@ -235,7 +263,7 @@ public sealed class ClipboardHistoryStorage : IDisposable
     private static void BindQueryParams(SqliteCommand cmd, string? search, ClipboardItemType? type, long? groupId)
     {
         if (type != null) cmd.Parameters.AddWithValue("$type", type.ToString());
-        if (groupId != null) cmd.Parameters.AddWithValue("$gid", groupId.Value);
+        if (groupId is > 0) cmd.Parameters.AddWithValue("$gid", groupId.Value);
         if (!string.IsNullOrWhiteSpace(search)) cmd.Parameters.AddWithValue("$search", $"%{search}%");
     }
 

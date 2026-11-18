@@ -133,6 +133,7 @@ public partial class App : ISingleInstanceApp, INavigation, IDisposable
                     services.AddSingleton<IAudioPlayer, AudioPlayer>();
                     services.AddSingleton<ScreenshotEditorService>();
                     services.AddSingleton<IScreenshot, JietuyaoScreenshot>();
+                    services.AddSingleton<Core.ClipboardHistory.ClipboardHistoryService>();
                     services.AddSingleton<ISnackbar, Snackbar>();
                     services.AddSingleton<PinnedWindowController>();
 

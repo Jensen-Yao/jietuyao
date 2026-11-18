@@ -112,6 +112,21 @@ public partial class Settings : ObservableObject
     /// </summary>
     [ObservableProperty] public partial bool ScreenshotLockRatio { get; set; } = false;
 
+    /// <summary>
+    /// 剪贴板历史监听开关
+    /// </summary>
+    [ObservableProperty] public partial bool ClipboardHistoryEnabled { get; set; } = true;
+
+    /// <summary>
+    /// 剪贴板历史上限（0=不限）
+    /// </summary>
+    [ObservableProperty] public partial int ClipboardHistoryLimit { get; set; } = 1000;
+
+    /// <summary>
+    /// 剪贴板粘贴后自动 Ctrl+V
+    /// </summary>
+    [ObservableProperty] public partial bool ClipboardHistoryAutoPaste { get; set; } = true;
+
     [ObservableProperty] public partial bool HideInput { get; set; } = false;
 
     [ObservableProperty] public partial bool HideInputWithLangSelectControl { get; set; } = false;

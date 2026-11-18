@@ -104,3 +104,4 @@ EnumWindows
 IsWindowVisible
 SetWindowPos
 GetWindowThreadProcessId
+GetClipboardOwner

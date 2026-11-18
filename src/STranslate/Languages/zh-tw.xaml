@@ -193,6 +193,8 @@
     <sys:String x:Key="Hotkey_MouseSelectionTranslationDescription">開啟或關閉滑鼠劃詞直接翻譯。</sys:String>
     <sys:String x:Key="Hotkey_ReplaceTranslate">替換翻譯</sys:String>
     <sys:String x:Key="Hotkey_ReplaceTranslateDescription">滑鼠選中文本後觸發翻譯並替換原文本的快捷鍵。</sys:String>
+    <sys:String x:Key="Hotkey_ClipboardHistory">剪貼板歷史</sys:String>
+    <sys:String x:Key="Hotkey_ClipboardHistoryDescription">開啟剪貼板歷史視窗的快捷鍵。</sys:String>
     <sys:String x:Key="Pin_Menu">貼圖</sys:String>
     <sys:String x:Key="Pin_RestoreAll">全部還原</sys:String>
     <sys:String x:Key="Pin_ThumbnailAll">全部縮圖</sys:String>

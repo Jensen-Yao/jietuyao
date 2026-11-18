@@ -193,6 +193,8 @@
     <sys:String x:Key="Hotkey_MouseSelectionTranslationDescription">Увімкнути або вимкнути негайний переклад тексту, виділеного мишею.</sys:String>
     <sys:String x:Key="Hotkey_ReplaceTranslate">Переклад із заміною</sys:String>
     <sys:String x:Key="Hotkey_ReplaceTranslateDescription">Перекласти виділений текст і замінити ним початковий.</sys:String>
+    <sys:String x:Key="Hotkey_ClipboardHistory">Історія буфера</sys:String>
+    <sys:String x:Key="Hotkey_ClipboardHistoryDescription">Гаряча клавіша відкриття історії буфера обміну.</sys:String>
     <sys:String x:Key="Pin_Menu">Закріплені</sys:String>
     <sys:String x:Key="Pin_RestoreAll">Відновити всі</sys:String>
     <sys:String x:Key="Pin_ThumbnailAll">Усі мініатюри</sys:String>
