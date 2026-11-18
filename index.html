@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>jietuyao 截图耀 — 截图·贴图·GIF·长截图·剪贴板·AI 一体化</title>
+<meta name="description" content="按下 Alt+X，框住屏幕，标注，回车。Windows 桌面一体化工具：截图、贴图、GIF 录屏、长截图、剪贴板历史、翻译/OCR/AI。C# WPF · .NET 10。">
+<link rel="icon" href="./logo.png">
+<style>
+  :root {
+    --bg: #F0EEE6;
+    --card: #FAF9F5;
+    --ink: #191919;
+    --muted: #6E6A63;
+    --accent: #D97757;
+    --accent-deep: #B85C3E;
+    --border: #E5E1D8;
+    --kbd-bg: #FFFFFF;
+    --kbd-border: #D8D4C8;
+    --code-bg: #ECEAE2;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1A1915;
+      --card: #232220;
+      --ink: #F5F4EF;
+      --muted: #A5A099;
+      --accent: #D97757;
+      --accent-deep: #E88A6A;
+      --border: #35332E;
+      --kbd-bg: #2B2926;
+      --kbd-border: #45423C;
+      --code-bg: #2B2926;
+    }
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+  .serif { font-family: Georgia, "Times New Roman", "Songti SC", "SimSun", serif; }
+  .wrap { max-width: 1060px; margin: 0 auto; padding: 0 28px; }
+
+  /* Nav */
+  nav {
+    position: sticky; top: 0; z-index: 50;
+    backdrop-filter: blur(14px);
+    background: color-mix(in srgb, var(--bg) 82%, transparent);
+    border-bottom: 1px solid var(--border);
+  }
+  nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 60px; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 17px; letter-spacing: .2px; }
+  .brand img { width: 26px; height: 26px; border-radius: 7px; }
+  nav a { color: var(--muted); text-decoration: none; font-size: 14px; margin-left: 22px; transition: color .18s; }
+  nav a:hover { color: var(--accent); }
+  nav .cta {
+    background: var(--accent); color: #FFF; padding: 7px 16px; border-radius: 9px;
+    font-weight: 600; margin-left: 22px;
+  }
+  nav .cta:hover { background: var(--accent-deep); color: #FFF; }
+
+  /* Hero */
+  header { padding: 92px 0 76px; text-align: center; position: relative; overflow: hidden; }
+  header::before {
+    content: ""; position: absolute; inset: -40% -20% auto; height: 130%;
+    background: radial-gradient(ellipse at 50% 0%, color-mix(in srgb, var(--accent) 13%, transparent), transparent 62%);
+    pointer-events: none;
+  }
+  .hero-logo {
+    width: 108px; height: 108px; border-radius: 26px;
+    border: 1px solid var(--border); background: var(--card);
+    padding: 12px; box-shadow: 0 18px 44px -14px color-mix(in srgb, var(--accent) 34%, transparent);
+    animation: float 5.2s ease-in-out infinite;
+  }
+  @keyframes float { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-9px) } }
+  h1 { font-size: clamp(44px, 7vw, 74px); font-weight: 600; letter-spacing: -1.5px; margin-top: 34px; }
+  h1 .zh { color: var(--accent); font-size: .42em; vertical-align: 18px; margin-left: 10px; letter-spacing: 2px; }
+  .tagline { font-size: clamp(17px, 2.4vw, 21px); color: var(--muted); margin-top: 14px; }
+  .tagline b { color: var(--ink); font-weight: 600; }
+  .flow-hint { margin-top: 34px; font-size: 15px; color: var(--muted); display: flex; gap: 8px; align-items: center; justify-content: center; flex-wrap: wrap; }
+  .arrow { color: var(--accent); font-weight: 700; }
+  .hero-btns { margin-top: 38px; display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+  .btn {
+    padding: 13px 30px; border-radius: 12px; font-size: 15px; font-weight: 600;
+    text-decoration: none; transition: transform .16s, box-shadow .16s, background .16s;
+  }
+  .btn:hover { transform: translateY(-2px); }
+  .btn-primary { background: var(--accent); color: #FFF; box-shadow: 0 10px 26px -8px color-mix(in srgb, var(--accent) 60%, transparent); }
+  .btn-primary:hover { background: var(--accent-deep); color: #FFF; }
+  .btn-ghost { border: 1px solid var(--border); color: var(--ink); background: var(--card); }
+  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+  kbd {
+    font-family: ui-monospace, "SF Mono", Consolas, monospace; font-size: .82em;
+    background: var(--kbd-bg); border: 1px solid var(--kbd-border); border-bottom-width: 2.5px;
+    border-radius: 7px; padding: 3px 9px; margin: 0 2px; white-space: nowrap;
+  }
+
+  /* Sections */
+  section { padding: 74px 0; }
+  .sec-head { text-align: center; margin-bottom: 46px; }
+  .sec-eyebrow { color: var(--accent); font-size: 13px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; }
+  h2 { font-size: clamp(28px, 4vw, 38px); font-weight: 600; letter-spacing: -.5px; margin-top: 8px; }
+  .sec-sub { color: var(--muted); margin-top: 10px; font-size: 15.5px; }
+
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  @media (max-width: 880px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 600px) { .grid { grid-template-columns: 1fr; } }
+  .card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 16px;
+    padding: 26px 24px; transition: transform .18s, box-shadow .18s, border-color .18s;
+    position: relative; overflow: hidden;
+  }
+  .card::before {
+    content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+    background: var(--accent); opacity: 0; transition: opacity .18s;
+  }
+  .card:hover { transform: translateY(-4px); box-shadow: 0 16px 36px -18px rgba(25,25,25,.28); border-color: color-mix(in srgb, var(--accent) 42%, var(--border)); }
+  .card:hover::before { opacity: 1; }
+  .card .ico { font-size: 26px; }
+  .card h3 { font-size: 18px; font-weight: 700; margin: 10px 0 8px; }
+  .card p { font-size: 13.8px; color: var(--muted); line-height: 1.75; }
+  .card p b { color: var(--ink); font-weight: 600; }
+
+  /* Workflow */
+  .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; counter-reset: step; }
+  @media (max-width: 880px) { .steps { grid-template-columns: repeat(2, 1fr); } }
+  .step { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 22px 20px; }
+  .step .n { font-family: Georgia, serif; font-size: 30px; color: var(--accent); font-weight: 700; }
+  .step h4 { font-size: 15.5px; margin: 8px 0 6px; }
+  .step p { font-size: 13px; color: var(--muted); }
+
+  /* Hotkeys */
+  .keys-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+  @media (max-width: 720px) { .keys-grid { grid-template-columns: 1fr; } }
+  .key-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 24px 26px; }
+  .key-card h3 { font-size: 15px; color: var(--muted); font-weight: 600; margin-bottom: 16px; letter-spacing: 1px; }
+  .krow { display: flex; justify-content: space-between; align-items: center; padding: 9px 0; border-bottom: 1px dashed var(--border); font-size: 14.5px; }
+  .krow:last-child { border-bottom: none; }
+  .krow .k { color: var(--muted); }
+
+  /* Stats */
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  @media (max-width: 720px) { .stats { grid-template-columns: repeat(2, 1fr); } }
+  .stat { text-align: center; background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 28px 12px; }
+  .stat .num { font-family: Georgia, serif; font-size: 42px; font-weight: 700; color: var(--accent); letter-spacing: -1px; }
+  .stat .lab { font-size: 13px; color: var(--muted); margin-top: 6px; }
+
+  /* Download */
+  .dl {
+    background: linear-gradient(150deg, var(--card), color-mix(in srgb, var(--accent) 7%, var(--card)));
+    border: 1px solid var(--border); border-radius: 20px; padding: 46px 34px; text-align: center;
+  }
+  .dl code {
+    display: block; margin: 20px auto 0; padding: 14px 20px; background: var(--code-bg);
+    border: 1px solid var(--border); border-radius: 10px; font-size: 13.5px;
+    font-family: ui-monospace, Consolas, monospace; max-width: 560px; text-align: left; color: var(--muted);
+  }
+  .dl code b { color: var(--accent); font-weight: 600; }
+
+  footer { border-top: 1px solid var(--border); padding: 40px 0 52px; text-align: center; color: var(--muted); font-size: 13.5px; }
+  footer .heart { color: var(--accent); }
+
+  .reveal { opacity: 0; transform: translateY(26px); transition: opacity .7s ease, transform .7s ease; }
+  .reveal.in { opacity: 1; transform: none; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <div class="brand"><img src="./logo.png" alt="jietuyao">jietuyao <span style="color:var(--accent)">截图耀</span></div>
+    <div>
+      <a href="#features">功能</a>
+      <a href="#workflow">工作流</a>
+      <a href="#hotkeys">快捷键</a>
+      <a href="#quality">工程质量</a>
+      <a href="#download">获取</a>
+      <a class="cta" href="https://github.com/Jensen-Yao/jietuyao" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </div>
+</nav>
+
+<header class="wrap">
+  <img class="hero-logo" src="./logo.png" alt="jietuyao logo">
+  <h1 class="serif">jietuyao<span class="zh serif">截图耀</span></h1>
+  <p class="tagline">截图 · 贴图 · GIF · 长截图 · 剪贴板 · <b>翻译 / OCR / AI</b> —— 一体化桌面工具</p>
+  <div class="flow-hint">
+    <kbd>Alt</kbd>+<kbd>X</kbd> 框住屏幕 <span class="arrow">→</span> 标注 <span class="arrow">→</span> <kbd>Enter</kbd>
+    &nbsp;或者&nbsp; <kbd>T</kbd> 贴图 · <kbd>L</kbd> 长截图 · <kbd>G</kbd> GIF
+  </div>
+  <div class="hero-btns">
+    <a class="btn btn-primary" href="https://github.com/Jensen-Yao/jietuyao" target="_blank" rel="noopener">前往 GitHub</a>
+    <a class="btn btn-ghost" href="#download">本地构建</a>
+  </div>
+</header>
+
+<section id="features">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-eyebrow">Six Modules</div>
+      <h2 class="serif">六件套，一次按键全打通</h2>
+      <p class="sec-sub">从一帧截图出发，覆盖你与「屏幕内容」的全部交互</p>
+    </div>
+    <div class="grid">
+      <div class="card reveal"><div class="ico">📸</div><h3>截图编辑器</h3><p>多屏冻结 · 智能窗口吸附 · 放大镜取色 · <b>10 种标注工具</b> · 图元移动/缩放/旋转 · <b>圆角截图</b> · 描边/阴影 · 锁定比例 · 刷新背景</p></div>
+      <div class="card reveal"><div class="ico">📌</div><h3>贴图</h3><p>置顶钉图 · 滚轮缩放 · 透明度 · 缩略图模式 · 再次编辑 · <b>OCR 文字层</b>（点击复制 / 拖框多选）</p></div>
+      <div class="card reveal"><div class="ico">🎬</div><h3>GIF 录屏</h3><p>5–24fps 区域录制 · 暂停续录 · <b>录制中手绘标注</b>（时间线分段） · <b>鼠标点击烟花 / 滚轮箭头特效</b> · 回放裁剪导出</p></div>
+      <div class="card reveal"><div class="ico">📜</div><h3>滚动长截图</h3><p>滚轮自动连拍 · 行哈希最优重叠拼接 · 方向切换 · 顶部忽略 · 冷却可调</p></div>
+      <div class="card reveal"><div class="ico">📋</div><h3>剪贴板历史</h3><p>SQLite 持久化 · 搜索/筛选/分组 · <b>13 种特殊粘贴</b>（SQL IN / JSON / 加行号…） · 自动 Ctrl+V · CSV 导入导出</p></div>
+      <div class="card reveal"><div class="ico">🌐</div><h3>翻译 · OCR · AI</h3><p>谷歌 / 微软 / DeepL / 百度 / Azure / Amazon / 智谱 · <b>任意 OpenAI 兼容端点</b>（DeepSeek / Ollama / 自建） · <b>本地 PP-OCR 完全离线</b> · Edge TTS</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="workflow" style="background:color-mix(in srgb, var(--card) 55%, var(--bg))">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-eyebrow">Workflow</div>
+      <h2 class="serif">四步，不多一步</h2>
+    </div>
+    <div class="steps">
+      <div class="step reveal"><div class="n serif">01</div><h4>按下 <kbd>Alt</kbd>+<kbd>X</kbd></h4><p>屏幕瞬间冻结，悬停即吸附窗口</p></div>
+      <div class="step reveal"><div class="n serif">02</div><h4>框选 & 标注</h4><p>画笔、箭头、序号、马赛克、文字……全部可撤销可再编辑</p></div>
+      <div class="step reveal"><div class="n serif">03</div><h4>一键去向</h4><p>回车复制 · T 贴图 · L 拼长图 · G 录 GIF · O 识别 · F 翻译</p></div>
+      <div class="step reveal"><div class="n serif">04</div><h4>交给 AI</h4><p>划词、截图、图片直通大模型：翻译 / 润色 / 总结</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="hotkeys">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-eyebrow">Shortcuts</div>
+      <h2 class="serif">为指尖而设计</h2>
+      <p class="sec-sub">全部快捷键可在设置中修改 · 冲突检测 · 全屏应用自动忽略</p>
+    </div>
+    <div class="keys-grid">
+      <div class="key-card reveal">
+        <h3>全局</h3>
+        <div class="krow"><span><kbd>Alt</kbd>+<kbd>X</kbd></span><span class="k">截图编辑器</span></div>
+        <div class="krow"><span><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>V</kbd></span><span class="k">剪贴板历史</span></div>
+        <div class="krow"><span><kbd>Alt</kbd>+<kbd>D</kbd></span><span class="k">划词翻译</span></div>
+        <div class="krow"><span><kbd>Alt</kbd>+<kbd>S</kbd></span><span class="k">截图翻译</span></div>
+        <div class="krow"><span><kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>X</kbd></span><span class="k">图片翻译</span></div>
+        <div class="krow"><span><kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd></span><span class="k">OCR</span></div>
+      </div>
+      <div class="key-card reveal">
+        <h3>编辑器内</h3>
+        <div class="krow"><span><kbd>1</kbd> – <kbd>0</kbd></span><span class="k">切换 10 种工具</span></div>
+        <div class="krow"><span><kbd>Enter</kbd> / <kbd>C</kbd> · <kbd>S</kbd> · <kbd>T</kbd></span><span class="k">复制 · 保存 · 贴图</span></div>
+        <div class="krow"><span><kbd>L</kbd> · <kbd>G</kbd> · <kbd>O</kbd> · <kbd>F</kbd></span><span class="k">长截图 · GIF · OCR · 翻译</span></div>
+        <div class="krow"><span><kbd>Ctrl</kbd>+<kbd>Z</kbd>/<kbd>Y</kbd> · <kbd>Del</kbd></span><span class="k">撤销重做 · 删除图元</span></div>
+        <div class="krow"><span><kbd>方向键</kbd> · <kbd>Ctrl</kbd>+点击</kbd></span><span class="k">微调选区 · 复制颜色</span></div>
+        <div class="krow"><span><kbd>Esc</kbd> · 双击</span><span class="k">退出 · 快速复制</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="quality" style="background:color-mix(in srgb, var(--card) 55%, var(--bg))">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-eyebrow">Engineering</div>
+      <h2 class="serif">被测试锤过的工程</h2>
+    </div>
+    <div class="stats">
+      <div class="stat reveal"><div class="num serif" data-count="576">0</div><div class="lab">自动化测试全绿</div></div>
+      <div class="stat reveal"><div class="num serif" data-count="24">0</div><div class="lab">内置插件</div></div>
+      <div class="stat reveal"><div class="num serif" data-count="10">0</div><div class="lab">标注工具</div></div>
+      <div class="stat reveal"><div class="num serif" data-count="13">0</div><div class="lab">特殊粘贴变换</div></div>
+    </div>
+    <p class="sec-sub reveal" style="text-align:center;margin-top:26px">
+      含引擎<b style="color:var(--ink)">真实执行</b>测试（拼接 / GIF / PDF / WEBP / CSV 端到端）与 <b style="color:var(--ink)">PP-OCR 真模型推理</b><br>
+      性能基准固化进测试 · 取色 150ns · JPEG 0.5ms/帧 · Release 冷启动 ~3.4s
+    </p>
+  </div>
+</section>
+
+<section id="download">
+  <div class="wrap">
+    <div class="dl reveal">
+      <div class="sec-eyebrow">Get Started</div>
+      <h2 class="serif" style="margin-top:8px">三步跑起来</h2>
+      <code>
+        <b># 需 .NET 10 SDK / Windows</b><br>
+        git clone https://github.com/Jensen-Yao/jietuyao<br>
+        dotnet build src/jietuyao.slnx -c Release<br>
+        <b>src/.artifacts/Release/jietuyao.exe</b> &nbsp;→&nbsp; 按 Alt+X 开始 ✂
+      </code>
+      <div class="hero-btns" style="margin-top:26px">
+        <a class="btn btn-primary" href="https://github.com/Jensen-Yao/jietuyao" target="_blank" rel="noopener">源码与发行版</a>
+        <a class="btn btn-ghost" href="https://github.com/Jensen-Yao/jietuyao#可选配置" target="_blank" rel="noopener">连接 AI / 离线 OCR 配置</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <img src="./logo.png" width="34" alt="" style="border-radius:9px;vertical-align:-10px;margin-right:8px">
+    <span class="serif" style="font-size:15px">jietuyao 截图耀</span><br><br>
+    MIT License · C# WPF · .NET 10<br>
+    截图不是功能，<span class="heart">是呼吸</span>。
+  </div>
+</footer>
+
+<script>
+  // 滚动渐显
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+  }), { threshold: .12 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  // 数字滚动
+  const cio = new IntersectionObserver(es => es.forEach(e => {
+    if (!e.isIntersecting) return;
+    const el = e.target, target = +el.dataset.count, t0 = performance.now();
+    (function tick(t) {
+      const p = Math.min((t - t0) / 900, 1);
+      el.textContent = Math.round(target * (1 - Math.pow(1 - p, 3)));
+      if (p < 1) requestAnimationFrame(tick);
+    })(t0);
+    cio.unobserve(el);
+  }), { threshold: .5 });
+  document.querySelectorAll('[data-count]').forEach(el => cio.observe(el));
+</script>
+</body>
+</html>
