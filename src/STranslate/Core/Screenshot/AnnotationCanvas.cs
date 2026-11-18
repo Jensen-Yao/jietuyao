@@ -25,6 +25,33 @@ public sealed class AnnotationCanvas : FrameworkElement
     private readonly DrawingVisual _previewVisual = new();
     private readonly DrawingVisual _magnifierVisual = new();
 
+    // 热路径静态冻结资源（每帧渲染不再重建）
+    private static readonly Brush DimBrushCache = Frozen(Color.FromArgb(80, 0, 0, 0));
+    private static readonly Pen WhitePenCache = FrozenPen(Brushes.White, 1.0);
+    private static readonly Pen BlackDashPenCache = FrozenPen(Brushes.Black, 1.0, dashed: true);
+    private static readonly Brush AccentBrushCache = Frozen(Color.FromRgb(0, 120, 215));
+    private static readonly Brush AccentLightBrushCache = Frozen(Color.FromRgb(0, 160, 255));
+    private static readonly Pen AccentPenCache = FrozenPen(AccentBrushCache, 1.5);
+    private static readonly Pen AccentThickPenCache = FrozenPen(AccentLightBrushCache, 2.5);
+    private static readonly Pen HandlePenCache = FrozenPen(Brushes.Black, 1);
+    private static readonly Pen HoverPenCache = FrozenPen(AccentLightBrushCache, 1.2, dashed: true);
+
+    private static Brush Frozen(Color c)
+    {
+        var b = new SolidColorBrush(c);
+        b.Freeze();
+        return b;
+    }
+
+    private static Pen FrozenPen(Brush brush, double width, bool dashed = false)
+    {
+        var p = new Pen(brush, width);
+        if (dashed)
+            p.DashStyle = DashStyles.Dash;
+        p.Freeze();
+        return p;
+    }
+
     private enum Interaction
     {
         None,
@@ -180,8 +207,7 @@ public sealed class AnnotationCanvas : FrameworkElement
     {
         using var dc = _maskVisual.RenderOpen();
         var bounds = new Rect(0, 0, ActualWidth, ActualHeight);
-        var dimBrush = new SolidColorBrush(Color.FromArgb((byte)(DimOpacity * 255), 0, 0, 0));
-        dimBrush.Freeze();
+        var dimBrush = DimBrushCache;
 
         if (Session.Selection is not { } selection || selection.Width < 1 || selection.Height < 1)
         {
@@ -207,12 +233,8 @@ public sealed class AnnotationCanvas : FrameworkElement
 
         // 选区边框（双描边保证任意背景下可见）
         var selDip = new Rect(PhysicalToDip(selection.Location), new Size(selection.Width / Scale, selection.Height / Scale));
-        var whitePen = new Pen(Brushes.White, 1.0);
-        whitePen.Freeze();
-        var blackPen = new Pen(Brushes.Black, 1.0) { DashStyle = DashStyles.Dash };
-        blackPen.Freeze();
-        dc.DrawRectangle(null, whitePen, selDip);
-        dc.DrawRectangle(null, blackPen, selDip.Inflated(1 / Scale));
+        dc.DrawRectangle(null, WhitePenCache, selDip);
+        dc.DrawRectangle(null, BlackDashPenCache, selDip.Inflated(1 / Scale));
 
         // 尺寸标签
         DrawSizeLabel(dc, selDip, (int)selection.Width, (int)selection.Height);
@@ -224,13 +246,10 @@ public sealed class AnnotationCanvas : FrameworkElement
     private void DrawHighlight(DrawingContext dc, Rect physicalRect)
     {
         var dip = new Rect(PhysicalToDip(physicalRect.Location), new Size(physicalRect.Width / Scale, physicalRect.Height / Scale));
-        var accent = new Pen(new SolidColorBrush(Color.FromRgb(0, 120, 215)), 1.5);
-        accent.Freeze();
-        dc.DrawRectangle(null, accent, dip);
+        dc.DrawRectangle(null, AccentPenCache, dip);
         // 四角强调
         var len = Math.Min(16.0, Math.Min(dip.Width, dip.Height) / 3);
-        var thick = new Pen(new SolidColorBrush(Color.FromRgb(0, 160, 255)), 2.5);
-        thick.Freeze();
+        var thick = AccentThickPenCache;
         foreach (var (cx, cy, dx, dy) in new[]
                  {
                      (dip.Left, dip.Top, 1.0, 1.0), (dip.Right, dip.Top, -1.0, 1.0),
@@ -270,10 +289,8 @@ public sealed class AnnotationCanvas : FrameworkElement
 
     private void DrawHandles(DrawingContext dc, Rect selDip, bool accent)
     {
-        var fill = accent ? new SolidColorBrush(Color.FromRgb(0, 120, 215)) : Brushes.White;
-        fill.Freeze();
-        var pen = new Pen(Brushes.Black, 1);
-        pen.Freeze();
+        var fill = accent ? AccentBrushCache : Brushes.White;
+        var pen = HandlePenCache;
         foreach (var p in GetHandlePoints(selDip))
         {
             var r = HandleRadiusPx;
@@ -304,9 +321,7 @@ public sealed class AnnotationCanvas : FrameworkElement
         {
             var bounds = hovered.Bounds;
             var dip = new Rect(PhysicalToDip(bounds.Location), new Size(bounds.Width / Scale, bounds.Height / Scale));
-            var accentPen = new Pen(new SolidColorBrush(Color.FromRgb(0, 160, 255)), 1.2) { DashStyle = DashStyles.Dash };
-            accentPen.Freeze();
-            dc.DrawRectangle(null, accentPen, dip);
+            dc.DrawRectangle(null, HoverPenCache, dip);
         }
     }
 

@@ -60,6 +60,7 @@ public sealed class ScreenshotEditorService(Settings settings, PinnedWindowContr
                 var source = ScreenshotCapturer.ToBitmapSource(frozen);
 
                 var session = new ScreenshotEditorSession(frozen, source, virtualBounds, monitors, finder, options);
+                session.BuildPixelCache();
                 session.ToolStyles = settings.ScreenshotToolStyles;
                 session.SelectionStyle = new SelectionStyleState
                 {
@@ -130,6 +131,7 @@ public sealed class ScreenshotEditorService(Settings settings, PinnedWindowContr
             var session = new ScreenshotEditorSession(image, source, virtualBounds, relevant,
                 new ScreenshotWindowFinder(),
                 new ScreenshotEditOptions { HideAppWindows = false, SmartSelection = false, InitialSelection = virtualBounds });
+            session.BuildPixelCache();
             session.ToolStyles = settings.ScreenshotToolStyles;
             session.SelectionStyle = new SelectionStyleState
             {

@@ -143,11 +143,11 @@ public sealed class GifFrameBuffer : IDisposable
     /// <summary>压缩并追加一帧</summary>
     public void Add(Bitmap frame) => Add(frame, 0);
 
-    /// <summary>压缩并追加一帧（带录制时间戳，毫秒）</summary>
+    /// <summary>压缩并追加一帧（带录制时间戳，毫秒）。注意：frame 所有权归调用方（支持双缓冲复用）</summary>
     public void Add(Bitmap frame, long timestampMs)
     {
         using var stream = new MemoryStream();
-        var codec = GetJpegCodec() ?? throw new InvalidOperationException("JPEG 编码器不可用");
+        var codec = JpegCodec ?? throw new InvalidOperationException("JPEG 编码器不可用");
         using (var ep = new EncoderParameters(1))
         {
             ep.Param[0] = new EncoderParameter(System.Drawing.Imaging.Encoder.Quality, _encoderParam);
@@ -248,7 +248,7 @@ public sealed class GifFrameBuffer : IDisposable
 
         firstClone.SetPropertyItem(CreatePropertyItem(0x5101, [0, 0, 0, 0])); // 无限循环
 
-        var codec = GetGifCodec() ?? throw new InvalidOperationException("GIF 编码器不可用");
+        var codec = CachedGifCodec ?? throw new InvalidOperationException("GIF 编码器不可用");
 
         using (var stream = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None))
         {
@@ -285,6 +285,13 @@ public sealed class GifFrameBuffer : IDisposable
         return item;
     }
 
+    // 编解码器静态缓存（避免每帧 LINQ 枚举系统编码器表）
+    private static readonly ImageCodecInfo? JpegCodec =
+        ImageCodecInfo.GetImageEncoders().FirstOrDefault(c => c.MimeType == "image/jpeg");
+
+    private static readonly ImageCodecInfo? CachedGifCodec =
+        ImageCodecInfo.GetImageEncoders().FirstOrDefault(c => c.MimeType == "image/gif");
+
     private static Bitmap Decode(byte[] jpeg)
     {
         // 注意：GDI+ Bitmap 惰性持有流引用，流提前释放会让后续 SaveAdd 抛
@@ -302,12 +309,6 @@ public sealed class GifFrameBuffer : IDisposable
         }
         return source;
     }
-
-    private static ImageCodecInfo? GetJpegCodec() =>
-        ImageCodecInfo.GetImageEncoders().FirstOrDefault(c => c.MimeType == "image/jpeg");
-
-    private static ImageCodecInfo? GetGifCodec() =>
-        ImageCodecInfo.GetImageEncoders().FirstOrDefault(c => c.MimeType == "image/gif");
 
     public void Dispose()
     {

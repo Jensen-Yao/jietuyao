@@ -125,6 +125,12 @@ public sealed class ClipboardHistoryStorage : IDisposable
 
         _connection = new SqliteConnection($"Data Source={effectiveDb}");
         _connection.Open();
+        // WAL：监听写入与窗口查询并发不互相阻塞
+        using (var pragma = _connection.CreateCommand())
+        {
+            pragma.CommandText = "PRAGMA journal_mode=WAL; PRAGMA synchronous=NORMAL;";
+            pragma.ExecuteNonQuery();
+        }
         using var command = _connection.CreateCommand();
         command.CommandText = """
             CREATE TABLE IF NOT EXISTS items(
@@ -142,6 +148,7 @@ public sealed class ClipboardHistoryStorage : IDisposable
             );
             CREATE INDEX IF NOT EXISTS idx_items_created ON items(created_at DESC);
             CREATE INDEX IF NOT EXISTS idx_items_hash ON items(content_hash);
+            CREATE INDEX IF NOT EXISTS idx_items_group ON items(group_id);
             CREATE TABLE IF NOT EXISTS groups(
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT NOT NULL,

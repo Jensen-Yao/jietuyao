@@ -100,31 +100,40 @@ public sealed class GifRecorderController : IDisposable
         _mouseHook.MouseDown += OnHookMouseDown;
         _mouseHook.MouseWheelExt += OnHookMouseWheel;
 
+        _encodeQueue = new System.Collections.Concurrent.BlockingCollection<(Bitmap, long)>(30);
         _thread = new Thread(CaptureLoop) { IsBackground = true, Name = "jietuyao.gif" };
         _thread.Start();
+        _encoderThread = new Thread(EncodeLoop) { IsBackground = true, Name = "jietuyao.gif.enc" };
+        _encoderThread.Start();
     }
+
+    // 采集/编码管线（解耦：BitBlt 节奏不受 JPEG 编码耗时影响）
+    private System.Collections.Concurrent.BlockingCollection<(Bitmap Frame, long Ts)>? _encodeQueue;
+    private readonly System.Collections.Concurrent.ConcurrentBag<Bitmap> _framePool = new();
+    private Thread? _encoderThread;
 
     private void CaptureLoop()
     {
         var interval = 1000.0 / _fps;
         var width = Math.Max(1, (int)Math.Round(_region.Width));
         var height = Math.Max(1, (int)Math.Round(_region.Height));
+
         while (_running)
         {
             var tick = DateTime.UtcNow;
-            if (!_paused && _buffer != null)
+            if (!_paused && _buffer != null && _encodeQueue is { IsAddingCompleted: false } queue)
             {
                 try
                 {
-                    var frame = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
+                    if (!_framePool.TryTake(out var frame))
+                        frame = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
                     using (var g = Graphics.FromImage(frame))
                     {
                         g.CopyFromScreen((int)_region.X, (int)_region.Y, 0, 0, new Size(width, height),
                             System.Drawing.CopyPixelOperation.SourceCopy);
                     }
-                    _buffer.Add(frame, NowMs);
-                    frame.Dispose();
-                    NotifyState();
+                    if (!queue.TryAdd((frame, NowMs)))
+                        _framePool.Add(frame); // 队列满（编码跟不上）：丢弃本帧并回收缓冲
                 }
                 catch (Exception ex)
                 {
@@ -134,6 +143,37 @@ public sealed class GifRecorderController : IDisposable
             var elapsed = (DateTime.UtcNow - tick).TotalMilliseconds;
             var sleep = (int)Math.Max(5, interval - elapsed);
             Thread.Sleep(sleep);
+        }
+    }
+
+    /// <summary>编码线程：JPEG 压缩入库，归还缓冲到池</summary>
+    private void EncodeLoop()
+    {
+        var queue = _encodeQueue;
+        if (queue == null)
+            return;
+        try
+        {
+            foreach (var (frame, ts) in queue.GetConsumingEnumerable())
+            {
+                try
+                {
+                    _buffer?.Add(frame, ts);
+                    NotifyState();
+                }
+                catch (Exception ex)
+                {
+                    _logger?.LogDebug(ex, "GIF 编码帧失败");
+                }
+                finally
+                {
+                    _framePool.Add(frame);
+                }
+            }
+        }
+        catch (ObjectDisposedException)
+        {
+            // 停止时集合先释放
         }
     }
 
@@ -229,7 +269,7 @@ public sealed class GifRecorderController : IDisposable
         if (!_running)
             return;
         _running = false;
-        _thread?.Join(1000);
+        StopPipeline();
         var buffer = _buffer;
         _buffer = null;
         var mouseEvents = SnapshotMouseEvents();
@@ -314,12 +354,24 @@ public sealed class GifRecorderController : IDisposable
         if (!_running)
             return;
         _running = false;
-        _thread?.Join(500);
+        StopPipeline();
         _buffer?.Dispose();
         _buffer = null;
         _annotation?.Close();
         _annotation = null;
         CleanupWindows();
+    }
+
+    /// <summary>停止采集/编码管线并释放缓冲池</summary>
+    private void StopPipeline()
+    {
+        try { _encodeQueue?.CompleteAdding(); } catch { /* 已完成 */ }
+        _thread?.Join(1000);
+        _encoderThread?.Join(3000);
+        while (_framePool.TryTake(out var pooled))
+            pooled.Dispose();
+        _encodeQueue?.Dispose();
+        _encodeQueue = null;
     }
 
     private void CleanupWindows()

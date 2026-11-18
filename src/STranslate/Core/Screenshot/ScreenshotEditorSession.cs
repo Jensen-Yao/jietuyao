@@ -367,13 +367,49 @@ public sealed class ScreenshotEditorSession : IDisposable
         return bitmap;
     }
 
-    /// <summary>读取冻结图像像素颜色（放大镜取色）</summary>
+    // ===== 像素缓存（放大镜取色 O(1)，替代 GDI+ GetPixel 的逐次封送开销）=====
+    private byte[]? _pixelCache;
+    private int _pixelStride;
+
+    /// <summary>构建冻结图像的像素字节数组缓存（BGRA 直读）</summary>
+    public void BuildPixelCache()
+    {
+        try
+        {
+            var data = FrozenImage.LockBits(
+                new Rectangle(0, 0, FrozenImage.Width, FrozenImage.Height),
+                ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+            try
+            {
+                var bytes = new byte[Math.Abs(data.Stride) * data.Height];
+                Marshal.Copy(data.Scan0, bytes, 0, bytes.Length);
+                _pixelCache = bytes;
+                _pixelStride = data.Stride;
+            }
+            finally
+            {
+                FrozenImage.UnlockBits(data);
+            }
+        }
+        catch
+        {
+            _pixelCache = null;
+        }
+    }
+
+    /// <summary>读取冻结图像像素颜色（放大镜取色；优先像素缓存 O(1)）</summary>
     public System.Drawing.Color GetPixelAt(Point physicalPoint)
     {
         var x = (int)(physicalPoint.X - VirtualBounds.Left);
         var y = (int)(physicalPoint.Y - VirtualBounds.Top);
         if (x < 0 || y < 0 || x >= FrozenImage.Width || y >= FrozenImage.Height)
             return System.Drawing.Color.Transparent;
+
+        if (_pixelCache is { } cache)
+        {
+            var offset = y * _pixelStride + x * 4;
+            return System.Drawing.Color.FromArgb(cache[offset + 3], cache[offset + 2], cache[offset + 1], cache[offset]);
+        }
         return FrozenImage.GetPixel(x, y);
     }
 
@@ -386,6 +422,7 @@ public sealed class ScreenshotEditorSession : IDisposable
         var frozen = ScreenshotCapturer.CaptureVirtualDesktop(VirtualBounds);
         _frozenImage = frozen;
         _frozenSource = ScreenshotCapturer.ToBitmapSource(frozen);
+        BuildPixelCache();
         WindowFinder.Snapshot(VirtualBounds);
         RepaintNeeded?.Invoke();
         // 旧位图延迟释放，避免与渲染竞态
