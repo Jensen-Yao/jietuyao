@@ -154,14 +154,21 @@ public sealed class GifToolbarWindow : Window
 }
 
 /// <summary>
-/// GIF 录制中标注覆盖窗（InkCanvas 手绘，导出时叠加到每帧）
+/// GIF 录制中标注覆盖窗（InkCanvas 手绘）。
+/// 笔画带录制时间戳 → 导出时按帧时间分段合成（v1 逐帧标注时间线语义）。
 /// </summary>
 public sealed class GifAnnotationWindow : Window
 {
+    private static readonly Guid TimestampGuid = new("3F9E7C2A-6B45-4D8E-9A21-5C0E7F1B2D34");
+
+    private readonly Func<long> _timestampProvider;
+
     public InkCanvas Ink { get; }
 
-    public GifAnnotationWindow(System.Windows.Rect physicalRegion)
+    public GifAnnotationWindow(System.Windows.Rect physicalRegion, Func<long>? timestampProvider = null)
     {
+        _timestampProvider = timestampProvider ?? (() => 0);
+
         WindowStyle = WindowStyle.None;
         ResizeMode = ResizeMode.NoResize;
         ShowInTaskbar = false;
@@ -182,6 +189,15 @@ public sealed class GifAnnotationWindow : Window
                 Height = 3,
                 FitToCurve = true,
             },
+        };
+        // 笔画落笔即打时间戳
+        Ink.Strokes.StrokesChanged += (_, e) =>
+        {
+            if (e.Added.Count == 0)
+                return;
+            var timestamp = _timestampProvider();
+            foreach (System.Windows.Ink.Stroke stroke in e.Added)
+                stroke.AddPropertyData(TimestampGuid, BitConverter.GetBytes(timestamp));
         };
         Content = Ink;
 
@@ -206,17 +222,76 @@ public sealed class GifAnnotationWindow : Window
         }
     }
 
-    /// <summary>渲染当前笔迹为位图（区域物理尺寸）</summary>
+    /// <summary>渲染指定笔画子集为位图（区域物理尺寸）</summary>
+    private System.Drawing.Bitmap RenderSubset(System.Windows.Ink.StrokeCollection strokes, double dpiScale)
+    {
+        var w = Math.Max(1, (int)Math.Round(ActualWidth * dpiScale));
+        var h = Math.Max(1, (int)Math.Round(ActualHeight * dpiScale));
+        var rtb = new System.Windows.Media.Imaging.RenderTargetBitmap(w, h, 96, 96, System.Windows.Media.PixelFormats.Pbgra32);
+        rtb.Render(new StrokeHostVisual(strokes));
+        rtb.Freeze();
+        return STranslate.Core.ScreenshotCapturer.ToGdiBitmap(rtb);
+    }
+
+    /// <summary>渲染当前全部笔迹为位图（兼容旧路径）</summary>
     public System.Drawing.Bitmap? RenderOverlayBitmap(double dpiScale)
     {
         if (Ink.Strokes.Count == 0)
             return null;
-        var w = Math.Max(1, (int)Math.Round(ActualWidth * dpiScale));
-        var h = Math.Max(1, (int)Math.Round(ActualHeight * dpiScale));
-        var rtb = new System.Windows.Media.Imaging.RenderTargetBitmap(w, h, 96, 96, System.Windows.Media.PixelFormats.Pbgra32);
-        rtb.Render(Ink);
-        rtb.Freeze();
-        return STranslate.Core.ScreenshotCapturer.ToGdiBitmap(rtb);
+        return RenderSubset(Ink.Strokes, dpiScale);
+    }
+
+    /// <summary>
+    /// 按时间线生成累积叠加变体：返回 [(t1,V1),(t2,V2)...]，
+    /// 帧时间 ≥ tk 时应用 Vk（笔画从落笔时刻起持续显示到结尾）。
+    /// </summary>
+    public List<(long TimeMs, System.Drawing.Bitmap Overlay)> BuildTimelineOverlays(double dpiScale)
+    {
+        var result = new List<(long, System.Drawing.Bitmap)>();
+        if (Ink.Strokes.Count == 0)
+            return result;
+
+        // 收集 (时间, 笔画) 并按时间排序
+        var timed = new List<(long Time, System.Windows.Ink.Stroke Stroke)>();
+        foreach (System.Windows.Ink.Stroke stroke in Ink.Strokes)
+        {
+            var data = stroke.ContainsPropertyData(TimestampGuid)
+                ? (byte[]?)stroke.GetPropertyData(TimestampGuid)
+                : null;
+            var time = data is { Length: >= 8 } ? BitConverter.ToInt64(data) : 0;
+            timed.Add((time, stroke));
+        }
+        timed.Sort((a, b) => a.Time.CompareTo(b.Time));
+
+        // 累积渲染：每出现一个新时间点生成一个变体
+        var cumulative = new System.Windows.Ink.StrokeCollection();
+        long lastTime = long.MinValue;
+        foreach (var (time, stroke) in timed)
+        {
+            cumulative.Add(stroke);
+            if (time == lastTime)
+                continue; // 同一时刻多笔画共用变体
+            lastTime = time;
+            result.Add((time, RenderSubset(criticalClone(cumulative), dpiScale)));
+        }
+        return result;
+
+        static System.Windows.Ink.StrokeCollection criticalClone(System.Windows.Ink.StrokeCollection source)
+        {
+            // RenderSubset 在 RTB 渲染时不修改集合，直接复用
+            return source;
+        }
+    }
+
+    /// <summary>承载笔画子集的独立视觉（脱离 InkCanvas 渲染）</summary>
+    private sealed class StrokeHostVisual : System.Windows.Media.DrawingVisual
+    {
+        public StrokeHostVisual(System.Windows.Ink.StrokeCollection strokes)
+        {
+            using var dc = RenderOpen();
+            foreach (System.Windows.Ink.Stroke stroke in strokes)
+                stroke.Draw(dc);
+        }
     }
 }
 
@@ -227,6 +302,8 @@ public sealed class GifPlaybackTrimWindow : Window
 {
     private readonly GifFrameBuffer _buffer;
     private readonly int _fps;
+    private readonly IReadOnlyList<STranslate.Core.MouseEffectEvent> _mouseEvents;
+    private readonly List<(long TimeMs, System.Drawing.Bitmap Overlay)>? _timelineOverlays;
     private readonly System.Windows.Controls.Image _image;
     private readonly Slider _start;
     private readonly Slider _end;
@@ -238,10 +315,14 @@ public sealed class GifPlaybackTrimWindow : Window
     /// <summary>用户确认导出（start/end 帧）</summary>
     public event Action<int, int>? ExportConfirmed;
 
-    public GifPlaybackTrimWindow(GifFrameBuffer buffer, int fps, System.Windows.Rect physicalRegion)
+    public GifPlaybackTrimWindow(GifFrameBuffer buffer, int fps, System.Windows.Rect physicalRegion,
+        IReadOnlyList<STranslate.Core.MouseEffectEvent>? mouseEvents = null,
+        List<(long TimeMs, System.Drawing.Bitmap Overlay)>? timelineOverlays = null)
     {
         _buffer = buffer;
         _fps = Math.Clamp(fps, 5, 24);
+        _mouseEvents = mouseEvents ?? [];
+        _timelineOverlays = timelineOverlays;
 
         WindowStyle = WindowStyle.ToolWindow;
         Title = "GIF 回放与裁剪";
@@ -357,7 +438,35 @@ public sealed class GifPlaybackTrimWindow : Window
     {
         if (index < 0 || index >= _frames.Count)
             return;
-        _image.Source = STranslate.Core.ScreenshotCapturer.ToBitmapSource(_frames[index]);
+        var source = _frames[index];
+
+        // 预览即所见：合成时间线标注与鼠标特效（临时副本，不污染源帧）
+        System.Drawing.Bitmap? composite = null;
+        var needsComposite = (_timelineOverlays is { Count: > 0 }) || _mouseEvents.Count > 0;
+        if (needsComposite)
+        {
+            composite = new System.Drawing.Bitmap(source.Width, source.Height, System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
+            using (var g = System.Drawing.Graphics.FromImage(composite))
+            {
+                g.DrawImage(source, 0, 0, source.Width, source.Height);
+                var frameTime = _buffer.FrameTimestampMs(index, Math.Max(2, (int)Math.Round(100.0 / _fps)));
+                if (_timelineOverlays is { Count: > 0 })
+                {
+                    foreach (var (t, o) in _timelineOverlays)
+                    {
+                        if (t <= frameTime)
+                            g.DrawImage(o, 0, 0, composite.Width, composite.Height);
+                        else
+                            break;
+                    }
+                }
+                if (_mouseEvents.Count > 0)
+                    STranslate.Core.MouseEffectRenderer.Draw(g, frameTime, _mouseEvents);
+            }
+        }
+
+        _image.Source = STranslate.Core.ScreenshotCapturer.ToBitmapSource(composite ?? source);
+        composite?.Dispose();
     }
 
     private void UpdateInfo()
