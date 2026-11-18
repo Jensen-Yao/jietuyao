@@ -24,12 +24,13 @@ jobs:
         run: dotnet build src/jietuyao.slnx -c Release
 
       # CI runner 无交互桌面（DWM 合成/动画时序断言必然失败），排除两个
-      # 交互桌面依赖套件；其余全量（含引擎真实执行与性能基准）作为门禁。
+      # 交互桌面依赖套件（WindowShowAnimation/UiaTextReader/TopEdgeAutoHide）；
+      # 其余全量（含引擎真实执行与性能基准）作为门禁。
       # 本地完整运行：dotnet test（不带 filter）
       - name: Run tests (non-interactive suites)
         run: >-
           dotnet test src/Tests/STranslate.Tests/STranslate.Tests.csproj -c Release --nologo
-          --filter "FullyQualifiedName!~WindowShowAnimationTests&FullyQualifiedName!~UiaTextReaderTests"
+          --filter "FullyQualifiedName!~WindowShowAnimationTests&FullyQualifiedName!~UiaTextReaderTests&FullyQualifiedName!~TopEdgeAutoHideTests"
 
       - name: Package
         shell: pwsh
