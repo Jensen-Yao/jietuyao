@@ -65,6 +65,9 @@ public enum ScreenshotEditorAction
     /// <summary>截图翻译</summary>
     Translate,
 
+    /// <summary>滚动长截图</summary>
+    LongScreenshot,
+
     /// <summary>直接关闭（已保存等场景）</summary>
     Close,
 }

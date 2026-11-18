@@ -176,7 +176,9 @@ public sealed class ScreenshotEditorService(Settings settings, PinnedWindowContr
     /// <summary>保存/贴图/复制等 UI 动作后处理（TCS 延续可能在线程池，调度回 UI 线程）</summary>
     private async Task PostProcessAsync(ScreenshotEditorResult? result)
     {
-        if (result == null || result.Action is not (ScreenshotEditorAction.Save or ScreenshotEditorAction.Pin or ScreenshotEditorAction.Copy))
+        if (result == null)
+            return;
+        if (result.Action is not (ScreenshotEditorAction.Save or ScreenshotEditorAction.Pin or ScreenshotEditorAction.Copy or ScreenshotEditorAction.LongScreenshot))
             return;
 
         await App.Current.Dispatcher.InvokeAsync(() =>
@@ -198,6 +200,10 @@ public sealed class ScreenshotEditorService(Settings settings, PinnedWindowContr
                     break;
                 case ScreenshotEditorAction.Copy:
                     ScreenshotOutput.CopyToClipboard(result.EditedImage);
+                    break;
+                case ScreenshotEditorAction.LongScreenshot:
+                    // 编辑器窗口已关闭，选区位置开启滚动连拍
+                    ScrollCaptureController.Instance.Begin(result.PhysicalBounds);
                     break;
             }
         });
