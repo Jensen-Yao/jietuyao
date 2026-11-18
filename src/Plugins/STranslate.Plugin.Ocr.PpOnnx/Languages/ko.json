@@ -1,0 +1,4 @@
+{
+  "Name": "PP-OCR (Local)",
+  "Description": "Fully offline local OCR (PaddleOCR ONNX)"
+}

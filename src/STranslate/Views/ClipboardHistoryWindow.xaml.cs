@@ -102,6 +102,7 @@ public sealed partial class ClipboardHistoryWindow : Window
             GroupFilterBox.Items.Add(new ComboBoxItem { Content = $"{g.Emoji} {g.Name}", Tag = g.Id });
         GroupFilterBox.Items.Add(new Separator());
         GroupFilterBox.Items.Add(new ComboBoxItem { Content = "➕ 新建分组…", Tag = "create" });
+        GroupFilterBox.Items.Add(new ComboBoxItem { Content = "⚙ 管理分组…", Tag = "manage" });
         GroupFilterBox.SelectedIndex = Math.Max(0, selection);
     }
 
@@ -145,10 +146,18 @@ public sealed partial class ClipboardHistoryWindow : Window
     {
         if (GroupFilterBox.SelectedItem is not ComboBoxItem item)
             return;
-        if (item.Tag is string s && s == "create")
+        if (item.Tag is string s)
         {
             GroupFilterBox.SelectedIndex = 0;
-            CreateGroup();
+            if (s == "create")
+                CreateGroup();
+            else if (s == "manage")
+            {
+                var dialog = new ClipboardGroupManagerDialog(_service.Storage) { Owner = this };
+                dialog.ShowDialog();
+                LoadGroups();
+                LoadItems();
+            }
             return;
         }
         _groupFilter = item.Tag switch
@@ -305,6 +314,49 @@ public sealed partial class ClipboardHistoryWindow : Window
     }
 
     private void OnClose(object sender, RoutedEventArgs e) => Hide();
+
+    private void OnMoreActions(object sender, RoutedEventArgs e)
+    {
+        var menu = new ContextMenu();
+        var export = new MenuItem { Header = "导出 CSV…" };
+        export.Click += (_, _) =>
+        {
+            var dialog = new Microsoft.Win32.SaveFileDialog
+            {
+                Title = "导出剪贴板历史",
+                Filter = "CSV 文件 (*.csv)|*.csv",
+                FileName = $"jietuyao_clipboard_{DateTime.Now:yyyyMMdd_HHmmss}.csv",
+            };
+            if (dialog.ShowDialog() == true)
+            {
+                var count = _service.Storage.ExportCsv(dialog.FileName);
+                MessageBox.Show(this, $"已导出 {count} 条", "导出完成", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        };
+        var import = new MenuItem { Header = "导入 CSV…" };
+        import.Click += (_, _) =>
+        {
+            var dialog = new Microsoft.Win32.OpenFileDialog
+            {
+                Title = "导入剪贴板历史",
+                Filter = "CSV 文件 (*.csv)|*.csv",
+            };
+            if (dialog.ShowDialog() == true)
+            {
+                var count = _service.Storage.ImportCsv(dialog.FileName);
+                LoadItems();
+                MessageBox.Show(this, $"已导入 {count} 条", "导入完成", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        };
+        menu.Items.Add(export);
+        menu.Items.Add(import);
+        if (sender is System.Windows.Controls.Primitives.ButtonBase source)
+        {
+            menu.PlacementTarget = source;
+            menu.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom;
+            menu.IsOpen = true;
+        }
+    }
 
     protected override void OnPreviewKeyDown(KeyEventArgs e)
     {

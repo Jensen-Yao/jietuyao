@@ -197,6 +197,7 @@
     <sys:String x:Key="Hotkey_ClipboardHistory">تاریخچه کلیپ‌بورد</sys:String>
     <sys:String x:Key="Hotkey_ClipboardHistoryDescription">کلید میان‌بر باز کردن پنجره تاریخچه کلیپ‌بورد.</sys:String>
     <sys:String x:Key="Pin_Menu">سنجاق‌شده‌ها</sys:String>
+    <sys:String x:Key="Pin_CenterAll">همه در مرکز</sys:String>
     <sys:String x:Key="Pin_RestoreAll">بازگردانی همه</sys:String>
     <sys:String x:Key="Pin_ThumbnailAll">همه بندانگشتی</sys:String>
     <sys:String x:Key="Pin_SaveAll">ذخیره همه...</sys:String>

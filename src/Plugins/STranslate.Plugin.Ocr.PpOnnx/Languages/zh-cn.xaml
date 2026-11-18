@@ -1,0 +1,11 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+    <sys:String x:Key="STranslate_Plugin_Ocr_PpOnnx_DetModel">检测模型路径</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Ocr_PpOnnx_RecModel">识别模型路径</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Ocr_PpOnnx_Threads">推理线程数</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Ocr_PpOnnx_Official">模型来源</sys:String>
+
+</ResourceDictionary>

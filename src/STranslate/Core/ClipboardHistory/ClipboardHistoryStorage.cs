@@ -412,5 +412,94 @@ public sealed class ClipboardHistoryStorage : IDisposable
         return File.ReadAllBytes(Path.Combine(_imagesDirectory, relativePath));
     }
 
+    // ===== CSV 导入导出 =====
+
+    /// <summary>导出全部条目为 CSV（文本类完整，图片导出其文本占位）</summary>
+    public long ExportCsv(string path)
+    {
+        var (items, _) = Query(null, null, null, pinnedOnly: false, 0, 1_000_000);
+        var sb = new System.Text.StringBuilder();
+        sb.AppendLine("type,text,html,pinned,paste_count,created_at");
+        foreach (var i in items)
+        {
+            sb.AppendLine(string.Join(",",
+                Csv(i.Type.ToString()), Csv(i.Text), Csv(i.Html ?? string.Empty),
+                i.Pinned ? "1" : "0", i.PasteCount.ToString(), i.CreatedAt.ToString("O")));
+        }
+        File.WriteAllText(path, sb.ToString(), new System.Text.UTF8Encoding(true));
+        return items.Count;
+    }
+
+    /// <summary>导入 CSV（type,text,html,pinned,paste_count,created_at），返回导入条数</summary>
+    public long ImportCsv(string path)
+    {
+        var lines = File.ReadAllLines(path);
+        if (lines.Length < 2)
+            return 0;
+        var imported = 0L;
+        foreach (var line in lines[1..])
+        {
+            var fields = ParseCsvLine(line);
+            if (fields.Count < 2 || !Enum.TryParse<ClipboardItemType>(fields[0], out var type))
+                continue;
+            var text = fields[1];
+            if (string.IsNullOrEmpty(text))
+                continue;
+            var item = new ClipboardItemRecord
+            {
+                Type = type,
+                Text = text,
+                Html = type == ClipboardItemType.Html && fields.Count > 2 ? fields[2] : null,
+                Pinned = fields.Count > 3 && fields[3] == "1",
+                PasteCount = fields.Count > 4 && long.TryParse(fields[4], out var pc) ? pc : 0,
+                CreatedAt = fields.Count > 5 && DateTime.TryParse(fields[5], out var t) ? t : DateTime.Now,
+                ContentHash = ClipboardDataExchange.Hash(type + "\n" + text),
+            };
+            Upsert(item, 0);
+            imported++;
+        }
+        return imported;
+    }
+
+    private static string Csv(string value)
+    {
+        var escaped = value.Replace("\"", "\"\"");
+        return $"\"{escaped.Replace("\r", " ").Replace("\n", "⏎")}\"";
+    }
+
+    private static List<string> ParseCsvLine(string line)
+    {
+        var fields = new List<string>();
+        var sb = new System.Text.StringBuilder();
+        var inQuotes = false;
+        for (var i = 0; i < line.Length; i++)
+        {
+            var c = line[i];
+            if (c == '"')
+            {
+                if (inQuotes && i + 1 < line.Length && line[i + 1] == '"')
+                {
+                    sb.Append('"');
+                    i++;
+                }
+                else
+                {
+                    inQuotes = !inQuotes;
+                }
+            }
+            else if (c == ',' && !inQuotes)
+            {
+                fields.Add(sb.ToString());
+                sb.Clear();
+            }
+            else
+            {
+                sb.Append(c);
+            }
+        }
+        fields.Add(sb.ToString());
+        return fields;
+    }
+
     public void Dispose() => _connection.Dispose();
 }

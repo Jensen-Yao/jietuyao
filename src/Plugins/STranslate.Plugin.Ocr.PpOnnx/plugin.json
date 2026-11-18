@@ -1,0 +1,10 @@
+{
+  "PluginID": "a1d4e9c2f8b3465789d0e1f2a3b4c5d6",
+  "Name": "PP-OCR (Local)",
+  "Description": "Local offline PaddleOCR (ONNX) plugin for jietuyao",
+  "Author": "Jensen-Yao",
+  "Version": "1.0.0",
+  "Website": "https://github.com/Jensen-Yao/jietuyao",
+  "ExecuteFileName": "STranslate.Plugin.Ocr.PpOnnx.dll",
+  "IconPath": "icon.png"
+}

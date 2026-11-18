@@ -196,6 +196,7 @@
     <sys:String x:Key="Hotkey_ClipboardHistory">Pano geçmişi</sys:String>
     <sys:String x:Key="Hotkey_ClipboardHistoryDescription">Pano geçmişi penceresini açan kısayol.</sys:String>
     <sys:String x:Key="Pin_Menu">Sabitlenmiş</sys:String>
+    <sys:String x:Key="Pin_CenterAll">Tümünü ortala</sys:String>
     <sys:String x:Key="Pin_RestoreAll">Tümünü geri yükle</sys:String>
     <sys:String x:Key="Pin_ThumbnailAll">Tümü küçük resim</sys:String>
     <sys:String x:Key="Pin_SaveAll">Tümünü kaydet...</sys:String>

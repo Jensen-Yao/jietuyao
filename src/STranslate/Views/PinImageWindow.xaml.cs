@@ -314,6 +314,19 @@ public sealed class PinImageWindow : Window
     /// <summary>公开：还原显示（管理器批量调用）</summary>
     public void ResetTransformPublic() => ResetTransform();
 
+    /// <summary>居中到所在显示器（保持当前尺寸）</summary>
+    public void CenterToWorkArea()
+    {
+        var scale = DpiScale;
+        var bounds = GetCurrentPhysicalBounds();
+        var monitor = STranslate.Helpers.MonitorInfo.GetDisplayMonitors()
+            .FirstOrDefault(m => m.Bounds.Contains(new System.Windows.Point(bounds.X + bounds.Width / 2, bounds.Y + bounds.Height / 2)))
+            ?? STranslate.Helpers.MonitorInfo.GetPrimaryDisplayMonitor();
+        var target = monitor.WorkingArea;
+        Left = (target.X + (target.Width - bounds.Width) / 2) / scale;
+        Top = (target.Y + (target.Height - bounds.Height) / 2) / scale;
+    }
+
     /// <summary>公开：保存到文件（管理器批量调用）</summary>
     public void SaveToFileDialog() => SaveToFile();
 
@@ -380,6 +393,7 @@ public sealed class PinImageWindow : Window
     private void BuildOcrLayer(OcrResult result)
     {
         _ocrLayer.Children.Clear();
+        _ocrBoxes.Clear();
         var scaleX = _image.ActualWidth / Math.Max(1, _source.PixelWidth);
         var scaleY = _image.ActualHeight / Math.Max(1, _source.PixelHeight);
 
@@ -423,12 +437,84 @@ public sealed class PinImageWindow : Window
             Canvas.SetLeft(border, rect.X);
             Canvas.SetTop(border, rect.Y);
             _ocrLayer.Children.Add(border);
+            _ocrBoxes.Add((new Rect(rect.X, rect.Y, rect.Width, rect.Height), regionText));
         }
 
         _ocrLayer.Width = _image.ActualWidth;
         _ocrLayer.Height = _image.ActualHeight;
         _ocrLayer.Visibility = Visibility.Visible;
         _ocrLayer.IsHitTestVisible = true;
+        AttachOcrDragSelect();
+    }
+
+    private readonly List<(Rect Rect, string Text)> _ocrBoxes = [];
+    private System.Windows.Shapes.Rectangle? _ocrSelectionRect;
+    private Point _ocrDragStart;
+    private bool _ocrDragging;
+
+    /// <summary>OCR 层空白处拖框 → 框住的文字合并复制</summary>
+    private void AttachOcrDragSelect()
+    {
+        _ocrLayer.MouseLeftButtonDown += (_, e) =>
+        {
+            if (e.OriginalSource is not Canvas)
+                return;
+            _ocrDragStart = e.GetPosition(_ocrLayer);
+            _ocrDragging = true;
+            _ocrSelectionRect = new System.Windows.Shapes.Rectangle
+            {
+                Stroke = new SolidColorBrush(Color.FromRgb(0, 160, 255)),
+                StrokeThickness = 1.5,
+                StrokeDashArray = [2, 2],
+                Fill = new SolidColorBrush(Color.FromArgb(30, 0, 120, 215)),
+            };
+            Canvas.SetLeft(_ocrSelectionRect, _ocrDragStart.X);
+            Canvas.SetTop(_ocrSelectionRect, _ocrDragStart.Y);
+            _ocrLayer.Children.Add(_ocrSelectionRect);
+            _ocrLayer.CaptureMouse();
+            e.Handled = true;
+        };
+        _ocrLayer.MouseMove += (_, e) =>
+        {
+            if (!_ocrDragging || _ocrSelectionRect == null)
+                return;
+            var pos = e.GetPosition(_ocrLayer);
+            var x = Math.Min(_ocrDragStart.X, pos.X);
+            var y = Math.Min(_ocrDragStart.Y, pos.Y);
+            var w = Math.Abs(pos.X - _ocrDragStart.X);
+            var h = Math.Abs(pos.Y - _ocrDragStart.Y);
+            Canvas.SetLeft(_ocrSelectionRect, x);
+            Canvas.SetTop(_ocrSelectionRect, y);
+            _ocrSelectionRect.Width = w;
+            _ocrSelectionRect.Height = h;
+            e.Handled = true;
+        };
+        _ocrLayer.MouseLeftButtonUp += (_, e) =>
+        {
+            if (!_ocrDragging || _ocrSelectionRect == null)
+                return;
+            var pos = e.GetPosition(_ocrLayer);
+            var selection = new Rect(
+                Math.Min(_ocrDragStart.X, pos.X), Math.Min(_ocrDragStart.Y, pos.Y),
+                Math.Abs(pos.X - _ocrDragStart.X), Math.Abs(pos.Y - _ocrDragStart.Y));
+            _ocrLayer.Children.Remove(_ocrSelectionRect);
+            _ocrSelectionRect = null;
+            _ocrDragging = false;
+            _ocrLayer.ReleaseMouseCapture();
+
+            if (selection.Width > 6 && selection.Height > 6)
+            {
+                // 按阅读序合并框选内文本
+                var ordered = _ocrBoxes.Where(b => b.Rect.IntersectsWith(selection))
+                    .OrderBy(b => b.Rect.Y).ThenBy(b => b.Rect.X);
+                var joined = string.Join("\n", ordered.Select(b => b.Text));
+                if (joined.Length > 0)
+                {
+                    try { Clipboard.SetText(joined); } catch { /* 占用 */ }
+                }
+            }
+            e.Handled = true;
+        };
     }
 
     private void UpdateOcrLayer()

@@ -56,6 +56,13 @@ public sealed class PinImageManager
             window.ResetTransformPublic();
     }
 
+    /// <summary>全部居中到各自显示器工作区</summary>
+    public void CenterAll()
+    {
+        foreach (var window in _pins.ToList())
+            window.CenterToWorkArea();
+    }
+
     /// <summary>全部切换缩略图</summary>
     public void SetAllThumbnail(bool thumbnail)
     {

@@ -196,6 +196,7 @@
     <sys:String x:Key="Hotkey_ClipboardHistory">История буфера</sys:String>
     <sys:String x:Key="Hotkey_ClipboardHistoryDescription">Горячая клавиша открытия истории буфера обмена.</sys:String>
     <sys:String x:Key="Pin_Menu">Закреплённые</sys:String>
+    <sys:String x:Key="Pin_CenterAll">Все по центру</sys:String>
     <sys:String x:Key="Pin_RestoreAll">Восстановить все</sys:String>
     <sys:String x:Key="Pin_ThumbnailAll">Все миниатюры</sys:String>
     <sys:String x:Key="Pin_SaveAll">Сохранить все...</sys:String>

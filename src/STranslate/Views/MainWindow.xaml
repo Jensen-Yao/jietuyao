@@ -347,6 +347,7 @@
                             <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Pin_20_Regular}" />
                         </MenuItem.Icon>
                         <MenuItem Click="OnPinRestoreAll" Header="{DynamicResource Pin_RestoreAll}" />
+                        <MenuItem Click="OnPinCenterAll" Header="{DynamicResource Pin_CenterAll}" />
                         <MenuItem Click="OnPinThumbnailAll" Header="{DynamicResource Pin_ThumbnailAll}" />
                         <MenuItem Click="OnPinSaveAll" Header="{DynamicResource Pin_SaveAll}" />
                         <Separator />

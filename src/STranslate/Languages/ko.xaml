@@ -192,6 +192,7 @@
     <sys:String x:Key="Hotkey_ClipboardHistory">클립보드 기록</sys:String>
     <sys:String x:Key="Hotkey_ClipboardHistoryDescription">클립보드 기록 창을 여는 바로 가기 키입니다.</sys:String>
     <sys:String x:Key="Pin_Menu">고정</sys:String>
+    <sys:String x:Key="Pin_CenterAll">모두 가운데</sys:String>
     <sys:String x:Key="Pin_RestoreAll">모두 복원</sys:String>
     <sys:String x:Key="Pin_ThumbnailAll">모두 썸네일</sys:String>
     <sys:String x:Key="Pin_SaveAll">모두 저장...</sys:String>

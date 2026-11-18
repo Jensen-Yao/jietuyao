@@ -127,6 +127,16 @@ public partial class Settings : ObservableObject
     /// </summary>
     [ObservableProperty] public partial bool ClipboardHistoryAutoPaste { get; set; } = true;
 
+    /// <summary>
+    /// 长截图滚轮冷却（毫秒）
+    /// </summary>
+    [ObservableProperty] public partial int ScrollCaptureCooldownMs { get; set; } = 420;
+
+    /// <summary>
+    /// 长截图顶部忽略像素（跳过固定表头）
+    /// </summary>
+    [ObservableProperty] public partial int ScrollIgnoreTopPx { get; set; } = 0;
+
     [ObservableProperty] public partial bool HideInput { get; set; } = false;
 
     [ObservableProperty] public partial bool HideInputWithLangSelectControl { get; set; } = false;

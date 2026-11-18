@@ -57,6 +57,9 @@ public sealed class GifToolbarWindow : Window
         _pauseButton = Button("⏸ 暂停", controller.Pause);
         panel.Children.Add(_pauseButton);
 
+        var annotateButton = Button("✏ 标注", controller.ToggleAnnotate);
+        panel.Children.Add(annotateButton);
+
         _fpsBox = new ComboBox
         {
             MinWidth = 64,
@@ -147,6 +150,222 @@ public sealed class GifToolbarWindow : Window
         _timer.Stop();
         _controller.StateChanged -= OnStateChanged;
         base.OnClosed(e);
+    }
+}
+
+/// <summary>
+/// GIF 录制中标注覆盖窗（InkCanvas 手绘，导出时叠加到每帧）
+/// </summary>
+public sealed class GifAnnotationWindow : Window
+{
+    public InkCanvas Ink { get; }
+
+    public GifAnnotationWindow(System.Windows.Rect physicalRegion)
+    {
+        WindowStyle = WindowStyle.None;
+        ResizeMode = ResizeMode.NoResize;
+        ShowInTaskbar = false;
+        Topmost = true;
+        ShowActivated = false;
+        AllowsTransparency = true;
+        Background = System.Windows.Media.Brushes.Transparent;
+        WindowStartupLocation = WindowStartupLocation.Manual;
+        IsHitTestVisible = true;
+
+        Ink = new InkCanvas
+        {
+            Background = System.Windows.Media.Brushes.Transparent,
+            DefaultDrawingAttributes = new System.Windows.Ink.DrawingAttributes
+            {
+                Color = System.Windows.Media.Colors.Red,
+                Width = 3,
+                Height = 3,
+                FitToCurve = true,
+            },
+        };
+        Content = Ink;
+
+        var scale = PresentationSource.FromVisual(this)?.CompositionTarget.TransformToDevice.M11 ?? 1.0;
+        Width = physicalRegion.Width / scale;
+        Height = physicalRegion.Height / scale;
+        Left = physicalRegion.Left / scale;
+        Top = physicalRegion.Top / scale;
+
+        // 初始不拦截鼠标（仅标注模式开启时交互）
+        IsHitTestVisible = false;
+        Opacity = 0.999;
+    }
+
+    public void SetAnnotateMode(bool on)
+    {
+        IsHitTestVisible = on;
+        if (on)
+        {
+            Show();
+            Activate();
+        }
+    }
+
+    /// <summary>渲染当前笔迹为位图（区域物理尺寸）</summary>
+    public System.Drawing.Bitmap? RenderOverlayBitmap(double dpiScale)
+    {
+        if (Ink.Strokes.Count == 0)
+            return null;
+        var w = Math.Max(1, (int)Math.Round(ActualWidth * dpiScale));
+        var h = Math.Max(1, (int)Math.Round(ActualHeight * dpiScale));
+        var rtb = new System.Windows.Media.Imaging.RenderTargetBitmap(w, h, 96, 96, System.Windows.Media.PixelFormats.Pbgra32);
+        rtb.Render(Ink);
+        rtb.Freeze();
+        return STranslate.Core.ScreenshotCapturer.ToGdiBitmap(rtb);
+    }
+}
+
+/// <summary>
+/// GIF 回放裁剪窗：预览循环 + 起止帧滑杆 + 导出
+/// </summary>
+public sealed class GifPlaybackTrimWindow : Window
+{
+    private readonly GifFrameBuffer _buffer;
+    private readonly int _fps;
+    private readonly System.Windows.Controls.Image _image;
+    private readonly Slider _start;
+    private readonly Slider _end;
+    private readonly TextBlock _info;
+    private readonly System.Windows.Threading.DispatcherTimer _timer;
+    private readonly List<System.Drawing.Bitmap> _frames = [];
+    private int _current;
+
+    /// <summary>用户确认导出（start/end 帧）</summary>
+    public event Action<int, int>? ExportConfirmed;
+
+    public GifPlaybackTrimWindow(GifFrameBuffer buffer, int fps, System.Windows.Rect physicalRegion)
+    {
+        _buffer = buffer;
+        _fps = Math.Clamp(fps, 5, 24);
+
+        WindowStyle = WindowStyle.ToolWindow;
+        Title = "GIF 回放与裁剪";
+        Width = 640;
+        Height = 520;
+        WindowStartupLocation = WindowStartupLocation.CenterScreen;
+        ShowInTaskbar = false;
+        Topmost = true;
+        Background = new SolidColorBrush(Color.FromRgb(40, 40, 40));
+        Foreground = new SolidColorBrush(Color.FromRgb(235, 235, 235));
+
+        var panel = new StackPanel { Margin = new Thickness(14) };
+
+        _image = new System.Windows.Controls.Image
+        {
+            Height = 300,
+            Stretch = Stretch.Uniform,
+        };
+        var imageBorder = new Border
+        {
+            Child = _image,
+            Background = new SolidColorBrush(Color.FromRgb(20, 20, 20)),
+            Padding = new Thickness(4),
+        };
+        panel.Children.Add(imageBorder);
+
+        _info = new TextBlock
+        {
+            Foreground = new SolidColorBrush(Color.FromRgb(187, 187, 187)),
+            Margin = new Thickness(0, 8, 0, 4),
+            FontSize = 12,
+        };
+        panel.Children.Add(_info);
+
+        var startLabel = new TextBlock { Text = "起始帧", FontSize = 12, Foreground = new SolidColorBrush(Color.FromRgb(136, 136, 136)) };
+        panel.Children.Add(startLabel);
+        _start = new Slider { Minimum = 0, IsMoveToPointEnabled = true };
+        panel.Children.Add(_start);
+
+        var endLabel = new TextBlock { Text = "结束帧", FontSize = 12, Margin = new Thickness(0, 6, 0, 0), Foreground = new SolidColorBrush(Color.FromRgb(136, 136, 136)) };
+        panel.Children.Add(endLabel);
+        _end = new Slider { Minimum = 0, IsMoveToPointEnabled = true };
+        panel.Children.Add(_end);
+
+        var buttons = new StackPanel
+        {
+            Orientation = Orientation.Horizontal,
+            HorizontalAlignment = HorizontalAlignment.Right,
+            Margin = new Thickness(0, 10, 0, 0),
+        };
+        var export = new Button
+        {
+            Content = "保存 GIF",
+            Padding = new Thickness(16, 4, 16, 4),
+            Background = new SolidColorBrush(Color.FromRgb(196, 43, 28)),
+            Foreground = Brushes.White,
+            BorderThickness = new Thickness(0),
+        };
+        export.Click += (_, _) =>
+        {
+            var s = (int)_start.Value;
+            var e = (int)Math.Max(_end.Value, _start.Value + 1);
+            ExportConfirmed?.Invoke(s, e);
+        };
+        var cancel = new Button
+        {
+            Content = "取消",
+            Padding = new Thickness(16, 4, 16, 4),
+            Margin = new Thickness(6, 0, 0, 0),
+            Background = Brushes.Transparent,
+            Foreground = new SolidColorBrush(Color.FromRgb(235, 235, 235)),
+            BorderBrush = new SolidColorBrush(Color.FromArgb(80, 255, 255, 255)),
+        };
+        cancel.Click += (_, _) => Close();
+        buttons.Children.Add(export);
+        buttons.Children.Add(cancel);
+        panel.Children.Add(buttons);
+
+        Content = panel;
+
+        // 载入帧
+        for (var i = 0; i < buffer.Count; i++)
+            _frames.Add(buffer.DecodeFrame(i));
+        _start.Maximum = Math.Max(0, _frames.Count - 1);
+        _end.Maximum = Math.Max(1, _frames.Count - 1);
+        _end.Value = Math.Max(1, _frames.Count - 1);
+        _start.ValueChanged += (_, _) => { if (_start.Value > _end.Value) _end.Value = _start.Value; UpdateInfo(); ShowFrame((int)_start.Value); };
+        _end.ValueChanged += (_, _) => { if (_end.Value < _start.Value) _start.Value = _end.Value; UpdateInfo(); };
+
+        _timer = new System.Windows.Threading.DispatcherTimer { Interval = TimeSpan.FromMilliseconds(1000.0 / _fps) };
+        _timer.Tick += (_, _) => PlayNext();
+        _timer.Start();
+        UpdateInfo();
+        ShowFrame(0);
+
+        Closed += (_, _) =>
+        {
+            _timer.Stop();
+            foreach (var f in _frames)
+                f.Dispose();
+        };
+    }
+
+    private void PlayNext()
+    {
+        var s = (int)_start.Value;
+        var e = (int)_end.Value;
+        _current = _current < s || _current >= e ? s : _current + 1;
+        ShowFrame(_current);
+    }
+
+    private void ShowFrame(int index)
+    {
+        if (index < 0 || index >= _frames.Count)
+            return;
+        _image.Source = STranslate.Core.ScreenshotCapturer.ToBitmapSource(_frames[index]);
+    }
+
+    private void UpdateInfo()
+    {
+        var s = (int)_start.Value;
+        var e = (int)_end.Value;
+        var duration = (e - s) / (double)_fps;
+        _info.Text = $"共 {_frames.Count} 帧 | 选中 {e - s} 帧 ≈ {duration:F1}s @ {_fps}fps";
     }
 }
 

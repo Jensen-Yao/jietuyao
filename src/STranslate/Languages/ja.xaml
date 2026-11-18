@@ -192,6 +192,7 @@
     <sys:String x:Key="Hotkey_ClipboardHistory">クリップボード履歴</sys:String>
     <sys:String x:Key="Hotkey_ClipboardHistoryDescription">クリップボード履歴ウィンドウを開くショートカット。</sys:String>
     <sys:String x:Key="Pin_Menu">ピン留め</sys:String>
+    <sys:String x:Key="Pin_CenterAll">すべて中央へ</sys:String>
     <sys:String x:Key="Pin_RestoreAll">すべて復元</sys:String>
     <sys:String x:Key="Pin_ThumbnailAll">すべてサムネイル</sys:String>
     <sys:String x:Key="Pin_SaveAll">すべて保存...</sys:String>

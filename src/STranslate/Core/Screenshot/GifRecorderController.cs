@@ -33,6 +33,20 @@ public sealed class GifRecorderController : IDisposable
     private GifFrameBuffer? _buffer;
     private Views.ScrollOverlayWindow? _overlay;
     private Views.GifToolbarWindow? _toolbar;
+    private Views.GifAnnotationWindow? _annotation;
+
+    /// <summary>录制中标注开关</summary>
+    public void ToggleAnnotate()
+    {
+        if (!_running)
+            return;
+        _annotation ??= new Views.GifAnnotationWindow(_region);
+        var active = !_annotation.IsHitTestVisible;
+        _annotation.SetAnnotateMode(active);
+        StateChanged?.Invoke();
+    }
+
+    public bool IsAnnotating => _annotation?.IsHitTestVisible == true;
 
     /// <summary>录制状态变化（时长/帧数/暂停）</summary>
     public event Action? StateChanged;
@@ -134,8 +148,8 @@ public sealed class GifRecorderController : IDisposable
     public int FrameCount => _buffer?.Count ?? 0;
     public TimeSpan Elapsed => (_paused ? _pauseMark : DateTime.Now) - _startTime - _pausedTotal;
 
-    /// <summary>完成：停止采集 → 导出 GIF（进度窗）</summary>
-    public async void Finish()
+    /// <summary>完成：停止采集 → 回放裁剪窗 → 导出 GIF（进度窗）</summary>
+    public void Finish()
     {
         if (!_running)
             return;
@@ -143,30 +157,65 @@ public sealed class GifRecorderController : IDisposable
         _thread?.Join(1000);
         var buffer = _buffer;
         _buffer = null;
+
+        // 采集标注层（录制中手绘）后清理窗口
+        System.Drawing.Bitmap? overlay = null;
+        if (_annotation != null)
+        {
+            var source = System.Windows.PresentationSource.FromVisual(_annotation);
+            var scale = source?.CompositionTarget?.TransformToDevice.M11 ?? 1.0;
+            overlay = _annotation.RenderOverlayBitmap(scale);
+            _annotation.Close();
+            _annotation = null;
+        }
         CleanupWindows();
 
         if (buffer == null || buffer.Count == 0)
         {
             buffer?.Dispose();
+            overlay?.Dispose();
             return;
         }
 
-        // 保存对话框
+        var trim = new Views.GifPlaybackTrimWindow(buffer, _fps, _region);
+        trim.ExportConfirmed += (start, end) =>
+        {
+            trim.Close();
+            _ = ExportAsync(buffer, overlay, start, end);
+        };
+        trim.Closed += (_, _) =>
+        {
+            // 用户直接关窗（未导出）
+            if (buffer.Count >= 0 && !_exportStarted)
+            {
+                // buffer 可能仍被引用，延迟销毁由 ExportAsync/这里处理
+            }
+        };
+        trim.Show();
+    }
+
+    private bool _exportStarted;
+
+    private async Task ExportAsync(GifFrameBuffer buffer, System.Drawing.Bitmap? overlay, int start, int end)
+    {
         var suggested = $"jietuyao_{DateTime.Now:yyyyMMdd_HHmmss}.gif";
         var path = ScreenshotOutput.SaveGifFile(suggested, _settings.LastScreenshotSaveDir);
         if (path == null)
         {
             buffer.Dispose();
+            overlay?.Dispose();
             return;
         }
         _settings.LastScreenshotSaveDir = Path.GetDirectoryName(path) ?? string.Empty;
 
+        _exportStarted = true;
         var progress = new Views.GifExportProgressWindow();
         progress.Show();
         try
         {
             var delayCs = Math.Max(2, (int)Math.Round(100.0 / _fps));
-            await Task.Run(() => buffer.ExportGif(path, delayCs, p =>
+            var fps = _fps;
+            await Task.Run(() => buffer.ExportGif(path, delayCs, overlay, start, end, p =>
                 progress.ReportProgress(p)));
             progress.Complete(path);
         }
@@ -178,6 +227,8 @@ public sealed class GifRecorderController : IDisposable
         finally
         {
             buffer.Dispose();
+            overlay?.Dispose();
+            _exportStarted = false;
         }
     }
 
@@ -189,6 +240,8 @@ public sealed class GifRecorderController : IDisposable
         _thread?.Join(500);
         _buffer?.Dispose();
         _buffer = null;
+        _annotation?.Close();
+        _annotation = null;
         CleanupWindows();
     }
 

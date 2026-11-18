@@ -1,0 +1,4 @@
+{
+  "Name": "PP-OCR 本地识别",
+  "Description": "完全离线的本地 OCR（PaddleOCR ONNX）"
+}

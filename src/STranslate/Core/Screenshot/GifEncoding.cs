@@ -40,8 +40,22 @@ public sealed class GifFrameBuffer : IDisposable
         }
     }
 
-    /// <summary>导出动画 GIF（延迟单位 1/100 秒，进度回调 0..1）</summary>
-    public void ExportGif(string path, int delayPerFrameCs = 7, Action<double>? progress = null)
+    /// <summary>解码指定帧（24bpp，供预览）</summary>
+    public Bitmap DecodeFrame(int index)
+    {
+        byte[] jpeg;
+        lock (_lock)
+        {
+            if (index < 0 || index >= _frames.Count)
+                throw new ArgumentOutOfRangeException(nameof(index));
+            jpeg = _frames[index];
+        }
+        return Decode(jpeg);
+    }
+
+    /// <summary>导出动画 GIF（延迟单位 1/100 秒；可指定帧区间与标注叠加层）</summary>
+    public void ExportGif(string path, int delayPerFrameCs = 7, Bitmap? overlay = null,
+        int startFrame = 0, int endFrame = int.MaxValue, Action<double>? progress = null)
     {
         List<byte[]> snapshot;
         lock (_lock)
@@ -51,16 +65,29 @@ public sealed class GifFrameBuffer : IDisposable
         if (snapshot.Count == 0)
             return;
 
-        // 解码首帧
-        using var first = Decode(snapshot[0]);
+        startFrame = Math.Clamp(startFrame, 0, snapshot.Count - 1);
+        endFrame = Math.Clamp(endFrame, startFrame + 1, snapshot.Count);
+        var count = endFrame - startFrame;
+
+        Bitmap RenderComposited(int index)
+        {
+            var frame = Decode(snapshot[index]);
+            if (overlay == null)
+                return frame;
+            using var g = Graphics.FromImage(frame);
+            g.DrawImage(overlay, 0, 0, frame.Width, frame.Height);
+            return frame;
+        }
+
+        using var first = RenderComposited(startFrame);
         var firstClone = new Bitmap(first);
 
         // 帧延迟 + 循环次数属性
         var delayItem = (PropertyItem)Activator.CreateInstance(typeof(PropertyItem))!;
         delayItem.Id = 0x5100; // PropertyTagFrameDelay
         delayItem.Type = 4;
-        var delays = new int[snapshot.Count];
-        for (var i = 0; i < snapshot.Count; i++)
+        var delays = new int[count];
+        for (var i = 0; i < count; i++)
             delays[i] = Math.Max(1, delayPerFrameCs);
         var delayBytes = new byte[delays.Length * 4];
         Buffer.BlockCopy(delays, 0, delayBytes, 0, delayBytes.Length);
@@ -83,15 +110,15 @@ public sealed class GifFrameBuffer : IDisposable
                 firstClone.Save(stream, codec, ep);
             }
 
-            for (var i = 1; i < snapshot.Count; i++)
+            for (var i = startFrame + 1; i < endFrame; i++)
             {
-                using var frame = Decode(snapshot[i]);
+                using var frame = RenderComposited(i);
                 using (var ep = new EncoderParameters(1))
                 {
                     ep.Param[0] = new EncoderParameter(System.Drawing.Imaging.Encoder.SaveFlag, (long)EncoderValue.FrameDimensionTime);
                     firstClone.SaveAdd(frame, ep);
                 }
-                progress?.Invoke((double)i / snapshot.Count);
+                progress?.Invoke((double)(i - startFrame + 1) / count);
             }
 
             using (var ep = new EncoderParameters(1))

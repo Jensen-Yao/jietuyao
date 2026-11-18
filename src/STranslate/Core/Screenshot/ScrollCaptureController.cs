@@ -44,10 +44,18 @@ public sealed class ScrollCaptureController : IDisposable
             _cooldown.Stop();
             CaptureFrame();
         };
+        _settings.PropertyChanged += OnSettingsChanged;
     }
 
     public bool IsRunning => _running;
     public int FrameCount => _frames.Count;
+
+    private void OnSettingsChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(Settings.ScrollCaptureCooldownMs))
+            _cooldown.Interval = TimeSpan.FromMilliseconds(Math.Clamp(_settings.ScrollCaptureCooldownMs, 120, 2000));
+    }
+
 
     /// <summary>状态变化（帧数/方向）</summary>
     public event Action? StateChanged;
@@ -108,6 +116,17 @@ public sealed class ScrollCaptureController : IDisposable
         try
         {
             var frame = ScrollStitcher.CaptureRegion(_region);
+
+            // 顶部忽略像素（跳过固定表头，仅非首帧）
+            var ignoreTop = Math.Clamp(_settings.ScrollIgnoreTopPx, 0, Math.Max(0, frame.Height - 20));
+            if (ignoreTop > 0 && _frames.Count > 0 && frame.Height > ignoreTop + 20)
+            {
+                var cropped = frame.Clone(new Rectangle(0, ignoreTop, frame.Width, frame.Height - ignoreTop),
+                    System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
+                frame.Dispose();
+                frame = cropped;
+            }
+
             var fingerprint = ScrollStitcher.ImageFingerprint(frame);
             if (fingerprint == _lastFingerprint)
             {
@@ -199,5 +218,9 @@ public sealed class ScrollCaptureController : IDisposable
         _toolbar = null;
     }
 
-    public void Dispose() => StopInternal();
+    public void Dispose()
+    {
+        _settings.PropertyChanged -= OnSettingsChanged;
+        StopInternal();
+    }
 }

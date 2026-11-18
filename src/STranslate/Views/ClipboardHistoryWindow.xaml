@@ -165,6 +165,7 @@
             <TextBlock x:Name="CountText" Grid.Column="2" Foreground="#888888" FontSize="12"
                        HorizontalAlignment="Center" VerticalAlignment="Center" />
             <StackPanel Grid.Column="3" Orientation="Horizontal">
+                <Button Content="⋯" Margin="0,0,6,0" Click="OnMoreActions" ToolTip="导入/导出 CSV" />
                 <Button Content="清空" Margin="0,0,6,0" Click="OnClearAll" />
                 <Button Content="关闭" Click="OnClose" />
             </StackPanel>

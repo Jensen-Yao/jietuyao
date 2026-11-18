@@ -196,6 +196,7 @@
     <sys:String x:Key="Hotkey_ClipboardHistory">剪贴板历史</sys:String>
     <sys:String x:Key="Hotkey_ClipboardHistoryDescription">打开剪贴板历史窗口的快捷键。</sys:String>
     <sys:String x:Key="Pin_Menu">贴图</sys:String>
+    <sys:String x:Key="Pin_CenterAll">全部居中</sys:String>
     <sys:String x:Key="Pin_RestoreAll">全部还原</sys:String>
     <sys:String x:Key="Pin_ThumbnailAll">全部缩略图</sys:String>
     <sys:String x:Key="Pin_SaveAll">全部保存...</sys:String>

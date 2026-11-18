@@ -196,6 +196,7 @@
     <sys:String x:Key="Hotkey_ClipboardHistory">Clipboard History</sys:String>
     <sys:String x:Key="Hotkey_ClipboardHistoryDescription">Hotkey to open the clipboard history window.</sys:String>
     <sys:String x:Key="Pin_Menu">Pinned</sys:String>
+    <sys:String x:Key="Pin_CenterAll">Center all</sys:String>
     <sys:String x:Key="Pin_RestoreAll">Restore all</sys:String>
     <sys:String x:Key="Pin_ThumbnailAll">All thumbnails</sys:String>
     <sys:String x:Key="Pin_SaveAll">Save all...</sys:String>
