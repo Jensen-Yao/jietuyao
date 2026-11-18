@@ -155,6 +155,17 @@
                             WindowTitle="{DynamicResource Hotkey_ReplaceTranslate}" />
                     </ui:SettingsCard>
 
+                    <ui:SettingsCard Description="{DynamicResource Hotkey_ScreenshotDescription}" Header="{DynamicResource Hotkey_Screenshot}">
+                        <ui:SettingsCard.HeaderIcon>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Camera_24_Regular}" />
+                        </ui:SettingsCard.HeaderIcon>
+                        <control:HotkeyControl
+                            DefaultHotkey="{Binding HotkeySettings.ScreenshotHotkey.Default}"
+                            Hotkey="{Binding HotkeySettings.ScreenshotHotkey.Key}"
+                            IsRegistered="{Binding HotkeySettings.ScreenshotHotkey.IsConflict}"
+                            WindowTitle="{DynamicResource Hotkey_Screenshot}" />
+                    </ui:SettingsCard>
+
                     <ui:SettingsCard Description="{DynamicResource Hotkey_ScreenshotTranslateDescription}" Header="{DynamicResource Hotkey_ScreenshotTranslate}">
                         <ui:SettingsCard.HeaderIcon>
                             <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.ScreenCut_20_Regular}" />
@@ -164,6 +175,17 @@
                             Hotkey="{Binding HotkeySettings.ScreenshotTranslateHotkey.Key}"
                             IsRegistered="{Binding HotkeySettings.ScreenshotTranslateHotkey.IsConflict}"
                             WindowTitle="{DynamicResource Hotkey_ScreenshotTranslate}" />
+                    </ui:SettingsCard>
+
+                    <ui:SettingsCard Description="{DynamicResource Hotkey_ClipboardHistoryDescription}" Header="{DynamicResource Hotkey_ClipboardHistory}">
+                        <ui:SettingsCard.HeaderIcon>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.ClipboardPaste_24_Regular}" />
+                        </ui:SettingsCard.HeaderIcon>
+                        <control:HotkeyControl
+                            DefaultHotkey="{Binding HotkeySettings.ClipboardHistoryHotkey.Default}"
+                            Hotkey="{Binding HotkeySettings.ClipboardHistoryHotkey.Key}"
+                            IsRegistered="{Binding HotkeySettings.ClipboardHistoryHotkey.IsConflict}"
+                            WindowTitle="{DynamicResource Hotkey_ClipboardHistory}" />
                     </ui:SettingsCard>
 
                     <ui:SettingsCard Description="{DynamicResource Hotkey_ImageTranslateDescription}" Header="{DynamicResource Hotkey_ImageTranslate}">

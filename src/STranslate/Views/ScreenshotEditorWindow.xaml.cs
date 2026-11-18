@@ -191,6 +191,22 @@ public sealed partial class ScreenshotEditorWindow : Window
                 }
                 break;
 
+            case Key.L:
+                if (_session.Selection != null)
+                {
+                    _session.Finish(ScreenshotEditorAction.LongScreenshot);
+                    e.Handled = true;
+                }
+                break;
+
+            case Key.G:
+                if (_session.Selection != null)
+                {
+                    _session.Finish(ScreenshotEditorAction.GifRecord);
+                    e.Handled = true;
+                }
+                break;
+
             case Key.Delete:
                 _canvas.DeleteHoveredOrClear();
                 e.Handled = true;
