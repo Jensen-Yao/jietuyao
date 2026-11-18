@@ -6,19 +6,20 @@ namespace STranslate.Core;
 
 public class Constant
 {
-    public const string AppName = "STranslate";
+    public const string AppName = "jietuyao";
+    public const string DisplayAppName = "jietuyao 截图耀";
     public const string Plugins = "Plugins";
     public const string PortableFolderName = "PortableConfig";
     public const string Cache = "Cache";
     public const string Settings = "Settings";
     public const string Logs = "Logs";
     public const string PluginMetaFileName = "plugin.json";
-    public const string TmpPluginFolderName = "STranslateTmpPlugins";
-    public const string TmpConfigFolderName = "STranslateTmpConfig";
+    public const string TmpPluginFolderName = "jietuyaoTmpPlugins";
+    public const string TmpConfigFolderName = "jietuyaoTmpConfig";
     public const string SystemLanguageCode = "system";
     public const string HttpClientName = "DefaultClient";
     public const string HostExeName = "z_stranslate_host.exe";
-    public const string TaskName = "STranslateSkipUAC";
+    public const string TaskName = "jietuyaoSkipUAC";
     public const string EmptyHotkey = "None";
     public const string PluginFileExtension = ".spkg";
     public const string NeedDelete = "NeedDelete.txt";
@@ -26,15 +27,17 @@ public class Constant
     public const string InfoFileName = ".INFO";
     public const string BackupFileName = ".BACKUP";
 
-    public const string Github = "https://github.com/STranslate/STranslate";
-    public const string Sponsor = "https://github.com/STranslate/STranslate/tree/main?tab=readme-ov-file#donations";
+    public const string Github = "https://github.com/Jensen-Yao/jietuyao";
+    public const string UpstreamGithub = "https://github.com/ZGGSONG/STranslate";
+    public const string Sponsor = "https://github.com/Jensen-Yao/jietuyao";
     public const string Dev = "Dev";
     public static readonly string Version = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location.NonNull()).ProductVersion.NonNull();
 
     public static readonly Uri GithubUri = new(Github);
-    public static readonly Uri ReportUri = new("https://github.com/STranslate/STranslate/issues/new/choose");
-    public static readonly Uri WebsiteUri = new("https://stranslate.zggsong.com");
-    public static readonly Uri GroupUri = new("https://t.me/stranslatewpf");
+    public static readonly Uri UpstreamGithubUri = new(UpstreamGithub);
+    public static readonly Uri ReportUri = new("https://github.com/Jensen-Yao/jietuyao/issues/new/choose");
+    public static readonly Uri WebsiteUri = new("https://github.com/Jensen-Yao/jietuyao");
+    public static readonly Uri GroupUri = new(UpstreamGithub);
     public static readonly Uri FlowLauncherUri = new("https://github.com/Flow-Launcher/Flow.Launcher");
     public static readonly Uri UiWpfMordenUri = new("https://github.com/iNKORE-NET/UI.WPF.Modern");
     public static readonly Uri BobUri = new("https://bobtranslate.com/");

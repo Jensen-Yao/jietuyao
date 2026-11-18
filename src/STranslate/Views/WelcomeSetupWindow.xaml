@@ -75,7 +75,7 @@
                         FontSize="32"
                         FontWeight="SemiBold"
                         Foreground="{DynamicResource {x:Static ui:ThemeKeys.TextFillColorPrimaryBrushKey}}"
-                        Text="STranslate" />
+                        Text="jietuyao" />
                     <TextBlock
                         FontSize="{DynamicResource STControlFontSize14}"
                         Foreground="{DynamicResource {x:Static ui:ThemeKeys.TextFillColorSecondaryBrushKey}}"

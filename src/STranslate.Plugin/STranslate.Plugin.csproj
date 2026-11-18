@@ -42,6 +42,8 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <!-- jietuyao 为主程序集新名（品牌重塑），STranslate 保留以兼容上游 -->
+        <InternalsVisibleTo Include="jietuyao" />
         <InternalsVisibleTo Include="STranslate" />
         <InternalsVisibleTo Include="STranslate.Tests" />
     </ItemGroup>

@@ -295,7 +295,7 @@ public static class CursorHelper
             _ => "32"
         };
 
-        var cursorPath = $"pack://application:,,,/STranslate;Component/Resources/Working_{cursorSize}x.ani";
+        var cursorPath = $"pack://application:,,,/jietuyao;Component/Resources/Working_{cursorSize}x.ani";
 
         using var resourceStream = Application.GetResourceStream(new Uri(cursorPath, UriKind.Absolute))?.Stream
             ?? throw new InvalidOperationException($"Could not load cursor resource: {cursorPath}");

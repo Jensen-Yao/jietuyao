@@ -163,7 +163,7 @@
                 </ui:SettingsCard>
 
                 <ui:SettingsExpander
-                    Description="© 2020 zggsong &amp; STranslate Contributors"
+                    Description="基于 STranslate (zggsong, MIT) 增强的 jietuyao"
                     Header="{x:Static core:Constant.AppName}"
                     IsExpanded="True">
                     <ui:SettingsExpander.HeaderIcon>

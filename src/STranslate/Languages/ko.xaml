@@ -36,7 +36,7 @@
     <sys:String x:Key="General_StartMode">시작 모드</sys:String>
     <sys:String x:Key="General_StartModeDescription">「UAC 건너뛰기(관리자)」는 UAC 팝업을 건너뛰는 작업 스케줄러를 생성합니다.</sys:String>
     <sys:String x:Key="General_HideOnStartup">시작 시 메인 창 숨기기</sys:String>
-    <sys:String x:Key="General_HideOnStartupDescription">STranslate 실행 후 검색 창을 트레이로 숨깁니다.</sys:String>
+    <sys:String x:Key="General_HideOnStartupDescription">jietuyao 실행 후 검색 창을 트레이로 숨깁니다.</sys:String>
     <sys:String x:Key="General_HideWhenDeactivated">포커스 해제 시 자동 숨김</sys:String>
     <sys:String x:Key="General_AutoHideAtTopEdge">상단 가장자리에서 자동으로 접기</sys:String>
     <sys:String x:Key="General_AutoHideAtTopEdgeDescription">창을 화면 상단으로 끌어다 놓으면 마우스 포인터가 벗어날 때 자동으로 접히고, 상단 표시줄에 포인터를 올리면 펼쳐집니다. 상단에 붙어 있을 때는 포커스를 잃으면 숨기는 설정보다 우선합니다.</sys:String>
@@ -173,10 +173,10 @@
 
     <sys:String x:Key="GlobalHotkeys">전역 단축키</sys:String>
     <sys:String x:Key="SoftwareHotkeys">소프트웨어 단축키</sys:String>
-    <sys:String x:Key="Hotkey_OpenSTranslate">STranslate 열기</sys:String>
-    <sys:String x:Key="Hotkey_OpenSTranslateDescription">STranslate 메인 화면 표시/숨기기 단축키입니다.</sys:String>
+    <sys:String x:Key="Hotkey_OpenSTranslate">jietuyao 열기</sys:String>
+    <sys:String x:Key="Hotkey_OpenSTranslateDescription">jietuyao 메인 화면 표시/숨기기 단축키입니다.</sys:String>
     <sys:String x:Key="Hotkey_InputTranslate">입력 번역</sys:String>
-    <sys:String x:Key="Hotkey_InputTranslateDescription">STranslate를 열고 내용을 지운 뒤 번역 입력을 대기하는 단축키입니다.</sys:String>
+    <sys:String x:Key="Hotkey_InputTranslateDescription">jietuyao를 열고 내용을 지운 뒤 번역 입력을 대기하는 단축키입니다.</sys:String>
     <sys:String x:Key="Hotkey_CrosswordTranslate">드래그 번역</sys:String>
     <sys:String x:Key="Hotkey_CrosswordTranslateDescription">마우스로 선택한 텍스트를 번역하는 단축키입니다.</sys:String>
     <sys:String x:Key="Hotkey_CrosswordTranslateIsUseCtrlSameC">Ctrl+C+C로 드래그 번역을 사용하시겠습니까?</sys:String>
@@ -476,7 +476,7 @@
     <sys:String x:Key="Document">문서</sys:String>
 
     <!--  // Welcome Setup //  -->
-    <sys:String x:Key="WelcomeSetup_Title">STranslate에 오신 것을 환영합니다</sys:String>
+    <sys:String x:Key="WelcomeSetup_Title">jietuyao에 오신 것을 환영합니다</sys:String>
     <sys:String x:Key="WelcomeSetup_Subtitle">자주 쓰는 서비스와 주요 단축키를 빠르게 설정합니다. 나중에 정보 페이지에서 다시 열 수 있습니다.</sys:String>
     <sys:String x:Key="WelcomeSetup_WelcomeDescription">시작하기 전에 언어, 자주 쓰는 서비스, 주요 단축키를 설정할 수 있습니다. 지금은 건너뛸 수도 있습니다.</sys:String>
     <sys:String x:Key="WelcomeSetup_LanguageDescription">인터페이스 언어를 선택합니다. 변경 사항은 기존 언어 설정을 통해 즉시 적용됩니다.</sys:String>
@@ -840,13 +840,13 @@
     <sys:String x:Key="UpdateOpenAboutButton">업데이트로 이동</sys:String>
     <sys:String x:Key="UpdateAvailableTrayMessage">새 버전 {0}이(가) 발견되었습니다. 버튼을 눌러 설정-정보에서 업데이트할 수 있습니다.</sys:String>
     <sys:String x:Key="NewVersionFound">새 버전 {0}을(를) 발견했습니다. 다운로드하시겠습니까?</sys:String>
-    <sys:String x:Key="PortableDataMoveError">STranslate가 사용자 구성 데이터를 새 업데이트 버전으로 이동할 수 없습니다.&#10;구성 데이터 폴더를 {0}에서 {1}로 수동 이동하세요.</sys:String>
+    <sys:String x:Key="PortableDataMoveError">jietuyao가 사용자 구성 데이터를 새 업데이트 버전으로 이동할 수 없습니다.&#10;구성 데이터 폴더를 {0}에서 {1}로 수동 이동하세요.</sys:String>
     <sys:String x:Key="UpdateReady">업데이트 준비 완료</sys:String>
     <sys:String x:Key="UpdateFailed">업데이트 실패</sys:String>
     <sys:String x:Key="UpdateFailedMessage">애플리케이션 업데이트에 실패했습니다. 네트워크 연결을 확인하세요.</sys:String>
     <sys:String x:Key="UpdateChangelogLoading">업데이트 내용을 불러오는 중...</sys:String>
     <sys:String x:Key="UpdateChangelogLoadFailedMarkdown">업데이트 내용을 불러오지 못했습니다. [여기를 눌러 전체 변경 로그 보기]({0}).</sys:String>
-    <sys:String x:Key="NewVersionTips">새 버전 {0}을(를) 사용할 수 있습니다. 업데이트를 적용하기 위해 STranslate를 재시작하시겠습니까?</sys:String>
+    <sys:String x:Key="NewVersionTips">새 버전 {0}을(를) 사용할 수 있습니다. 업데이트를 적용하기 위해 jietuyao를 재시작하시겠습니까?</sys:String>
 
     <sys:String x:Key="Url">엔드포인트</sys:String>
     <sys:String x:Key="Url_Description">「#」로 끝나면 입력 주소를 강제로 사용합니다</sys:String>

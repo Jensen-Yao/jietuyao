@@ -14,7 +14,7 @@
     xmlns:ui="http://schemas.inkore.net/lib/ui/wpf/modern"
     xmlns:vm="clr-namespace:STranslate.ViewModels"
     Name="STWindow"
-    Title="STranslate"
+    Title="jietuyao"
     Width="{Binding Settings.MainWindowWidth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
     MinWidth="400"
     MinHeight="200"

@@ -39,7 +39,7 @@
     <sys:String x:Key="General_StartMode">啟動模式</sys:String>
     <sys:String x:Key="General_StartModeDescription">「跳過UAC管理員啟動」將建立一個計劃任務來跳過UAC彈出視窗。</sys:String>
     <sys:String x:Key="General_HideOnStartup">系統啟動時不顯示主視窗</sys:String>
-    <sys:String x:Key="General_HideOnStartupDescription">STranslate 啟動後搜尋視窗隱藏在托盤中。</sys:String>
+    <sys:String x:Key="General_HideOnStartupDescription">jietuyao 啟動後搜尋視窗隱藏在托盤中。</sys:String>
     <sys:String x:Key="General_HideWhenDeactivated">失去焦點時自動隱藏主視窗</sys:String>
     <sys:String x:Key="General_AutoHideAtTopEdge">貼頂自動收起</sys:String>
     <sys:String x:Key="General_AutoHideAtTopEdgeDescription">將視窗拖到螢幕頂部，滑鼠移開後自動收起，移到頂部感應條展開。貼頂時優先於失焦隱藏。</sys:String>
@@ -177,10 +177,10 @@
     <!--  // Hotkey Page //  -->
     <sys:String x:Key="GlobalHotkeys">全域快速鍵</sys:String>
     <sys:String x:Key="SoftwareHotkeys">軟體快速鍵</sys:String>
-    <sys:String x:Key="Hotkey_OpenSTranslate">開啟STranslate</sys:String>
-    <sys:String x:Key="Hotkey_OpenSTranslateDescription">顯示/隱藏STranslate主界面的快速鍵。</sys:String>
+    <sys:String x:Key="Hotkey_OpenSTranslate">開啟jietuyao</sys:String>
+    <sys:String x:Key="Hotkey_OpenSTranslateDescription">顯示/隱藏jietuyao主界面的快速鍵。</sys:String>
     <sys:String x:Key="Hotkey_InputTranslate">輸入翻譯</sys:String>
-    <sys:String x:Key="Hotkey_InputTranslateDescription">開啟STranslate並清空內容等待輸入翻譯的快速鍵。</sys:String>
+    <sys:String x:Key="Hotkey_InputTranslateDescription">開啟jietuyao並清空內容等待輸入翻譯的快速鍵。</sys:String>
     <sys:String x:Key="Hotkey_CrosswordTranslate">劃詞翻譯</sys:String>
     <sys:String x:Key="Hotkey_CrosswordTranslateDescription">滑鼠選中文字觸發翻譯的快速鍵。</sys:String>
     <sys:String x:Key="Hotkey_CrosswordTranslateIsUseCtrlSameC">是否使用 Ctrl+C+C 進行劃詞翻譯？</sys:String>
@@ -487,7 +487,7 @@
     <sys:String x:Key="Document">文件</sys:String>
 
     <!--  // Welcome Setup //  -->
-    <sys:String x:Key="WelcomeSetup_Title">歡迎使用 STranslate</sys:String>
+    <sys:String x:Key="WelcomeSetup_Title">歡迎使用 jietuyao</sys:String>
     <sys:String x:Key="WelcomeSetup_Subtitle">快速配置常用服務和關鍵快速鍵，之後也可以在「關於」頁面重新打開精靈。</sys:String>
     <sys:String x:Key="WelcomeSetup_WelcomeDescription">第一次啟動時可以先設定語言、常用服務和關鍵快速鍵；如果暫時不想配置，也可以跳過。</sys:String>
     <sys:String x:Key="WelcomeSetup_LanguageDescription">選擇介面語言，更改會按現有設定立即生效。</sys:String>
@@ -866,13 +866,13 @@
     <sys:String x:Key="UpdateOpenAboutButton">前往更新</sys:String>
     <sys:String x:Key="UpdateAvailableTrayMessage">發現新版本 {0}，點擊按鈕可前往 設定-關於 頁面更新。</sys:String>
     <sys:String x:Key="NewVersionFound">發現新版本 {0}。是否下載？</sys:String>
-    <sys:String x:Key="PortableDataMoveError">STranslate 無法將您的使用者配置資料移動到新更新版本。&#10;請手動將您的配置資料資料夾從 {0} 移動到 {1}</sys:String>
+    <sys:String x:Key="PortableDataMoveError">jietuyao 無法將您的使用者配置資料移動到新更新版本。&#10;請手動將您的配置資料資料夾從 {0} 移動到 {1}</sys:String>
     <sys:String x:Key="UpdateReady">更新準備就緒</sys:String>
     <sys:String x:Key="UpdateFailed">更新失敗</sys:String>
     <sys:String x:Key="UpdateFailedMessage">應用程式更新失敗。請檢查您的網路連接。</sys:String>
     <sys:String x:Key="UpdateChangelogLoading">正在載入更新內容...</sys:String>
     <sys:String x:Key="UpdateChangelogLoadFailedMarkdown">更新內容載入失敗。你可以[點擊這裡查看完整更新日誌]({0})。</sys:String>
-    <sys:String x:Key="NewVersionTips">新版本 {0} 已可用，是否重新啟動 STranslate 以使用更新？</sys:String>
+    <sys:String x:Key="NewVersionTips">新版本 {0} 已可用，是否重新啟動 jietuyao 以使用更新？</sys:String>
 
     <!--  // LLM Service Configurations for plugins //  -->
     <sys:String x:Key="Url">API 介面</sys:String>

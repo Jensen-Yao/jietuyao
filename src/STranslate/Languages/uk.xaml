@@ -39,7 +39,7 @@
     <sys:String x:Key="General_StartMode">Режим запуску</sys:String>
     <sys:String x:Key="General_StartModeDescription">Режим «Без запиту UAC» створює завдання в планувальнику, щоб вікно UAC не з'являлося.</sys:String>
     <sys:String x:Key="General_HideOnStartup">Приховувати вікно під час запуску системи</sys:String>
-    <sys:String x:Key="General_HideOnStartupDescription">Після запуску STranslate головне вікно ховається в трей.</sys:String>
+    <sys:String x:Key="General_HideOnStartupDescription">Після запуску jietuyao головне вікно ховається в трей.</sys:String>
     <sys:String x:Key="General_HideWhenDeactivated">Автоматично приховувати вікно при втраті фокуса</sys:String>
     <sys:String x:Key="General_AutoHideAtTopEdge">Автоматично згортати біля верхнього краю</sys:String>
     <sys:String x:Key="General_AutoHideAtTopEdgeDescription">Перетягніть вікно до верхнього краю екрана. Коли вказівник віддаляється, вікно згортається, а коли навести його на смужку вгорі — розгортається. Біля верхнього краю ця поведінка має пріоритет над приховуванням у разі втрати фокуса.</sys:String>
@@ -177,10 +177,10 @@
     <!--  // Hotkey Page //  -->
     <sys:String x:Key="GlobalHotkeys">Глобальні гарячі клавіші</sys:String>
     <sys:String x:Key="SoftwareHotkeys">Гарячі клавіші в програмі</sys:String>
-    <sys:String x:Key="Hotkey_OpenSTranslate">Відкрити STranslate</sys:String>
-    <sys:String x:Key="Hotkey_OpenSTranslateDescription">Показати або приховати головне вікно STranslate.</sys:String>
+    <sys:String x:Key="Hotkey_OpenSTranslate">Відкрити jietuyao</sys:String>
+    <sys:String x:Key="Hotkey_OpenSTranslateDescription">Показати або приховати головне вікно jietuyao.</sys:String>
     <sys:String x:Key="Hotkey_InputTranslate">Переклад із поля введення</sys:String>
-    <sys:String x:Key="Hotkey_InputTranslateDescription">Відкрити STranslate з очищеним полем введення для перекладу.</sys:String>
+    <sys:String x:Key="Hotkey_InputTranslateDescription">Відкрити jietuyao з очищеним полем введення для перекладу.</sys:String>
     <sys:String x:Key="Hotkey_CrosswordTranslate">Переклад виділеного тексту</sys:String>
     <sys:String x:Key="Hotkey_CrosswordTranslateDescription">Перекласти текст, виділений мишею.</sys:String>
     <sys:String x:Key="Hotkey_CrosswordTranslateIsUseCtrlSameC">Використовувати Ctrl+C+C для перекладу виділеного тексту?</sys:String>
@@ -389,7 +389,7 @@
     <sys:String x:Key="UserDataLocation">Розташування даних користувача</sys:String>
     <sys:String x:Key="UserDataLocationDescription">Налаштування користувача та встановлені плагіни зберігаються в теці даних користувача. Її розташування залежить від того, чи ввімкнено портативний режим.</sys:String>
     <sys:String x:Key="OpenDirectory">Відкрити теку</sys:String>
-    <sys:String x:Key="PortableModeDescription">Вибір місця, де STranslate зберігає дані користувача: тека програми або профіль користувача. Після зміни режиму дані буде перенесено, а програму перезапущено.</sys:String>
+    <sys:String x:Key="PortableModeDescription">Вибір місця, де jietuyao зберігає дані користувача: тека програми або профіль користувача. Після зміни режиму дані буде перенесено, а програму перезапущено.</sys:String>
     <sys:String x:Key="PortableModeStatePortable">Портативний режим</sys:String>
     <sys:String x:Key="PortableModeStateRoaming">Режим профілю користувача</sys:String>
     <sys:String x:Key="EnablePortableMode">Увімкнути портативний режим</sys:String>
@@ -485,7 +485,7 @@
     <sys:String x:Key="Document">Документація</sys:String>
 
     <!--  // Welcome Setup //  -->
-    <sys:String x:Key="WelcomeSetup_Title">Ласкаво просимо до STranslate</sys:String>
+    <sys:String x:Key="WelcomeSetup_Title">Ласкаво просимо до jietuyao</sys:String>
     <sys:String x:Key="WelcomeSetup_Subtitle">Швидко налаштуйте основні сервіси та головні гарячі клавіші. Майстер налаштування можна відкрити пізніше в розділі «Про програму».</sys:String>
     <sys:String x:Key="WelcomeSetup_WelcomeDescription">Перед початком роботи задайте мову, основні сервіси та головні гарячі клавіші. Цей крок можна пропустити.</sys:String>
     <sys:String x:Key="WelcomeSetup_LanguageDescription">Виберіть мову інтерфейсу. Зміна застосовується одразу.</sys:String>
@@ -863,13 +863,13 @@
     <sys:String x:Key="UpdateOpenAboutButton">Перейти до оновлення</sys:String>
     <sys:String x:Key="UpdateAvailableTrayMessage">Знайдено нову версію {0}. Натисніть кнопку, щоб відкрити «Налаштування → Про програму» й оновитися.</sys:String>
     <sys:String x:Key="NewVersionFound">Знайдено нову версію {0}. Завантажити?</sys:String>
-    <sys:String x:Key="PortableDataMoveError">STranslate не зміг перенести дані профілю до оновленої версії.&#10;Перенесіть теку з даними профілю вручну з {0} до {1}</sys:String>
+    <sys:String x:Key="PortableDataMoveError">jietuyao не зміг перенести дані профілю до оновленої версії.&#10;Перенесіть теку з даними профілю вручну з {0} до {1}</sys:String>
     <sys:String x:Key="UpdateReady">Оновлення готове</sys:String>
     <sys:String x:Key="UpdateFailed">Не вдалося оновити</sys:String>
     <sys:String x:Key="UpdateFailedMessage">Не вдалося оновити застосунок. Перевірте підключення.</sys:String>
     <sys:String x:Key="UpdateChangelogLoading">Завантаження списку змін...</sys:String>
     <sys:String x:Key="UpdateChangelogLoadFailedMarkdown">Не вдалося завантажити список змін. Можна [відкрити повний список тут]({0}).</sys:String>
-    <sys:String x:Key="NewVersionTips">Доступна нова версія {0}. Перезапустити STranslate, щоб застосувати оновлення?</sys:String>
+    <sys:String x:Key="NewVersionTips">Доступна нова версія {0}. Перезапустити jietuyao, щоб застосувати оновлення?</sys:String>
 
     <!--  // LLM Service Configurations for plugins //  -->
     <sys:String x:Key="Url">Адреса API</sys:String>

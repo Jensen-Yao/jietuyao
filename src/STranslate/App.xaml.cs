@@ -162,7 +162,7 @@ public partial class App : ISingleInstanceApp, INavigation, IDisposable
         }
         catch (Exception e)
         {
-            ShowErrorMsgBoxAndFailFast("Cannot configure dependency injection container, please open new issue in STranslate", e);
+            ShowErrorMsgBoxAndFailFast("Cannot configure dependency injection container, please open new issue in jietuyao", e);
             return;
         }
 
@@ -189,7 +189,7 @@ public partial class App : ISingleInstanceApp, INavigation, IDisposable
         }
         catch (Exception ex)
         {
-            ShowErrorMsgBoxAndFailFast("Cannot initialize settings, please open new issue in STranslate", ex);
+            ShowErrorMsgBoxAndFailFast("Cannot initialize settings, please open new issue in jietuyao", ex);
             return;
         }
     }
@@ -206,7 +206,7 @@ public partial class App : ISingleInstanceApp, INavigation, IDisposable
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
         _logger = Ioc.Default.GetRequiredService<ILogger<App>>();
-        _logger.LogInformation("Begin STranslate startup ----------------------------------------------------");
+        _logger.LogInformation("Begin jietuyao startup ----------------------------------------------------");
 
         _notification = Ioc.Default.GetRequiredService<INotification>() as Notification;
         _notification?.Install();
@@ -225,7 +225,7 @@ public partial class App : ISingleInstanceApp, INavigation, IDisposable
         InitializeMainWindow();
         RegisterExitEvents();
 
-        _logger.LogInformation("End STranslate startup ----------------------------------------------------");
+        _logger.LogInformation("End jietuyao startup ----------------------------------------------------");
     }
 
     private void InitializeMainWindow()
@@ -547,7 +547,7 @@ public partial class App : ISingleInstanceApp, INavigation, IDisposable
 
         _disposed = true;
 
-        _logger?.LogInformation("Begin STranslate dispose ----------------------------------------------------");
+        _logger?.LogInformation("Begin jietuyao dispose ----------------------------------------------------");
 
         if (disposing)
         {
@@ -563,7 +563,7 @@ public partial class App : ISingleInstanceApp, INavigation, IDisposable
             _pluginManager?.Dispose();
         }
 
-        _logger?.LogInformation("End STranslate dispose ----------------------------------------------------");
+        _logger?.LogInformation("End jietuyao dispose ----------------------------------------------------");
     }
 
     public void Dispose()

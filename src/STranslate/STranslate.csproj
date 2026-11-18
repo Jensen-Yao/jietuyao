@@ -7,6 +7,10 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <UseWPF>true</UseWPF>
         <StartupObject>STranslate.App</StartupObject>
+        <!-- 产品名 jietuyao（截图耀）；内部命名空间保留 STranslate.* 以兼容上游合并 -->
+        <AssemblyName>jietuyao</AssemblyName>
+        <Product>jietuyao</Product>
+        <RootNamespace>STranslate</RootNamespace>
         <!--// Avoid generating redundant assembly attributes //-->
         <RuntimeIdentifier>win-x64</RuntimeIdentifier>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>

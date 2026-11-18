@@ -36,7 +36,7 @@
     <sys:String x:Key="General_StartMode">起動モード</sys:String>
     <sys:String x:Key="General_StartModeDescription">「UACスキップ(管理者)」は、UACポップアップを回避するタスクスケジューラを作成します。</sys:String>
     <sys:String x:Key="General_HideOnStartup">起動時にメインウィンドウを隠す</sys:String>
-    <sys:String x:Key="General_HideOnStartupDescription">STranslate起動後、検索ウィンドウをタスクトレイに格納します。</sys:String>
+    <sys:String x:Key="General_HideOnStartupDescription">jietuyao起動後、検索ウィンドウをタスクトレイに格納します。</sys:String>
     <sys:String x:Key="General_HideWhenDeactivated">フォーカス喪失時に自動的に隠す</sys:String>
     <sys:String x:Key="General_AutoHideAtTopEdge">上端で自動的に折りたたむ</sys:String>
     <sys:String x:Key="General_AutoHideAtTopEdgeDescription">ウィンドウを画面上端にドラッグすると、マウスポインターが離れたときに折りたたまれ、上端のバーに合わせると展開します。画面上端では、フォーカス喪失時の自動非表示より優先されます。</sys:String>
@@ -173,10 +173,10 @@
 
     <sys:String x:Key="GlobalHotkeys">グローバルホットキー</sys:String>
     <sys:String x:Key="SoftwareHotkeys">ソフトウェアホットキー</sys:String>
-    <sys:String x:Key="Hotkey_OpenSTranslate">STranslateを開く</sys:String>
-    <sys:String x:Key="Hotkey_OpenSTranslateDescription">STranslateメイン画面の表示/非表示を切り替えます。</sys:String>
+    <sys:String x:Key="Hotkey_OpenSTranslate">jietuyaoを開く</sys:String>
+    <sys:String x:Key="Hotkey_OpenSTranslateDescription">jietuyaoメイン画面の表示/非表示を切り替えます。</sys:String>
     <sys:String x:Key="Hotkey_InputTranslate">入力翻訳</sys:String>
-    <sys:String x:Key="Hotkey_InputTranslateDescription">STranslateを開き、内容をクリアして翻訳入力を待機します。</sys:String>
+    <sys:String x:Key="Hotkey_InputTranslateDescription">jietuyaoを開き、内容をクリアして翻訳入力を待機します。</sys:String>
     <sys:String x:Key="Hotkey_CrosswordTranslate">選択翻訳</sys:String>
     <sys:String x:Key="Hotkey_CrosswordTranslateDescription">マウスで選択したテキストを翻訳するホットキー。</sys:String>
     <sys:String x:Key="Hotkey_CrosswordTranslateIsUseCtrlSameC">Ctrl+C+C で選択翻訳を行う？</sys:String>
@@ -476,7 +476,7 @@
     <sys:String x:Key="Document">ドキュメント</sys:String>
 
     <!--  // Welcome Setup //  -->
-    <sys:String x:Key="WelcomeSetup_Title">STranslate へようこそ</sys:String>
+    <sys:String x:Key="WelcomeSetup_Title">jietuyao へようこそ</sys:String>
     <sys:String x:Key="WelcomeSetup_Subtitle">よく使うサービスと主要なホットキーをすばやく設定します。あとで「About」ページから再度開けます。</sys:String>
     <sys:String x:Key="WelcomeSetup_WelcomeDescription">開始前に言語、よく使うサービス、主要なホットキーを設定できます。今はスキップしてもかまいません。</sys:String>
     <sys:String x:Key="WelcomeSetup_LanguageDescription">インターフェイスの言語を選択します。変更は既存の言語設定ですぐに反映されます。</sys:String>
@@ -840,13 +840,13 @@
     <sys:String x:Key="UpdateOpenAboutButton">更新ページへ</sys:String>
     <sys:String x:Key="UpdateAvailableTrayMessage">新バージョン {0} が見つかりました。ボタンから 設定-情報 へ移動して更新できます。</sys:String>
     <sys:String x:Key="NewVersionFound">新バージョン {0} が見つかりました。ダウンロードしますか？</sys:String>
-    <sys:String x:Key="PortableDataMoveError">STranslateはユーザー設定データを新バージョンへ移行できませんでした。&#10;設定データフォルダを {0} から {1} へ手動で移動してください。</sys:String>
+    <sys:String x:Key="PortableDataMoveError">jietuyaoはユーザー設定データを新バージョンへ移行できませんでした。&#10;設定データフォルダを {0} から {1} へ手動で移動してください。</sys:String>
     <sys:String x:Key="UpdateReady">更新の準備完了</sys:String>
     <sys:String x:Key="UpdateFailed">更新失敗</sys:String>
     <sys:String x:Key="UpdateFailedMessage">アプリケーションの更新に失敗しました。ネットワーク接続を確認してください。</sys:String>
     <sys:String x:Key="UpdateChangelogLoading">更新内容を読み込み中...</sys:String>
     <sys:String x:Key="UpdateChangelogLoadFailedMarkdown">更新内容の読み込みに失敗しました。[ここをクリックして完全な更新ログを表示]({0})。</sys:String>
-    <sys:String x:Key="NewVersionTips">新バージョン {0} が利用可能です。STranslateを再起動して更新を適用しますか？</sys:String>
+    <sys:String x:Key="NewVersionTips">新バージョン {0} が利用可能です。jietuyaoを再起動して更新を適用しますか？</sys:String>
 
     <sys:String x:Key="Url">エンドポイント</sys:String>
     <sys:String x:Key="Url_Description">末尾に「#」を付けると、入力アドレスを強制的に使用します</sys:String>

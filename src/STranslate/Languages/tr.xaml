@@ -39,7 +39,7 @@
     <sys:String x:Key="General_StartMode">Başlangıç Modu</sys:String>
     <sys:String x:Key="General_StartModeDescription">"SkipUACAdmin", UAC açılır penceresini atlamak için zamanlanmış bir görev oluşturur.</sys:String>
     <sys:String x:Key="General_HideOnStartup">Sistem Başlangıcında Pencereyi Gizle</sys:String>
-    <sys:String x:Key="General_HideOnStartupDescription">STranslate başladığında arama penceresi sistem tepsisine gizlenir.</sys:String>
+    <sys:String x:Key="General_HideOnStartupDescription">jietuyao başladığında arama penceresi sistem tepsisine gizlenir.</sys:String>
     <sys:String x:Key="General_HideWhenDeactivated">Odak Kaybedince Pencereyi Otomatik Gizle</sys:String>
     <sys:String x:Key="General_AutoHideAtTopEdge">Üst Kenarda Otomatik Daralt</sys:String>
     <sys:String x:Key="General_AutoHideAtTopEdgeDescription">Pencereyi ekranın üst kenarına sürükleyin. İşaretçiyi uzaklaştırınca pencere daralır, üstteki çubuğun üzerine getirince genişler. Üst kenara yerleştirildiğinde bu davranış, odak kaybında gizlemeye göre önceliklidir.</sys:String>
@@ -177,10 +177,10 @@
     <!--  // Kısayol Sayfası //  -->
     <sys:String x:Key="GlobalHotkeys">Genel Kısayollar</sys:String>
     <sys:String x:Key="SoftwareHotkeys">Yazılım Kısayolları</sys:String>
-    <sys:String x:Key="Hotkey_OpenSTranslate">STranslate'i Aç</sys:String>
-    <sys:String x:Key="Hotkey_OpenSTranslateDescription">STranslate ana arayüzünü göster/gizle kısayolu.</sys:String>
+    <sys:String x:Key="Hotkey_OpenSTranslate">jietuyao'i Aç</sys:String>
+    <sys:String x:Key="Hotkey_OpenSTranslateDescription">jietuyao ana arayüzünü göster/gizle kısayolu.</sys:String>
     <sys:String x:Key="Hotkey_InputTranslate">Giriş Çevirisi</sys:String>
-    <sys:String x:Key="Hotkey_InputTranslateDescription">STranslate'i açmak ve giriş çevirisi için içeriği temizlemek üzere kısayol tuşu.</sys:String>
+    <sys:String x:Key="Hotkey_InputTranslateDescription">jietuyao'i açmak ve giriş çevirisi için içeriği temizlemek üzere kısayol tuşu.</sys:String>
     <sys:String x:Key="Hotkey_CrosswordTranslate">Kelime Seçimi Çevirisi</sys:String>
     <sys:String x:Key="Hotkey_CrosswordTranslateDescription">Fare ile seçilen metnin çevirisini tetiklemek için kısayol tuşu.</sys:String>
     <sys:String x:Key="Hotkey_CrosswordTranslateIsUseCtrlSameC">Metin seçimi çevirisi için Ctrl+C+C kullanılsın mı?</sys:String>
@@ -390,7 +390,7 @@
     <sys:String x:Key="UserDataLocation">Kullanıcı Verisi Konumu</sys:String>
     <sys:String x:Key="UserDataLocationDescription">Kullanıcı ayarları ve yüklü eklentiler kullanıcı verisi klasörüne kaydedilir. Bu konum, taşınabilir modda olup olmamasına bağlı olarak değişebilir.</sys:String>
     <sys:String x:Key="OpenDirectory">Dizini Aç</sys:String>
-    <sys:String x:Key="PortableModeDescription">STranslate'in kullanıcı verilerini uygulama klasörü ile gezgin profili arasında nerede saklayacağını değiştirin. Bu değiştirildiğinde veriler taşınır ve uygulama yeniden başlatılır.</sys:String>
+    <sys:String x:Key="PortableModeDescription">jietuyao'in kullanıcı verilerini uygulama klasörü ile gezgin profili arasında nerede saklayacağını değiştirin. Bu değiştirildiğinde veriler taşınır ve uygulama yeniden başlatılır.</sys:String>
     <sys:String x:Key="PortableModeStatePortable">Taşınabilir Mod</sys:String>
     <sys:String x:Key="PortableModeStateRoaming">Gezgin Modu</sys:String>
     <sys:String x:Key="EnablePortableMode">Taşınabilir Modu Etkinleştir</sys:String>
@@ -486,7 +486,7 @@
     <sys:String x:Key="Document">Belge</sys:String>
 
     <!--  // Hoş Geldiniz Kurulumu //  -->
-    <sys:String x:Key="WelcomeSetup_Title">STranslate'e Hoş Geldiniz</sys:String>
+    <sys:String x:Key="WelcomeSetup_Title">jietuyao'e Hoş Geldiniz</sys:String>
     <sys:String x:Key="WelcomeSetup_Subtitle">Ortak hizmetleri ve önemli kısayolları hızlıca yapılandırın. Sihirbazı daha sonra Hakkında sayfasından yeniden açabilirsiniz.</sys:String>
     <sys:String x:Key="WelcomeSetup_WelcomeDescription">Başlamadan önce dili, ortak hizmetleri ve önemli kısayolları ayarlayın. Şimdilik bunu atlayabilirsiniz.</sys:String>
     <sys:String x:Key="WelcomeSetup_LanguageDescription">Arayüz dilini seçin. Değişiklikler mevcut dil ayarını anında kullanır.</sys:String>
@@ -865,13 +865,13 @@
     <sys:String x:Key="UpdateOpenAboutButton">Güncellemeye Git</sys:String>
     <sys:String x:Key="UpdateAvailableTrayMessage">Yeni sürüm {0} bulundu. Güncellemek için Ayarlar-Hakkında bölümünü açmak üzere düğmeye tıklayın.</sys:String>
     <sys:String x:Key="NewVersionFound">Yeni sürüm {0} bulundu. İndirilsin mi?</sys:String>
-    <sys:String x:Key="PortableDataMoveError">STranslate, kullanıcı profil verilerinizi yeni güncelleme sürümüne taşıyamadı. Lütfen profil veri klasörünüzü manuel olarak {0} konumundan {1} konumuna taşıyın.</sys:String>
+    <sys:String x:Key="PortableDataMoveError">jietuyao, kullanıcı profil verilerinizi yeni güncelleme sürümüne taşıyamadı. Lütfen profil veri klasörünüzü manuel olarak {0} konumundan {1} konumuna taşıyın.</sys:String>
     <sys:String x:Key="UpdateReady">Güncelleme Hazır</sys:String>
     <sys:String x:Key="UpdateFailed">Güncelleme Başarısız</sys:String>
     <sys:String x:Key="UpdateFailedMessage">Uygulama güncellenemedi. Lütfen bağlantınızı kontrol edin.</sys:String>
     <sys:String x:Key="UpdateChangelogLoading">Sürüm notları yükleniyor...</sys:String>
     <sys:String x:Key="UpdateChangelogLoadFailedMarkdown">Sürüm notları yüklenemedi. [Değişiklik günlüğünün tamamını buradan açabilirsiniz]({0}).</sys:String>
-    <sys:String x:Key="NewVersionTips">Yeni sürüm {0} mevcut, STranslate'i güncellemeyi kullanmak için yeniden başlatmak ister misiniz?</sys:String>
+    <sys:String x:Key="NewVersionTips">Yeni sürüm {0} mevcut, jietuyao'i güncellemeyi kullanmak için yeniden başlatmak ister misiniz?</sys:String>
 
     <!--  // Eklentiler için LLM Hizmet Yapılandırmaları //  -->
     <sys:String x:Key="Url">API Uç Noktası</sys:String>

@@ -79,7 +79,9 @@
 | 设置持久化 | ✅ M1 | 工具样式+选区效果入 Settings.json |
 | 首次运行向导 | ➕ 超额 | STranslate 5 步向导（截图页引导 M1.5 增强） |
 
-## 八、视觉资产（本轮完成 ✅）
+## 八、品牌与视觉资产（已完成 ✅）
 
 - 工具栏/信息栏/动作行 **25 个图标全部换成 v1 自有 SVG**（`svg/` → `JietuyaoIcons.cs`，`tools/gen_icons.py` 可再生成）
 - 应用图标/托盘/通知图标 → **截图耀** `托盘.ico` + logo
+- **产品全名重塑为 jietuyao**：exe = `jietuyao.exe`、程序集/产品名 jietuyao、窗口标题/托盘提示/关于页/欢迎向导/9 语言文案、单实例互斥体、数据目录 `%AppData%\jietuyao`、GitHub 链接指向 Jensen-Yao/jietuyao（上游致敬链接保留）
+- 内部 C# 命名空间保留 `STranslate.*`（零代码迁移成本，可继续合并上游修复）；插件 SDK `InternalsVisibleTo` 同时开放新旧程序集名

@@ -1,18 +1,18 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="pack://application:,,,/STranslate;component/Controls/Badge.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/STranslate;component/Controls/CardGroup.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/STranslate;component/Controls/EditableTextBlock.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/STranslate;component/Controls/IconButton.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/STranslate;component/Controls/InputControl.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/STranslate;component/Controls/HeaderControl.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/STranslate;component/Controls/HistoryControl.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/STranslate;component/Controls/HotkeyControl.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/STranslate;component/Controls/HotkeyDisplay.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/STranslate;component/Controls/OutputControl.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/STranslate;component/Controls/ServicePanel.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/STranslate;component/Controls/WordExchange.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/STranslate;component/Controls/ImageZoom.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/STranslate;component/Controls/STranslateBadge.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/jietuyao;Component/Controls/Badge.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/jietuyao;Component/Controls/CardGroup.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/jietuyao;Component/Controls/EditableTextBlock.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/jietuyao;Component/Controls/IconButton.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/jietuyao;Component/Controls/InputControl.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/jietuyao;Component/Controls/HeaderControl.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/jietuyao;Component/Controls/HistoryControl.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/jietuyao;Component/Controls/HotkeyControl.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/jietuyao;Component/Controls/HotkeyDisplay.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/jietuyao;Component/Controls/OutputControl.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/jietuyao;Component/Controls/ServicePanel.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/jietuyao;Component/Controls/WordExchange.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/jietuyao;Component/Controls/ImageZoom.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/jietuyao;Component/Controls/STranslateBadge.xaml" />
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

@@ -39,7 +39,7 @@
     <sys:String x:Key="General_StartMode">حالت شروع</sys:String>
     <sys:String x:Key="General_StartModeDescription">حالت "رد کردن UAC" یک وظیفه زمان‌بندی‌شده برای عدم نمایش پنجره UAC ایجاد می‌کند.</sys:String>
     <sys:String x:Key="General_HideOnStartup">پنهان کردن پنجره هنگام شروع سیستم</sys:String>
-    <sys:String x:Key="General_HideOnStartupDescription">پنجره جستجو پس از شروع STranslate در سینی سیستم پنهان می‌شود.</sys:String>
+    <sys:String x:Key="General_HideOnStartupDescription">پنجره جستجو پس از شروع jietuyao در سینی سیستم پنهان می‌شود.</sys:String>
     <sys:String x:Key="General_HideWhenDeactivated">پنهان‌سازی خودکار پنجره با خروج از فوکوس</sys:String>
     <sys:String x:Key="General_AutoHideAtTopEdge">جمع شدن خودکار در لبهٔ بالایی</sys:String>
     <sys:String x:Key="General_AutoHideAtTopEdgeDescription">پنجره را به لبهٔ بالایی صفحه بکشید. با دور شدن نشانگر، پنجره جمع می‌شود و با بردن نشانگر روی نوار بالایی، باز می‌شود. در این حالت، این رفتار بر پنهان شدن هنگام از دست دادن فوکوس اولویت دارد.</sys:String>
@@ -178,10 +178,10 @@
     <!--  // Hotkey Page //  -->
     <sys:String x:Key="GlobalHotkeys">کلیدهای میانبر سراسری</sys:String>
     <sys:String x:Key="SoftwareHotkeys">کلیدهای میانبر نرم‌افزار</sys:String>
-    <sys:String x:Key="Hotkey_OpenSTranslate">باز کردن STranslate</sys:String>
-    <sys:String x:Key="Hotkey_OpenSTranslateDescription">کلید میانبر برای نمایش/پنهان کردن رابط اصلی STranslate.</sys:String>
+    <sys:String x:Key="Hotkey_OpenSTranslate">باز کردن jietuyao</sys:String>
+    <sys:String x:Key="Hotkey_OpenSTranslateDescription">کلید میانبر برای نمایش/پنهان کردن رابط اصلی jietuyao.</sys:String>
     <sys:String x:Key="Hotkey_InputTranslate">ترجمه ورودی</sys:String>
-    <sys:String x:Key="Hotkey_InputTranslateDescription">کلید میانبر برای باز کردن STranslate و پاک کردن محتوا جهت ترجمه ورودی.</sys:String>
+    <sys:String x:Key="Hotkey_InputTranslateDescription">کلید میانبر برای باز کردن jietuyao و پاک کردن محتوا جهت ترجمه ورودی.</sys:String>
     <sys:String x:Key="Hotkey_CrosswordTranslate">ترجمه انتخاب متن</sys:String>
     <sys:String x:Key="Hotkey_CrosswordTranslateDescription">کلید میانبر برای شروع ترجمه متن انتخاب‌شده با موش‌واره.</sys:String>
     <sys:String x:Key="Hotkey_CrosswordTranslateIsUseCtrlSameC">استفاده از Ctrl+C+C برای ترجمه متن انتخاب‌شده؟</sys:String>
@@ -495,7 +495,7 @@ localhost;127.*;10.*;192.168.*;*.example.com</sys:String>
     <sys:String x:Key="Document">مستندات</sys:String>
 
     <!--  // Welcome Setup //  -->
-    <sys:String x:Key="WelcomeSetup_Title">به STranslate خوش آمدید</sys:String>
+    <sys:String x:Key="WelcomeSetup_Title">به jietuyao خوش آمدید</sys:String>
     <sys:String x:Key="WelcomeSetup_Subtitle">پیکربندی سریع سرویس‌های متداول و کلیدهای میانبر اصلی. می‌توانید بعداً راهنما را از صفحه «درباره» دوباره باز کنید.</sys:String>
     <sys:String x:Key="WelcomeSetup_WelcomeDescription">تنظیم زبان، سرویس‌های متداول و کلیدهای اصلی پیش از شروع. می‌توانید فعلاً از این مرحله بگذرید.</sys:String>
     <sys:String x:Key="WelcomeSetup_LanguageDescription">زبان رابط کاربری را انتخاب کنید. تغییرات بلافاصله اعمال می‌شوند.</sys:String>
@@ -886,7 +886,7 @@ Alt+کلیک چپ -> تنظیمات ترجمه متن</sys:String>
     <sys:String x:Key="UpdateFailedMessage">خطا در به‌روزرسانی برنامه. لطفاً اتصال شبکه خود را بررسی کنید.</sys:String>
     <sys:String x:Key="UpdateChangelogLoading">در حال بارگذاری تغییرات نسخه...</sys:String>
     <sys:String x:Key="UpdateChangelogLoadFailedMarkdown">بارگذاری یادداشت‌های نسخه ناموفق بود. می‌توانید [فهرست کامل تغییرات را از اینجا باز کنید]({0}).</sys:String>
-    <sys:String x:Key="NewVersionTips">نسخه جدید {0} در دسترس است، آیا می‌خواهید STranslate را برای اعمال به‌روزرسانی راه‌اندازی مجدد کنید؟</sys:String>
+    <sys:String x:Key="NewVersionTips">نسخه جدید {0} در دسترس است، آیا می‌خواهید jietuyao را برای اعمال به‌روزرسانی راه‌اندازی مجدد کنید؟</sys:String>
 
     <!--  // LLM Service Configurations for plugins //  -->
     <sys:String x:Key="Url">آدرس نهایی API</sys:String>
