@@ -342,6 +342,16 @@
                             <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Camera_20_Regular}" />
                         </MenuItem.Icon>
                     </MenuItem>
+                    <MenuItem x:Name="TrayPinMenuItem" Header="{DynamicResource Pin_Menu}">
+                        <MenuItem.Icon>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Pin_20_Regular}" />
+                        </MenuItem.Icon>
+                        <MenuItem Click="OnPinRestoreAll" Header="{DynamicResource Pin_RestoreAll}" />
+                        <MenuItem Click="OnPinThumbnailAll" Header="{DynamicResource Pin_ThumbnailAll}" />
+                        <MenuItem Click="OnPinSaveAll" Header="{DynamicResource Pin_SaveAll}" />
+                        <Separator />
+                        <MenuItem Click="OnPinCloseAll" Header="{DynamicResource Pin_CloseAll}" />
+                    </MenuItem>
                     <MenuItem
                         Command="{Binding Source={StaticResource ViewModel}, Path=Data.ScreenshotTranslateCommand}"
                         Header="{DynamicResource Hotkey_ScreenshotTranslate}"

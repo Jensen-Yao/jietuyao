@@ -5,16 +5,46 @@ using System.Windows.Media;
 namespace STranslate.Core;
 
 /// <summary>
+/// 渲染上下文：马赛克等图元需要访问冻结的桌面背景
+/// </summary>
+public sealed class ScreenshotRenderContext
+{
+    public required System.Windows.Media.Imaging.BitmapSource Background { get; init; }
+
+    /// <summary>背景绘制区域（物理像素，通常等于虚拟桌面范围）</summary>
+    public required Rect BackgroundBounds { get; init; }
+}
+
+/// <summary>
 /// 标注图元基类。所有坐标均为虚拟桌面物理像素。
 /// 渲染走 WPF DrawingContext，导出时用 RenderTargetBitmap 保证所见即所得。
 /// </summary>
 public abstract class ScreenshotAnnotation
 {
-    /// <summary>图元包围盒（物理像素）</summary>
+    /// <summary>旋转角度（度，绕未旋转包围盒中心）</summary>
+    public double Rotation { get; set; }
+
+    /// <summary>图元包围盒（物理像素，未含旋转）</summary>
     public abstract Rect Bounds { get; }
 
-    /// <summary>渲染（物理像素坐标系）</summary>
-    public abstract void Render(DrawingContext dc);
+    /// <summary>渲染入口（应用旋转变换后转发 RenderCore）</summary>
+    public void Render(DrawingContext dc, ScreenshotRenderContext context)
+    {
+        if (Math.Abs(Rotation) > 0.01)
+        {
+            var b = Bounds;
+            dc.PushTransform(new RotateTransform(Rotation, b.X + b.Width / 2, b.Y + b.Height / 2));
+            RenderCore(dc, context);
+            dc.Pop();
+        }
+        else
+        {
+            RenderCore(dc, context);
+        }
+    }
+
+    /// <summary>实际渲染（物理像素坐标系）</summary>
+    protected abstract void RenderCore(DrawingContext dc, ScreenshotRenderContext context);
 
     /// <summary>命中测试</summary>
     public abstract bool HitTest(Point p, double tolerance);
@@ -27,6 +57,54 @@ public abstract class ScreenshotAnnotation
 
     /// <summary>缩放到新包围盒</summary>
     public abstract void Resize(Rect newBounds);
+}
+
+/// <summary>
+/// 马赛克：将背景区域放大采样实现像素化遮盖（v2 新增）
+/// </summary>
+public sealed class MosaicAnnotation : ScreenshotAnnotation
+{
+    public MosaicAnnotation(Rect rect, double blockSize = 14)
+    {
+        Rect = rect;
+        BlockSize = Math.Clamp(blockSize, 4, 64);
+    }
+
+    public Rect Rect { get; private set; }
+    public double BlockSize { get; private set; }
+
+    public override Rect Bounds => Rect;
+
+    protected override void RenderCore(DrawingContext dc, ScreenshotRenderContext context)
+    {
+        // 取中心 1/k 子区域放大到整个矩形 → 像素块
+        var f = Math.Max(2.0, BlockSize);
+        var srcWidth = Math.Max(1.0, Rect.Width / f);
+        var srcHeight = Math.Max(1.0, Rect.Height / f);
+        var src = new Rect(
+            Rect.X + (Rect.Width - srcWidth) / 2,
+            Rect.Y + (Rect.Height - srcHeight) / 2,
+            srcWidth, srcHeight);
+        dc.PushClip(new RectangleGeometry(Rect));
+        var m = new Matrix();
+        m.Scale(f, f);
+        m.Translate(Rect.X - src.X * f, Rect.Y - src.Y * f);
+        dc.PushTransform(new MatrixTransform(m));
+        dc.DrawImage(context.Background, context.BackgroundBounds);
+        dc.Pop();
+        dc.Pop();
+    }
+
+    public override bool HitTest(Point p, double tolerance) => Rect.Inflated(tolerance).Contains(p);
+
+    public override bool Intersects(Rect rect) => Rect.Intersect(rect, Rect) is { IsEmpty: false };
+
+    public override void Offset(double dx, double dy) => Rect = new Rect(Rect.X + dx, Rect.Y + dy, Rect.Width, Rect.Height);
+
+    public override void Resize(Rect newBounds)
+    {
+        Rect = newBounds;
+    }
 }
 
 /// <summary>自由手绘（画笔/荧光笔）</summary>
@@ -70,7 +148,7 @@ public sealed class FreehandAnnotation : ScreenshotAnnotation
         }
     }
 
-    public override void Render(DrawingContext dc)
+    protected override void RenderCore(DrawingContext dc, ScreenshotRenderContext context)
     {
         if (_points.Count == 0) return;
         var geometry = new StreamGeometry();
@@ -165,7 +243,7 @@ public sealed class ShapeAnnotation : ScreenshotAnnotation
 
     public override Rect Bounds => Rect;
 
-    public override void Render(DrawingContext dc)
+    protected override void RenderCore(DrawingContext dc, ScreenshotRenderContext context)
     {
         var brush = new SolidColorBrush(Color);
         brush.Freeze();
@@ -234,7 +312,7 @@ public sealed class ArrowAnnotation : ScreenshotAnnotation
         }
     }
 
-    public override void Render(DrawingContext dc)
+    protected override void RenderCore(DrawingContext dc, ScreenshotRenderContext context)
     {
         var brush = new SolidColorBrush(Color);
         brush.Freeze();
@@ -347,7 +425,7 @@ public sealed class TextAnnotation : ScreenshotAnnotation
         }
     }
 
-    public override void Render(DrawingContext dc)
+    protected override void RenderCore(DrawingContext dc, ScreenshotRenderContext context)
     {
         var ft = CreateFormattedText();
         var bounds = new Rect(Position.X - PaddingX, Position.Y - PaddingY, ft.Width + PaddingX * 2, ft.Height + PaddingY * 2);
@@ -396,7 +474,7 @@ public sealed class NumberAnnotation : ScreenshotAnnotation
 
     public override Rect Bounds => new(Center.X - Diameter / 2, Center.Y - Diameter / 2, Diameter, Diameter);
 
-    public override void Render(DrawingContext dc)
+    protected override void RenderCore(DrawingContext dc, ScreenshotRenderContext context)
     {
         var brush = new SolidColorBrush(Color);
         brush.Freeze();
@@ -460,7 +538,7 @@ public sealed class CursorAnnotation : ScreenshotAnnotation
         }
     }
 
-    public override void Render(DrawingContext dc)
+    protected override void RenderCore(DrawingContext dc, ScreenshotRenderContext context)
     {
         var s = Size / 19.0;
         var geometry = new StreamGeometry();

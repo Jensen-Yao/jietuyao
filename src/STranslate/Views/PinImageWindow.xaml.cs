@@ -1,41 +1,51 @@
 using System.Drawing;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using Windows.Win32;
 using Windows.Win32.Foundation;
 using Windows.Win32.UI.WindowsAndMessaging;
 using STranslate.Core;
 using STranslate.Helpers;
+using STranslate.Plugin;
 using Brushes = System.Windows.Media.Brushes;
+using Size = System.Windows.Size;
 using Point = System.Windows.Point;
 using Color = System.Windows.Media.Color;
 
 namespace STranslate.Views;
 
 /// <summary>
-/// jietuyao 贴图窗口：置顶、拖动、滚轮缩放、Ctrl+滚轮透明度、旋转/翻转、OCR/翻译
+/// jietuyao 贴图窗口：置顶、拖动、滚轮缩放、Ctrl+滚轮透明度、旋转/翻转、
+/// 缩略图模式、再次编辑、OCR 文字选择层
 /// </summary>
 public sealed class PinImageWindow : Window
 {
     private readonly BitmapSource _source;
-    private readonly Rect _physicalBounds;
+    private Rect _physicalBounds;
+    private readonly Grid _rootGrid;
     private readonly System.Windows.Controls.Image _image;
     private readonly ScaleTransform _flipTransform = new(1, 1);
     private readonly RotateTransform _rotateTransform = new(0);
     private readonly TransformGroup _renderTransform;
+    private readonly Canvas _ocrLayer = new() { IsHitTestVisible = false, Visibility = Visibility.Collapsed };
 
     private double _scale = 1.0;
     private int _rotation; // 0/90/180/270
+    private double _savedScale = 1.0;
+    private bool _isThumbnail;
 
     /// <summary>OCR 请求</summary>
     public event Action<BitmapSource>? OcrRequested;
 
     /// <summary>翻译请求</summary>
     public event Action<BitmapSource>? TranslateRequested;
+
+    /// <summary>再次编辑完成（参数为编辑后的位图）</summary>
+    public event Action<PinImageWindow, Bitmap>? ImageEdited;
 
     public PinImageWindow(BitmapSource source, Rect physicalBounds, double opacity = 1.0)
     {
@@ -71,7 +81,10 @@ public sealed class PinImageWindow : Window
             BorderThickness = new Thickness(1),
             CornerRadius = new CornerRadius(2),
         };
-        Content = border;
+        _rootGrid = new Grid();
+        _rootGrid.Children.Add(border);
+        _rootGrid.Children.Add(_ocrLayer);
+        Content = _rootGrid;
 
         MouseLeftButtonDown += OnDragMove;
         PreviewMouseWheel += OnMouseWheel;
@@ -94,16 +107,16 @@ public sealed class PinImageWindow : Window
     private unsafe void PositionWindow()
     {
         var scale = DpiScale;
-        Width = _physicalBounds.Width / scale;
-        Height = _physicalBounds.Height / scale;
+        Width = _physicalBounds.Width * _scale / scale;
+        Height = _physicalBounds.Height * _scale / scale;
         var hwnd = new HWND(new System.Windows.Interop.WindowInteropHelper(this).Handle);
         PInvoke.SetWindowPos(hwnd, HWND.Null,
             (int)_physicalBounds.X, (int)_physicalBounds.Y,
-            (int)Math.Ceiling(_physicalBounds.Width), (int)Math.Ceiling(_physicalBounds.Height),
+            (int)Math.Ceiling(_physicalBounds.Width * _scale), (int)Math.Ceiling(_physicalBounds.Height * _scale),
             SET_WINDOW_POS_FLAGS.SWP_NOACTIVATE | SET_WINDOW_POS_FLAGS.SWP_NOZORDER);
-        // WPF 内部布局坐标转换
         Left = _physicalBounds.X / scale;
         Top = _physicalBounds.Y / scale;
+        ApplyTransform();
     }
 
     /// <summary>应用缩放/旋转后的窗口尺寸</summary>
@@ -117,6 +130,7 @@ public sealed class PinImageWindow : Window
         _image.Height = rotated ? w : h;
         Width = _image.Width;
         Height = _image.Height;
+        UpdateOcrLayer();
     }
 
     private void ResetTransform()
@@ -126,11 +140,49 @@ public sealed class PinImageWindow : Window
         _rotateTransform.Angle = 0;
         _flipTransform.ScaleX = 1;
         _flipTransform.ScaleY = 1;
+        _isThumbnail = false;
         PositionWindow();
-        ApplyTransform();
         // 重置后回到原始位置
         Left = _physicalBounds.X / DpiScale;
         Top = _physicalBounds.Y / DpiScale;
+    }
+
+    // ===== 缩略图模式 =====
+    public bool IsThumbnail => _isThumbnail;
+
+    public void ToggleThumbnail()
+    {
+        if (_isThumbnail)
+        {
+            _scale = _savedScale;
+            _isThumbnail = false;
+        }
+        else
+        {
+            _savedScale = _scale;
+            // 缩略图宽度固定 120 物理像素
+            _scale = 120.0 / Math.Max(1, _physicalBounds.Width);
+            _isThumbnail = true;
+        }
+        ApplyTransform();
+    }
+
+    public void SetThumbnail(bool thumbnail)
+    {
+        if (thumbnail != _isThumbnail)
+            ToggleThumbnail();
+    }
+
+    /// <summary>替换贴图内容（再次编辑后回填）</summary>
+    public void UpdateImage(Bitmap newImage)
+    {
+        var source = ScreenshotCapturer.ToBitmapSource(newImage);
+        newImage.Dispose();
+        _image.Source = source;
+        _physicalBounds = new Rect(_physicalBounds.Location, new Size(source.PixelWidth, source.PixelHeight));
+        _scale = 1.0;
+        _isThumbnail = false;
+        PositionWindow();
     }
 
     private void OnDragMove(object sender, MouseButtonEventArgs e)
@@ -152,12 +204,12 @@ public sealed class PinImageWindow : Window
         var newScale = Math.Clamp(_scale * factor, 0.1, 8.0);
         if (Math.Abs(newScale - _scale) < 0.001) return;
         _scale = newScale;
+        if (_isThumbnail) _isThumbnail = false;
 
         var pos = e.GetPosition(this);
         var screenX = Left + pos.X;
         var screenY = Top + pos.Y;
 
-        // 保持 (screenX, screenY) 相对内容位置不变
         var relX = Width > 0 ? pos.X / Width : 0.5;
         var relY = Height > 0 ? pos.Y / Height : 0.5;
         ApplyTransform();
@@ -170,7 +222,15 @@ public sealed class PinImageWindow : Window
         switch (e.Key)
         {
             case Key.Escape:
-                Close();
+                if (_ocrLayer.Visibility == Visibility.Visible)
+                {
+                    _ocrLayer.Visibility = Visibility.Collapsed;
+                    _ocrLayer.IsHitTestVisible = false;
+                }
+                else
+                {
+                    Close();
+                }
                 e.Handled = true;
                 break;
             case Key.C when Keyboard.Modifiers.HasFlag(ModifierKeys.Control):
@@ -180,26 +240,26 @@ public sealed class PinImageWindow : Window
         }
     }
 
-    private Bitmap ToCurrentBitmap()
+    /// <summary>导出当前视觉状态（含旋转/翻转/缩放）</summary>
+    public Bitmap ExportCurrentBitmap()
     {
-        // 导出当前视觉状态（含旋转/翻转/缩放）
         var w = Math.Max(1, (int)Math.Round(ActualWidth * DpiScale));
         var h = Math.Max(1, (int)Math.Round(ActualHeight * DpiScale));
         var rtb = new RenderTargetBitmap(w, h, 96, 96, System.Windows.Media.PixelFormats.Pbgra32);
-        var clone = CloneVisual();
-        rtb.Render(clone);
+        rtb.Render(_rootGrid);
         return ScreenshotCapturer.ToGdiBitmap(rtb);
     }
 
-    private System.Windows.Media.Visual CloneVisual()
+    /// <summary>当前窗口的物理屏幕范围</summary>
+    public Rect GetCurrentPhysicalBounds()
     {
-        // 简化：直接渲染 _image 所在 Border
-        return (System.Windows.Media.Visual)Content;
+        var scale = DpiScale;
+        return new Rect(Left * scale, Top * scale, Width * scale, Height * scale);
     }
 
     private void CopyToClipboard()
     {
-        using var bitmap = ToCurrentBitmap();
+        using var bitmap = ExportCurrentBitmap();
         ScreenshotOutput.CopyToClipboard(bitmap);
     }
 
@@ -224,12 +284,15 @@ public sealed class PinImageWindow : Window
 
         Add("复制 (Ctrl+C)", CopyToClipboard);
         Add("保存为文件...", SaveToFile);
+        Add("再次编辑...", () => ImageEdited?.Invoke(this, ExportCurrentBitmap()));
         Add("OCR 识别", () => OcrRequested?.Invoke(_source));
         Add("翻译", () => TranslateRequested?.Invoke(_source));
-        Add("还原显示 (双击)", ResetTransform, separator: true);
-        Add("缩放 50%", () => ZoomTo(0.5));
-        Add("缩放 100%", () => ZoomTo(1.0));
-        Add("缩放 200%", () => ZoomTo(2.0));
+        Add("OCR 文字层（点击复制）", ToggleOcrLayer);
+        Add("缩略图模式", ToggleThumbnail, separator: true);
+        Add("还原显示 (双击)", ResetTransform);
+        Add("缩放 50%", () => { _isThumbnail = false; _scale = 0.5; ApplyTransform(); });
+        Add("缩放 100%", () => { _isThumbnail = false; _scale = 1.0; ApplyTransform(); });
+        Add("缩放 200%", () => { _isThumbnail = false; _scale = 2.0; ApplyTransform(); });
         Add("旋转 90°", Rotate90);
         Add("水平翻转", () => _flipTransform.ScaleX *= -1, separator: true);
         Add("不透明度 25%", () => Opacity = 0.25);
@@ -241,12 +304,6 @@ public sealed class PinImageWindow : Window
         ContextMenu = menu;
     }
 
-    private void ZoomTo(double scale)
-    {
-        _scale = scale;
-        ApplyTransform();
-    }
-
     private void Rotate90()
     {
         _rotation = (_rotation + 90) % 360;
@@ -254,11 +311,131 @@ public sealed class PinImageWindow : Window
         ApplyTransform();
     }
 
+    /// <summary>公开：还原显示（管理器批量调用）</summary>
+    public void ResetTransformPublic() => ResetTransform();
+
+    /// <summary>公开：保存到文件（管理器批量调用）</summary>
+    public void SaveToFileDialog() => SaveToFile();
+
     private void SaveToFile()
     {
-        using var bitmap = ToCurrentBitmap();
+        using var bitmap = ExportCurrentBitmap();
         var vm = CommunityToolkit.Mvvm.DependencyInjection.Ioc.Default.GetService<ViewModels.MainWindowViewModel>();
         var dir = vm?.Settings.LastScreenshotSaveDir;
         ScreenshotOutput.SaveToFile(bitmap, string.IsNullOrEmpty(dir) ? null : dir);
+    }
+
+    // ===== OCR 文字选择层 =====
+    private bool _ocrRunning;
+
+    private async void ToggleOcrLayer()
+    {
+        if (_ocrLayer.Visibility == Visibility.Visible)
+        {
+            _ocrLayer.Visibility = Visibility.Collapsed;
+            _ocrLayer.IsHitTestVisible = false;
+            return;
+        }
+        if (_ocrRunning) return;
+
+        _ocrRunning = true;
+        try
+        {
+            var ocrService = CommunityToolkit.Mvvm.DependencyInjection.Ioc.Default.GetService<Services.OcrService>();
+            var svc = ocrService?.Services.FirstOrDefault(s => s.IsEnabled);
+            if (svc?.Plugin is not IOcrPlugin plugin)
+            {
+                MessageBox.Show(this, "请先在设置中启用一个 OCR 服务", "OCR", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            // 用原始图像识别（不受缩放旋转影响）
+            var bitmap = ScreenshotCapturer.ToGdiBitmap(_source);
+            OcrResult? result;
+            var lang = CommunityToolkit.Mvvm.DependencyInjection.Ioc.Default
+                .GetService<ViewModels.MainWindowViewModel>()?.Settings.ScreenshotOcrLanguage ?? LangEnum.Auto;
+            using (var stream = new MemoryStream())
+            {
+                bitmap.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
+                result = await plugin.RecognizeAsync(
+                    new OcrRequest(stream.ToArray(), lang, _source.PixelWidth, _source.PixelHeight));
+            }
+            bitmap.Dispose();
+            Utilities.PrepareOcrResult(result);
+            if (result?.Regions is not { Count: > 0 })
+                return;
+
+            BuildOcrLayer(result);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(this, $"OCR 失败：{ex.Message}", "OCR", MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
+        finally
+        {
+            _ocrRunning = false;
+        }
+    }
+
+    private void BuildOcrLayer(OcrResult result)
+    {
+        _ocrLayer.Children.Clear();
+        var scaleX = _image.ActualWidth / Math.Max(1, _source.PixelWidth);
+        var scaleY = _image.ActualHeight / Math.Max(1, _source.PixelHeight);
+
+        foreach (var region in result.Regions)
+        {
+            var regionText = string.Join("\n", region.Paragraphs.SelectMany(p => p.Lines.Select(l => l.Text))).Trim();
+            if (region.BoxPoints is not { Count: > 0 } || string.IsNullOrEmpty(regionText))
+                continue;
+
+            var minX = region.BoxPoints.Min(p => p.X);
+            var minY = region.BoxPoints.Min(p => p.Y);
+            var maxX = region.BoxPoints.Max(p => p.X);
+            var maxY = region.BoxPoints.Max(p => p.Y);
+            var rect = new Rect(minX * scaleX, minY * scaleY,
+                Math.Max(8, (maxX - minX) * scaleX), Math.Max(8, (maxY - minY) * scaleY));
+
+            var border = new Border
+            {
+                Width = rect.Width,
+                Height = rect.Height,
+                Background = new SolidColorBrush(Color.FromArgb(70, 0, 120, 215)),
+                BorderBrush = new SolidColorBrush(Color.FromArgb(180, 0, 160, 255)),
+                BorderThickness = new Thickness(1),
+                CornerRadius = new CornerRadius(2),
+                Cursor = Cursors.Hand,
+                ToolTip = regionText,
+            };
+            var text = new TextBlock
+            {
+                Text = regionText,
+                Foreground = Brushes.White,
+                FontSize = Math.Max(8, Math.Min(16, rect.Height * 0.6)),
+                TextTrimming = TextTrimming.CharacterEllipsis,
+                Margin = new Thickness(2, 0, 2, 0),
+            };
+            border.Child = text;
+            border.MouseLeftButtonDown += (_, _) =>
+            {
+                try { Clipboard.SetText(regionText); } catch { /* 占用 */ }
+            };
+            Canvas.SetLeft(border, rect.X);
+            Canvas.SetTop(border, rect.Y);
+            _ocrLayer.Children.Add(border);
+        }
+
+        _ocrLayer.Width = _image.ActualWidth;
+        _ocrLayer.Height = _image.ActualHeight;
+        _ocrLayer.Visibility = Visibility.Visible;
+        _ocrLayer.IsHitTestVisible = true;
+    }
+
+    private void UpdateOcrLayer()
+    {
+        if (_ocrLayer.Visibility != Visibility.Visible)
+            return;
+        _ocrLayer.Visibility = Visibility.Collapsed; // 尺寸变化后旧坐标失效，需重识别
+        _ocrLayer.Children.Clear();
     }
 }

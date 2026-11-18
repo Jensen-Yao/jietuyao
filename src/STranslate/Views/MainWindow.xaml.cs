@@ -302,5 +302,20 @@ public partial class MainWindow : IDisposable
         GC.SuppressFinalize(this);
     }
 
-    #endregion
-}
+    #endregion
+
+    #region 托盘贴图子菜单（jietuyao v2）
+
+#region 托盘贴图子菜单（jietuyao v2）
+
+    private void OnPinRestoreAll(object sender, RoutedEventArgs e) => Core.PinImageManager.Instance.RestoreAll();
+
+    private void OnPinThumbnailAll(object sender, RoutedEventArgs e) => Core.PinImageManager.Instance.SetAllThumbnail(true);
+
+    private void OnPinSaveAll(object sender, RoutedEventArgs e) => Core.PinImageManager.Instance.SaveAll();
+
+    private void OnPinCloseAll(object sender, RoutedEventArgs e) => Core.PinImageManager.Instance.CloseAll();
+
+    #endregion
+    #endregion
+}

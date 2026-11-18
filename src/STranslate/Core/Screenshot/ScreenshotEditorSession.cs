@@ -153,6 +153,7 @@ public sealed class ScreenshotEditorSession : IDisposable
                 ScreenshotTool.Text => new ScreenshotToolStyle { ColorHex = "#000000", FontSize = 14 },
                 ScreenshotTool.Number => new ScreenshotToolStyle { ColorHex = "#FF0000", FontSize = 10 },
                 ScreenshotTool.Cursor => new ScreenshotToolStyle { ColorHex = "#FF0000", StrokeWidth = 32 },
+                ScreenshotTool.Mosaic => new ScreenshotToolStyle { ColorHex = "#FF0000", StrokeWidth = 14 },
                 ScreenshotTool.Eraser => new ScreenshotToolStyle { EraserSize = 25 },
                 _ => new ScreenshotToolStyle(),
             };
@@ -270,8 +271,9 @@ public sealed class ScreenshotEditorSession : IDisposable
             dc.DrawImage(FrozenSource, VirtualBounds);
             if (withAnnotations)
             {
+                var context = new ScreenshotRenderContext { Background = FrozenSource, BackgroundBounds = VirtualBounds };
                 foreach (var annotation in Annotations)
-                    annotation.Render(dc);
+                    annotation.Render(dc, context);
             }
             dc.Pop();
             dc.Pop();

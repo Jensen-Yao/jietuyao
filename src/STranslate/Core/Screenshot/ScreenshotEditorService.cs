@@ -3,6 +3,7 @@ using System.IO;
 using System.Windows;
 using System.Windows.Threading;
 using STranslate.Helpers;
+using Size = System.Windows.Size;
 
 namespace STranslate.Core;
 
@@ -90,39 +91,9 @@ public sealed class ScreenshotEditorService(Settings settings, PinnedWindowContr
                     window.CloseEditor();
 
                 session.Dispose();
-                settings.ScreenshotToolStyles = session.ToolStyles;
-                var style = session.SelectionStyle;
-                settings.ScreenshotRoundedRadius = style.RoundedEnabled ? style.RoundedRadius : 0;
-                settings.ScreenshotBorderMode = style.BorderMode;
-                settings.ScreenshotBorderSize = style.BorderSize;
-                settings.ScreenshotLockRatio = style.LockRatio;
+                PersistStyles(session);
 
-                // 保存/贴图属于 UI 动作，TCS 延续可能在线程池，调度回 UI 线程
-                if (result != null && result.Action is ScreenshotEditorAction.Save or ScreenshotEditorAction.Pin or ScreenshotEditorAction.Copy)
-                {
-                    await App.Current.Dispatcher.InvokeAsync(() =>
-                    {
-                        switch (result.Action)
-                        {
-                            case ScreenshotEditorAction.Save:
-                            {
-                                var path = ScreenshotOutput.SaveToFile(result.EditedImage, settings.LastScreenshotSaveDir);
-                                if (path != null)
-                                {
-                                    result.SavedFilePath = path;
-                                    settings.LastScreenshotSaveDir = Path.GetDirectoryName(path) ?? string.Empty;
-                                }
-                                break;
-                            }
-                            case ScreenshotEditorAction.Pin:
-                                PinImageManager.Instance.Pin(result.EditedImage, result.PhysicalBounds, settings.PinDefaultOpacity);
-                                break;
-                            case ScreenshotEditorAction.Copy:
-                                ScreenshotOutput.CopyToClipboard(result.EditedImage);
-                                break;
-                        }
-                    });
-                }
+                await PostProcessAsync(result);
                 return result;
             }
             finally
@@ -137,6 +108,99 @@ public sealed class ScreenshotEditorService(Settings settings, PinnedWindowContr
         {
             _editing = false;
         }
+    }
+
+    /// <summary>
+    /// 编辑已有图像（贴图再次编辑等场景）：不重新抓屏，隐藏窗口仅限编辑范围
+    /// </summary>
+    public async Task<ScreenshotEditorResult?> EditImageAsync(Bitmap image, Rect physicalRect)
+    {
+        if (_editing)
+            return null;
+        _editing = true;
+        try
+        {
+            var virtualBounds = new Rect(physicalRect.Location, new Size(image.Width, image.Height));
+            var monitors = ScreenshotCapturer.GetMonitors();
+            var relevant = monitors.Where(m => m.Bounds.IntersectsWith(virtualBounds)).ToList();
+            if (relevant.Count == 0)
+                relevant = [monitors[0]];
+
+            var source = ScreenshotCapturer.ToBitmapSource(image);
+            var session = new ScreenshotEditorSession(image, source, virtualBounds, relevant,
+                new ScreenshotWindowFinder(),
+                new ScreenshotEditOptions { HideAppWindows = false, SmartSelection = false, InitialSelection = virtualBounds });
+            session.ToolStyles = settings.ScreenshotToolStyles;
+            session.SelectionStyle = new SelectionStyleState
+            {
+                RoundedEnabled = settings.ScreenshotRoundedRadius > 0,
+                RoundedRadius = settings.ScreenshotRoundedRadius,
+                BorderMode = settings.ScreenshotBorderMode,
+                BorderSize = settings.ScreenshotBorderSize,
+                ShadowColorHex = settings.ScreenshotShadowColor,
+                BorderColorHex = settings.ScreenshotBorderColor,
+                LockRatio = settings.ScreenshotLockRatio,
+            };
+
+            var windows = relevant.Select(m => new Views.ScreenshotEditorWindow(session, m)).ToList();
+            foreach (var window in windows)
+                window.ShowNoActivate();
+            var cursorMonitor = MonitorInfo.GetCursorDisplayMonitor();
+            (windows.FirstOrDefault(w => w.Monitor.DeviceName == cursorMonitor.Name) ?? windows[0]).ActivateCanvas();
+
+            var result = await session.Task;
+            foreach (var window in windows)
+                window.CloseEditor();
+            session.Dispose();
+            PersistStyles(session);
+
+            await PostProcessAsync(result);
+            return result;
+        }
+        finally
+        {
+            _editing = false;
+        }
+    }
+
+    private void PersistStyles(ScreenshotEditorSession session)
+    {
+        settings.ScreenshotToolStyles = session.ToolStyles;
+        var style = session.SelectionStyle;
+        settings.ScreenshotRoundedRadius = style.RoundedEnabled ? style.RoundedRadius : 0;
+        settings.ScreenshotBorderMode = style.BorderMode;
+        settings.ScreenshotBorderSize = style.BorderSize;
+        settings.ScreenshotLockRatio = style.LockRatio;
+    }
+
+    /// <summary>保存/贴图/复制等 UI 动作后处理（TCS 延续可能在线程池，调度回 UI 线程）</summary>
+    private async Task PostProcessAsync(ScreenshotEditorResult? result)
+    {
+        if (result == null || result.Action is not (ScreenshotEditorAction.Save or ScreenshotEditorAction.Pin or ScreenshotEditorAction.Copy))
+            return;
+
+        await App.Current.Dispatcher.InvokeAsync(() =>
+        {
+            switch (result.Action)
+            {
+                case ScreenshotEditorAction.Save:
+                {
+                    var path = ScreenshotOutput.SaveToFile(result.EditedImage, settings.LastScreenshotSaveDir);
+                    if (path != null)
+                    {
+                        result.SavedFilePath = path;
+                        settings.LastScreenshotSaveDir = Path.GetDirectoryName(path) ?? string.Empty;
+                    }
+                    break;
+                }
+                case ScreenshotEditorAction.Pin:
+                    PinImageManager.Instance.Pin(result.EditedImage, result.PhysicalBounds, settings.PinDefaultOpacity);
+                    break;
+                case ScreenshotEditorAction.Copy:
+                    ScreenshotOutput.CopyToClipboard(result.EditedImage);
+                    break;
+            }
+        });
     }
 }
 

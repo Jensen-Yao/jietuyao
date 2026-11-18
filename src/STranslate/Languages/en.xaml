@@ -193,6 +193,11 @@
     <sys:String x:Key="Hotkey_MouseSelectionTranslationDescription">Enable or disable immediate mouse selection translation.</sys:String>
     <sys:String x:Key="Hotkey_ReplaceTranslate">Replace Translation</sys:String>
     <sys:String x:Key="Hotkey_ReplaceTranslateDescription">Shortcut key to translate the selected text and replace the original text.</sys:String>
+    <sys:String x:Key="Pin_Menu">Pinned</sys:String>
+    <sys:String x:Key="Pin_RestoreAll">Restore all</sys:String>
+    <sys:String x:Key="Pin_ThumbnailAll">All thumbnails</sys:String>
+    <sys:String x:Key="Pin_SaveAll">Save all...</sys:String>
+    <sys:String x:Key="Pin_CloseAll">Close all</sys:String>
     <sys:String x:Key="Hotkey_Screenshot">Screenshot</sys:String>
     <sys:String x:Key="Hotkey_ScreenshotDescription">Hotkey to open the screenshot editor (annotate/pin/OCR/translate).</sys:String>
     <sys:String x:Key="Hotkey_ScreenshotTranslate">Screenshot Translation</sys:String>

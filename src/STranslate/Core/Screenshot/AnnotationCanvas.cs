@@ -35,6 +35,7 @@ public sealed class AnnotationCanvas : FrameworkElement
         Erasing,
         MovingAnnotation,
         ResizingAnnotation,
+        RotatingAnnotation,
     }
 
     private enum SelectionHandle
@@ -295,8 +296,9 @@ public sealed class AnnotationCanvas : FrameworkElement
     private void RenderAnnotations()
     {
         using var dc = _annotationVisual.RenderOpen();
+        var context = new ScreenshotRenderContext { Background = Session.FrozenSource, BackgroundBounds = Session.VirtualBounds };
         foreach (var annotation in Session.Annotations)
-            annotation.Render(dc);
+            annotation.Render(dc, context);
 
         if (_hoveredAnnotation is { } hovered && Session.ActiveTool == ScreenshotTool.Select)
         {
@@ -311,11 +313,12 @@ public sealed class AnnotationCanvas : FrameworkElement
     private void RenderPreview()
     {
         using var dc = _previewVisual.RenderOpen();
+        var renderContext = new ScreenshotRenderContext { Background = Session.FrozenSource, BackgroundBounds = Session.VirtualBounds };
         if (_interaction == Interaction.DrawingAnnotation)
         {
             if (_previewStroke != null)
             {
-                _previewStroke.Render(dc);
+                _previewStroke.Render(dc, renderContext);
             }
             else if (_hasPreview)
             {
@@ -325,13 +328,20 @@ public sealed class AnnotationCanvas : FrameworkElement
                 switch (Session.ActiveTool)
                 {
                     case ScreenshotTool.Rectangle:
-                        new ShapeAnnotation(rect, color, style.StrokeWidth, false, style.Fill).Render(dc);
+                        new ShapeAnnotation(rect, color, style.StrokeWidth, false, style.Fill).Render(dc, renderContext);
                         break;
                     case ScreenshotTool.Ellipse:
-                        new ShapeAnnotation(rect, color, style.StrokeWidth, true, style.Fill).Render(dc);
+                        new ShapeAnnotation(rect, color, style.StrokeWidth, true, style.Fill).Render(dc, renderContext);
                         break;
                     case ScreenshotTool.Arrow:
-                        new ArrowAnnotation(_previewArrowFrom, _lastPoint, color, style.StrokeWidth).Render(dc);
+                        new ArrowAnnotation(_previewArrowFrom, _lastPoint, color, style.StrokeWidth).Render(dc, renderContext);
+                        break;
+                    case ScreenshotTool.Mosaic:
+                        new MosaicAnnotation(rect, style.StrokeWidth).Render(dc, renderContext);
+                        // 外框提示
+                        var dashed = new Pen(new SolidColorBrush(Color.FromArgb(160, 255, 255, 255)), 1) { DashStyle = DashStyles.Dash };
+                        dashed.Freeze();
+                        dc.DrawRectangle(null, dashed, rect);
                         break;
                 }
             }
@@ -346,8 +356,8 @@ public sealed class AnnotationCanvas : FrameworkElement
             dc.DrawEllipse(new SolidColorBrush(Color.FromArgb(30, 255, 255, 255)), pen, _lastPoint, size / 2, size / 2);
         }
 
-        // 悬停图元的编辑手柄
-        if (_hoveredAnnotation is { } hovered && Session.ActiveTool == ScreenshotTool.Select && _interaction is Interaction.None or Interaction.MovingAnnotation)
+        // 悬停图元的编辑手柄 + 旋转手柄
+        if (_hoveredAnnotation is { } hovered && Session.ActiveTool == ScreenshotTool.Select && _interaction is Interaction.None or Interaction.MovingAnnotation or Interaction.RotatingAnnotation)
         {
             var bounds = hovered.Bounds;
             var dip = new Rect(PhysicalToDip(bounds.Location), new Size(bounds.Width / Scale, bounds.Height / Scale));
@@ -357,7 +367,31 @@ public sealed class AnnotationCanvas : FrameworkElement
             pen.Freeze();
             foreach (var p in GetHandlePoints(dip))
                 dc.DrawEllipse(fill, pen, p, 4, 4);
+
+            // 旋转手柄：顶部中央上方 22px，带连接线
+            var rotateHandle = GetRotateHandlePoint(hovered);
+            var rotateDip = PhysicalToDip(rotateHandle);
+            var topCenterDip = new Point(dip.Left + dip.Width / 2, dip.Top);
+            var linePen = new Pen(new SolidColorBrush(Color.FromArgb(180, 0, 160, 255)), 1);
+            linePen.Freeze();
+            dc.DrawLine(linePen, topCenterDip, new Point(rotateDip.X, rotateDip.Y + 6 / Scale * Scale));
+            dc.DrawEllipse(fill, pen, rotateDip, 5, 5);
+            var rp = new FormattedText("↻",
+                System.Globalization.CultureInfo.CurrentUICulture,
+                FlowDirection.LeftToRight,
+                new Typeface("Segoe UI"),
+                8,
+                Brushes.White,
+                VisualTreeHelper.GetDpi(this).PixelsPerDip);
+            dc.DrawText(rp, new Point(rotateDip.X - rp.Width / 2, rotateDip.Y - rp.Height / 2));
         }
+    }
+
+    /// <summary>旋转手柄物理坐标（顶部中央上方 22px）</summary>
+    private static Point GetRotateHandlePoint(ScreenshotAnnotation annotation)
+    {
+        var b = annotation.Bounds;
+        return new Point(b.X + b.Width / 2, b.Y - 22);
     }
 
     private void RenderMagnifier()
@@ -545,7 +579,7 @@ public sealed class AnnotationCanvas : FrameworkElement
             return;
         }
 
-        if (tool is ScreenshotTool.Rectangle or ScreenshotTool.Ellipse or ScreenshotTool.Arrow)
+        if (tool is ScreenshotTool.Rectangle or ScreenshotTool.Ellipse or ScreenshotTool.Arrow or ScreenshotTool.Mosaic)
         {
             if (!selection.Contains(physical)) return;
             _interaction = Interaction.DrawingAnnotation;
@@ -559,6 +593,26 @@ public sealed class AnnotationCanvas : FrameworkElement
         }
 
         // Select 工具：图元编辑优先
+        // 旋转手柄位于包围盒外，需独立命中测试（自顶向下取第一个）
+        if (Session.ActiveTool == ScreenshotTool.Select)
+        {
+            for (var i = Session.Annotations.Count - 1; i >= 0; i--)
+            {
+                var candidate = Session.Annotations[i];
+                var hp = GetRotateHandlePoint(candidate);
+                if (Math.Abs(physical.X - hp.X) <= 12 && Math.Abs(physical.Y - hp.Y) <= 12)
+                {
+                    _interaction = Interaction.RotatingAnnotation;
+                    _hoveredAnnotation = candidate;
+                    _rotationStartAngle = candidate.Rotation;
+                    _pressPoint = physical;
+                    CaptureMouse();
+                    InteractionStarted?.Invoke();
+                    return;
+                }
+            }
+        }
+
         var hovered = Session.HitTestAnnotation(physical, HitTolerancePx);
         if (hovered != null)
         {
@@ -698,6 +752,23 @@ public sealed class AnnotationCanvas : FrameworkElement
                 }
                 break;
             }
+
+            case Interaction.RotatingAnnotation:
+            {
+                if (_hoveredAnnotation is { } annotation)
+                {
+                    var b = annotation.Bounds;
+                    var cx = b.X + b.Width / 2;
+                    var cy = b.Y + b.Height / 2;
+                    var angle = Math.Atan2(physical.Y - cy, physical.X - cx) * 180.0 / Math.PI + 90;
+                    if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift))
+                        angle = Math.Round(angle / 15.0) * 15;
+                    annotation.Rotation = angle;
+                    RenderAnnotations();
+                    RenderPreview();
+                }
+                break;
+            }
         }
 
         if (_interaction == Interaction.None && Session.Selection == null && Session.Options.ShowMagnifier)
@@ -774,6 +845,22 @@ public sealed class AnnotationCanvas : FrameworkElement
                 }
                 break;
             }
+
+            case Interaction.RotatingAnnotation:
+            {
+                if (_hoveredAnnotation is { } annotation)
+                {
+                    var beforeAngle = _rotationStartAngle;
+                    var afterAngle = annotation.Rotation;
+                    if (Math.Abs(beforeAngle - afterAngle) > 0.5)
+                    {
+                        Session.Undo.Push("rotate",
+                            () => { annotation.Rotation = beforeAngle; Session.RequestRepaint(); },
+                            () => { annotation.Rotation = afterAngle; Session.RequestRepaint(); });
+                    }
+                }
+                break;
+            }
         }
 
         _interaction = Interaction.None;
@@ -786,6 +873,7 @@ public sealed class AnnotationCanvas : FrameworkElement
     }
 
     private Rect? _annotationStartBoundsForMove;
+    private double _rotationStartAngle;
 
     protected override void OnMouseLeave(MouseEventArgs e)
     {
@@ -852,6 +940,14 @@ public sealed class AnnotationCanvas : FrameworkElement
                 break;
             }
 
+            case ScreenshotTool.Mosaic:
+            {
+                var rect = Normalize(_previewShapeRect);
+                if (rect.Width >= 6 && rect.Height >= 6)
+                    Session.AddAnnotation(new MosaicAnnotation(rect, style.StrokeWidth));
+                break;
+            }
+
             case ScreenshotTool.Arrow:
             {
                 var dist = Math.Sqrt(Math.Pow(_previewArrowFrom.X - _lastPoint.X, 2) + Math.Pow(_previewArrowFrom.Y - _lastPoint.Y, 2));
@@ -874,10 +970,24 @@ public sealed class AnnotationCanvas : FrameworkElement
             RenderMask();
         }
 
-        // 图元悬停
+        // 图元悬停（含旋转手柄区域，位于包围盒外）
         ScreenshotAnnotation? hovered = null;
         if (Session.ActiveTool == ScreenshotTool.Select && Session.Selection != null)
+        {
             hovered = Session.HitTestAnnotation(physical, HitTolerancePx);
+            if (hovered == null)
+            {
+                for (var i = Session.Annotations.Count - 1; i >= 0; i--)
+                {
+                    var hp = GetRotateHandlePoint(Session.Annotations[i]);
+                    if (Math.Abs(physical.X - hp.X) <= 12 && Math.Abs(physical.Y - hp.Y) <= 12)
+                    {
+                        hovered = Session.Annotations[i];
+                        break;
+                    }
+                }
+            }
+        }
         if (!ReferenceEquals(hovered, _hoveredAnnotation))
         {
             _hoveredAnnotation = hovered;

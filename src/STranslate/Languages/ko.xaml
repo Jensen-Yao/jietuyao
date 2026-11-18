@@ -189,6 +189,11 @@
     <sys:String x:Key="Hotkey_MouseSelectionTranslationDescription">마우스 선택 즉시 번역을 켜거나 끕니다.</sys:String>
     <sys:String x:Key="Hotkey_ReplaceTranslate">치환 번역</sys:String>
     <sys:String x:Key="Hotkey_ReplaceTranslateDescription">마우스로 선택한 텍스트를 번역하고 원본 텍스트를 치환하는 단축키입니다.</sys:String>
+    <sys:String x:Key="Pin_Menu">고정</sys:String>
+    <sys:String x:Key="Pin_RestoreAll">모두 복원</sys:String>
+    <sys:String x:Key="Pin_ThumbnailAll">모두 썸네일</sys:String>
+    <sys:String x:Key="Pin_SaveAll">모두 저장...</sys:String>
+    <sys:String x:Key="Pin_CloseAll">모두 닫기</sys:String>
     <sys:String x:Key="Hotkey_Screenshot">스크린샷</sys:String>
     <sys:String x:Key="Hotkey_ScreenshotDescription">스크린샷 편집기(주석/고정/OCR/번역)를 여는 바로 가기 키입니다.</sys:String>
     <sys:String x:Key="Hotkey_ScreenshotTranslate">스크린샷 번역</sys:String>

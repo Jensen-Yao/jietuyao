@@ -37,6 +37,9 @@ public enum ScreenshotTool
 
     /// <summary>鼠标指针</summary>
     Cursor,
+
+    /// <summary>马赛克（v2 新增）</summary>
+    Mosaic,
 }
 
 /// <summary>

@@ -158,6 +158,7 @@ public sealed class ScreenshotEditorToolbar : Border
         AddToolButton(ScreenshotTool.Number, "序号 (8)", CreateNumberIcon());
         AddToolButton(ScreenshotTool.Eraser, "橡皮 (9)", JietuyaoIconRenderer.Create(JietuyaoIcons.Eraser, ForegroundBrush));
         AddToolButton(ScreenshotTool.Cursor, "鼠标指针 (0)", JietuyaoIconRenderer.Create(JietuyaoIcons.Cursor, ForegroundBrush));
+        AddToolButton(ScreenshotTool.Mosaic, "马赛克", CreateMosaicIcon());
 
         _toolRow.Children.Add(CreateSeparator());
 
@@ -206,6 +207,32 @@ public sealed class ScreenshotEditorToolbar : Border
         return grid;
     }
 
+    /// <summary>马赛克图标：2×2 像素方块</summary>
+    private static UIElement CreateMosaicIcon()
+    {
+        var grid = new Grid();
+        foreach (var (row, col, opacity) in new[] { (0, 0, 1.0), (0, 1, 0.55), (1, 0, 0.7), (1, 1, 0.9) })
+        {
+            var rect = new System.Windows.Shapes.Rectangle
+            {
+                Width = 7,
+                Height = 7,
+                Fill = new SolidColorBrush(Color.FromArgb((byte)(opacity * 255), 235, 235, 235)),
+                Margin = new Thickness(0.5),
+                RadiusX = 1,
+                RadiusY = 1,
+            };
+            Grid.SetRow(rect, row);
+            Grid.SetColumn(rect, col);
+            grid.Children.Add(rect);
+        }
+        grid.RowDefinitions.Add(new RowDefinition());
+        grid.RowDefinitions.Add(new RowDefinition());
+        grid.ColumnDefinitions.Add(new ColumnDefinition());
+        grid.ColumnDefinitions.Add(new ColumnDefinition());
+        return grid;
+    }
+
     private void AddToolButton(ScreenshotTool tool, string tooltip, UIElement icon)
     {
         var button = new ToggleButton
@@ -242,8 +269,8 @@ public sealed class ScreenshotEditorToolbar : Border
         {
             button.IsChecked = _session.ActiveTool == tool;
             button.Background = button.IsChecked == true ? AccentBrush : Brushes.Transparent;
-            // 选中时图标反白（序号为复合图标，背景高亮已足够）
-            if (tool != ScreenshotTool.Number)
+            // 选中时图标反白（序号/马赛克为复合图标，背景高亮已足够）
+            if (tool is not (ScreenshotTool.Number or ScreenshotTool.Mosaic))
                 button.Content = JietuyaoIconRenderer.Create(IconForTool(tool), button.IsChecked == true ? Brushes.White : ForegroundBrush, 16);
         }
     }
@@ -260,6 +287,7 @@ public sealed class ScreenshotEditorToolbar : Border
         ScreenshotTool.Number => JietuyaoIcons.Number,
         ScreenshotTool.Eraser => JietuyaoIcons.Eraser,
         ScreenshotTool.Cursor => JietuyaoIcons.Cursor,
+        ScreenshotTool.Mosaic => JietuyaoIcons.Select,
         _ => JietuyaoIcons.Select,
     };
 
@@ -332,6 +360,9 @@ public sealed class ScreenshotEditorToolbar : Border
                 break;
             case ScreenshotTool.Cursor:
                 _settingsPanel.Children.Add(CreateSlider("大小", 16, 64, style.StrokeWidth * 2.5, v => style.StrokeWidth = v / 2.5, format: "F0"));
+                break;
+            case ScreenshotTool.Mosaic:
+                _settingsPanel.Children.Add(CreateSlider("马赛克块大小", 4, 48, style.StrokeWidth, v => style.StrokeWidth = v, format: "F0"));
                 break;
             case ScreenshotTool.Eraser:
                 _settingsPanel.Children.Add(CreateSlider("橡皮大小", 8, 80, style.EraserSize, v => style.EraserSize = v, format: "F0"));

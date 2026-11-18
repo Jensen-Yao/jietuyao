@@ -193,6 +193,11 @@
     <sys:String x:Key="Hotkey_MouseSelectionTranslationDescription">开启或关闭鼠标划词直接翻译。</sys:String>
     <sys:String x:Key="Hotkey_ReplaceTranslate">替换翻译</sys:String>
     <sys:String x:Key="Hotkey_ReplaceTranslateDescription">鼠标选中文本触发翻译并替换原文本的快捷键。</sys:String>
+    <sys:String x:Key="Pin_Menu">贴图</sys:String>
+    <sys:String x:Key="Pin_RestoreAll">全部还原</sys:String>
+    <sys:String x:Key="Pin_ThumbnailAll">全部缩略图</sys:String>
+    <sys:String x:Key="Pin_SaveAll">全部保存...</sys:String>
+    <sys:String x:Key="Pin_CloseAll">全部关闭</sys:String>
     <sys:String x:Key="Hotkey_Screenshot">截图</sys:String>
     <sys:String x:Key="Hotkey_ScreenshotDescription">打开截图编辑器（标注/贴图/OCR/翻译）的快捷键。</sys:String>
     <sys:String x:Key="Hotkey_ScreenshotTranslate">截图翻译</sys:String>
