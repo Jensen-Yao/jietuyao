@@ -1,0 +1,63 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:cnvt="clr-namespace:STranslate.Converters"
+    xmlns:control="clr-namespace:STranslate.Controls"
+    xmlns:ui="http://schemas.inkore.net/lib/ui/wpf/modern">
+
+    <Style TargetType="{x:Type control:HotkeyDisplay}">
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Width" Value="Auto" />
+        <Setter Property="Background" Value="{DynamicResource {x:Static ui:ThemeKeys.AccentFillColorDisabledBrushKey}}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type control:HotkeyDisplay}">
+                    <ui:ElevationBorder BorderBrush="{DynamicResource ControlElevationBorderBrush}" CornerRadius="5">
+                        <ui:ElevationBorder.Style>
+                            <Style TargetType="ui:ElevationBorder">
+                                <Setter Property="Background" Value="{DynamicResource ButtonBackground}" />
+                                <Setter Property="Padding" Value="5,0" />
+                                <Setter Property="BorderThickness" Value="1" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=control:HotkeyDisplay}, Path=Type}" Value="Small">
+                                        <Setter Property="Background" Value="Transparent" />
+                                        <Setter Property="Padding" Value="0" />
+                                        <Setter Property="BorderThickness" Value="0" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ui:ElevationBorder.Style>
+                        <ItemsControl x:Name="PART_ItemsHost">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border BorderThickness="1" CornerRadius="5">
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Setter Property="Background" Value="{Binding RelativeSource={RelativeSource AncestorType=control:HotkeyDisplay}, Path=Background}" />
+                                                <Setter Property="Padding" Value="10,5" />
+                                                <Setter Property="Margin" Value="2,5" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=control:HotkeyDisplay}, Path=Type}" Value="Small">
+                                                        <Setter Property="Background" Value="{DynamicResource AccentTextFillColorPrimaryBrush}" />
+                                                        <Setter Property="Padding" Value="10,5" />
+                                                        <Setter Property="Margin" Value="2,0" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+                                        <TextBlock Foreground="{DynamicResource TextOnAccentFillColorSelectedTextBrush}" Text="{Binding}" />
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ui:ElevationBorder>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

@@ -1,0 +1,224 @@
+<ui:Page
+    x:Class="STranslate.Views.Pages.AboutPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:cnvt="clr-namespace:STranslate.Converters"
+    xmlns:core="clr-namespace:STranslate.Core"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:ikw="http://schemas.inkore.net/lib/ui/wpf"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:plugin="clr-namespace:STranslate.Plugin;assembly=STranslate.Plugin"
+    xmlns:ui="http://schemas.inkore.net/lib/ui/wpf/modern"
+    xmlns:vm="clr-namespace:STranslate.ViewModels.Pages"
+    Title="About"
+    d:DataContext="{d:DesignInstance Type=vm:AboutViewModel,
+                                     IsDesignTimeCreatable=False}"
+    d:DesignHeight="850"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+    <ui:ScrollViewerEx
+        Padding="20,10"
+        ui:FocusVisualHelper.UseSystemFocusVisuals="False"
+        IsTabStop="False"
+        VerticalScrollBarVisibility="Auto">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <TextBlock
+                Margin="0,0,0,12"
+                Style="{DynamicResource {x:Static ui:ThemeKeys.SubtitleTextBlockStyleKey}}"
+                Text="{DynamicResource About}" />
+            <ikw:SimpleStackPanel Grid.Row="1" Spacing="4">
+
+                <ui:SettingsCard Description="{DynamicResource UserDataLocationDescription}" Header="{DynamicResource UserDataLocation}">
+                    <ui:SettingsCard.HeaderIcon>
+                        <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.FolderPerson_24_Regular}" />
+                    </ui:SettingsCard.HeaderIcon>
+                    <ikw:SimpleStackPanel Orientation="Horizontal" Spacing="12">
+                        <Button Command="{Binding LocateUserDataCommand}" Content="{DynamicResource OpenDirectory}" />
+                        <Button>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.FolderSearch_24_Regular}" />
+                            <ui:FlyoutService.Flyout>
+                                <ui:MenuFlyout>
+                                    <MenuItem Command="{Binding LocateSettingsCommand}" Header="{DynamicResource SettingsDirectory}">
+                                        <MenuItem.Icon>
+                                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Folder_24_Regular}" />
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+
+                                    <MenuItem Command="{Binding LocateLogCommand}" Header="{DynamicResource LogsDirectory}">
+                                        <MenuItem.Icon>
+                                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Folder_24_Regular}" />
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+
+                                    <MenuItem Command="{Binding LocateCacheCommand}" Header="{DynamicResource CacheDirectory}">
+                                        <MenuItem.Icon>
+                                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Folder_24_Regular}" />
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                </ui:MenuFlyout>
+                            </ui:FlyoutService.Flyout>
+                        </Button>
+                    </ikw:SimpleStackPanel>
+                </ui:SettingsCard>
+
+                <ui:SettingsCard Description="{DynamicResource PortableModeDescription}">
+                    <ui:SettingsCard.Style>
+                        <Style BasedOn="{StaticResource {x:Type ui:SettingsCard}}" TargetType="ui:SettingsCard">
+                            <Setter Property="Header" Value="{DynamicResource PortableModeStateRoaming}" />
+                            <Setter Property="HeaderIcon">
+                                <Setter.Value>
+                                    <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Globe_24_Regular}" />
+                                </Setter.Value>
+                            </Setter>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsPortableMode}" Value="True">
+                                    <Setter Property="Header" Value="{DynamicResource PortableModeStatePortable}" />
+                                    <Setter Property="HeaderIcon">
+                                        <Setter.Value>
+                                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Box_24_Regular}" />
+                                        </Setter.Value>
+                                    </Setter>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ui:SettingsCard.Style>
+
+                    <ikw:SimpleStackPanel Orientation="Horizontal" Spacing="12">
+                        <Button
+                            Command="{Binding TogglePortableModeCommand}"
+                            Content="{DynamicResource EnablePortableMode}"
+                            Visibility="{Binding IsPortableMode, Converter={cnvt:BoolToVisibilityInverseConverter}}" />
+                        <Button
+                            Command="{Binding TogglePortableModeCommand}"
+                            Content="{DynamicResource DisablePortableMode}"
+                            Visibility="{Binding IsPortableMode, Converter={cnvt:BoolToVisibilityConverter}}" />
+                    </ikw:SimpleStackPanel>
+                </ui:SettingsCard>
+
+                <ui:SettingsExpander Description="{DynamicResource BackupMethodDescription}" Header="{DynamicResource BackupMethod}">
+                    <ui:SettingsExpander.HeaderIcon>
+                        <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.FolderZip_20_Regular}" />
+                    </ui:SettingsExpander.HeaderIcon>
+                    <ComboBox
+                        MinWidth="150"
+                        DisplayMemberPath="Display"
+                        ItemsSource="{Binding DataProvider.BackupTypes}"
+                        SelectedValue="{Binding Settings.Backup.Type}"
+                        SelectedValuePath="Value" />
+
+                    <ui:SettingsExpander.Items>
+                        <ui:SettingsCard Header="{DynamicResource WebDavAddress}" Visibility="{Binding Settings.Backup.Type, Converter={cnvt:BackupTypeVisibilityConverter}, ConverterParameter=WebDav}">
+                            <ui:SettingsCard.HeaderIcon>
+                                <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Globe_20_Regular}" />
+                            </ui:SettingsCard.HeaderIcon>
+                            <TextBox MinWidth="200" Text="{Binding Settings.Backup.Address}" />
+                        </ui:SettingsCard>
+                        <ui:SettingsCard Header="{DynamicResource WebDavUsername}" Visibility="{Binding Settings.Backup.Type, Converter={cnvt:BackupTypeVisibilityConverter}, ConverterParameter=WebDav}">
+                            <ui:SettingsCard.HeaderIcon>
+                                <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Person_20_Regular}" />
+                            </ui:SettingsCard.HeaderIcon>
+                            <TextBox MinWidth="200" Text="{Binding Settings.Backup.Username}" />
+                        </ui:SettingsCard>
+                        <ui:SettingsCard Header="{DynamicResource WebDavPassword}" Visibility="{Binding Settings.Backup.Type, Converter={cnvt:BackupTypeVisibilityConverter}, ConverterParameter=WebDav}">
+                            <ui:SettingsCard.HeaderIcon>
+                                <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Password_20_Regular}" />
+                            </ui:SettingsCard.HeaderIcon>
+                            <PasswordBox
+                                MinWidth="200"
+                                plugin:PasswordBoxAssistant.Attach="True"
+                                plugin:PasswordBoxAssistant.Password="{Binding Settings.Backup.Password}" />
+                        </ui:SettingsCard>
+                        <ui:SettingsCard
+                            Description="{DynamicResource WebDavBackupNoticeDescription}"
+                            Header="{DynamicResource WebDavBackupNotice}"
+                            Visibility="{Binding Settings.Backup.Type, Converter={cnvt:BackupTypeVisibilityConverter}, ConverterParameter=WebDav}">
+                            <ui:SettingsCard.HeaderIcon>
+                                <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Info_24_Regular}" />
+                            </ui:SettingsCard.HeaderIcon>
+                        </ui:SettingsCard>
+
+                        <ui:SettingsCard Header="{DynamicResource Backup}">
+                            <Button Command="{Binding BackupCommand}" Content="{DynamicResource CreateBackup}" />
+                        </ui:SettingsCard>
+                        <ui:SettingsCard Header="{DynamicResource Restore}">
+                            <Button Command="{Binding RestoreCommand}" Content="{DynamicResource RestoreBackup}" />
+                        </ui:SettingsCard>
+                    </ui:SettingsExpander.Items>
+                </ui:SettingsExpander>
+
+                <ui:SettingsCard Header="{DynamicResource LogLevel}">
+                    <ui:SettingsCard.HeaderIcon>
+                        <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Print_20_Regular}" />
+                    </ui:SettingsCard.HeaderIcon>
+                    <ComboBox
+                        MinWidth="150"
+                        DisplayMemberPath="Display"
+                        ItemsSource="{Binding DataProvider.LogEventLevels}"
+                        SelectedValue="{Binding Settings.LogLevel}"
+                        SelectedValuePath="Value" />
+                </ui:SettingsCard>
+
+                <ui:SettingsExpander
+                    Description="© 2020 zggsong &amp; STranslate Contributors"
+                    Header="{x:Static core:Constant.AppName}"
+                    IsExpanded="True">
+                    <ui:SettingsExpander.HeaderIcon>
+                        <Image
+                            Width="20"
+                            Height="20"
+                            Source="/Resources/app.ico" />
+                    </ui:SettingsExpander.HeaderIcon>
+                    <TextBox
+                        Width="Auto"
+                        MinWidth="0"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Foreground="{DynamicResource {x:Static ui:ThemeKeys.TextFillColorSecondaryBrushKey}}"
+                        IsReadOnly="True"
+                        IsReadOnlyCaretVisible="False"
+                        Text="{Binding Version, Mode=OneWay}"
+                        TextAlignment="Right" />
+                    <ui:SettingsExpander.Items>
+
+                        <ui:SettingsCard Header="{DynamicResource Version}">
+                            <ikw:SimpleStackPanel Orientation="Horizontal" Spacing="4">
+                                <Button Command="{Binding CheckUpdateCommand}">
+                                    <ui:IconAndText Content="{DynamicResource CheckUpdate}" Icon="{x:Static ui:FluentSystemIcons.GlobeArrowUp_20_Regular}" />
+                                </Button>
+                                <Button Command="{Binding OpenWizardCommand}">
+                                    <ui:IconAndText Content="{DynamicResource Wizard}" Icon="{x:Static ui:FluentSystemIcons.PlayMultiple_16_Regular}" />
+                                </Button>
+                                <Button Command="{Binding DonateCommand}" Style="{DynamicResource {x:Static ui:ThemeKeys.AccentButtonStyleKey}}">
+                                    <ui:IconAndText Content="{DynamicResource Donate}" Icon="{x:Static ui:FluentSystemIcons.DrinkCoffee_20_Filled}" />
+                                </Button>
+                            </ikw:SimpleStackPanel>
+                        </ui:SettingsCard>
+
+                        <ui:SettingsCard Margin="0,0,-10,0" Header="{DynamicResource Website}">
+                            <ikw:SimpleStackPanel Orientation="Horizontal" Spacing="2">
+                                <ui:HyperlinkButton Content="{DynamicResource OfficialWebsite}" NavigateUri="{x:Static core:Constant.WebsiteUri}" />
+                                <ui:HyperlinkButton Content="{DynamicResource Group}" NavigateUri="{x:Static core:Constant.GroupUri}" />
+                                <ui:HyperlinkButton Content="Github" NavigateUri="{x:Static core:Constant.GithubUri}" />
+                                <ui:HyperlinkButton Content="Issue" NavigateUri="{x:Static core:Constant.ReportUri}" />
+                            </ikw:SimpleStackPanel>
+                        </ui:SettingsCard>
+
+                        <ui:SettingsCard Margin="0,0,-10,0" Header="{DynamicResource Thanks}">
+                            <ikw:SimpleStackPanel Orientation="Horizontal" Spacing="2">
+                                <ui:HyperlinkButton Content="Flow Launcher" NavigateUri="{x:Static core:Constant.FlowLauncherUri}" />
+                                <ui:HyperlinkButton Content="UI.WPF.Modern" NavigateUri="{x:Static core:Constant.UiWpfMordenUri}" />
+                                <ui:HyperlinkButton Content="Bob" NavigateUri="{x:Static core:Constant.BobUri}" />
+                                <ui:HyperlinkButton Content="Icons8" NavigateUri="{x:Static core:Constant.Icons8Uri}" />
+                            </ikw:SimpleStackPanel>
+                        </ui:SettingsCard>
+                    </ui:SettingsExpander.Items>
+                </ui:SettingsExpander>
+
+            </ikw:SimpleStackPanel>
+        </Grid>
+    </ui:ScrollViewerEx>
+</ui:Page>

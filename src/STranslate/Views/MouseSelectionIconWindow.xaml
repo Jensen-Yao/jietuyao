@@ -1,0 +1,86 @@
+<Window
+    x:Class="STranslate.Views.MouseSelectionIconWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="http://schemas.inkore.net/lib/ui/wpf/modern"
+    Title="STranslate Icon"
+    Width="40"
+    Height="40"
+    AllowsTransparency="True"
+    Background="Transparent"
+    ResizeMode="NoResize"
+    ShowActivated="False"
+    ShowInTaskbar="False"
+    SizeToContent="Manual"
+    SnapsToDevicePixels="True"
+    Topmost="True"
+    UseLayoutRounding="True"
+    WindowStyle="None"
+    mc:Ignorable="d">
+    <Grid
+        x:Name="IconRoot"
+        Background="Transparent"
+        Opacity="0"
+        RenderTransformOrigin="0.5,0.5">
+        <Grid.RenderTransform>
+            <ScaleTransform x:Name="IconScaleTransform" />
+        </Grid.RenderTransform>
+
+        <Button
+            x:Name="TranslateBtn"
+            Width="32"
+            Height="32"
+            Background="{DynamicResource {x:Static ui:ThemeKeys.SolidBackgroundFillColorBaseBrushKey}}"
+            BorderBrush="{DynamicResource {x:Static ui:ThemeKeys.ControlStrokeColorDefaultBrushKey}}"
+            BorderThickness="1"
+            Click="TranslateBtn_Click"
+            Cursor="Hand"
+            Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+            RenderTransformOrigin="0.5,0.5">
+
+            <Button.ToolTip>
+                <ToolTip Content="{DynamicResource MouseSelectionIconTranslate}" />
+            </Button.ToolTip>
+
+            <Button.Template>
+                <ControlTemplate TargetType="Button">
+                    <Border
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="6">
+                        <Border.Effect>
+                            <DropShadowEffect
+                                BlurRadius="8"
+                                Direction="270"
+                                Opacity="0.32"
+                                ShadowDepth="2" />
+                        </Border.Effect>
+                        <ui:FontIcon
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            FontSize="20"
+                            Foreground="{TemplateBinding Foreground}"
+                            Icon="{x:Static ui:FluentSystemIcons.CursorClick_20_Regular}" />
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="{DynamicResource {x:Static ui:ThemeKeys.SystemControlBackgroundAccentBrushKey}}" />
+                            <Setter Property="Foreground" Value="{DynamicResource {x:Static ui:ThemeKeys.TextFillColorInverseBrushKey}}" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="RenderTransform">
+                                <Setter.Value>
+                                    <ScaleTransform ScaleX="0.94" ScaleY="0.94" />
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Button.Template>
+        </Button>
+    </Grid>
+</Window>

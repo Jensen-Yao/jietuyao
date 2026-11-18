@@ -1,0 +1,10 @@
+{
+  "PluginID": "0b5d84917783415d865032f1d6e2877f",
+  "Name": "Google Translate (Built-in)",
+  "Description": "Free Google Translate plugin",
+  "Author": "zggsong",
+  "Version": "1.1.0",
+  "Website": "https://github.com/STranslate/STranslate",
+  "ExecuteFileName": "STranslate.Plugin.Translate.GoogleBuiltIn.dll",
+  "IconPath": "icon.png"
+}

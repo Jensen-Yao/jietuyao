@@ -1,0 +1,10 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+    <sys:String x:Key="STranslate_Plugin_Translate_Microsoft">معرفی</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_Microsoft_Content">این افزونه دسترسی رایگان به سرویس ترجمه مایکروسافت را فراهم می‌کند.</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_Microsoft_RequestMode">حالت درخواست</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_Microsoft_RequestMode_Description">حالت پیش‌فرض از روش امضای قدیمی استفاده می‌کند و EdgeToken از روش احراز هویت جدید؛ اگر یک حالت ناموفق بود، حالت دیگر را امتحان کنید.</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_Microsoft_RequestMode_Legacy">پیش‌فرض</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_Microsoft_RequestMode_Edge">توکن ایج (EdgeToken)</sys:String>
+</ResourceDictionary>

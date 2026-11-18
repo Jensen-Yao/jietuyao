@@ -1,0 +1,48 @@
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageVersion Include="ChefKeys" Version="0.1.2" />
+    <PackageVersion Include="CommunityToolkit.Mvvm" Version="8.4.2" />
+    <PackageVersion Include="Costura.Fody" Version="6.2.0" />
+    <PackageVersion Include="Dapper.Contrib" Version="2.0.78" />
+    <PackageVersion Include="gong-wpf-dragdrop" Version="4.0.0" />
+    <PackageVersion Include="H.InputSimulator" Version="1.5.0" />
+    <PackageVersion Include="Hardcodet.NotifyIcon.Wpf" Version="2.0.1" />
+    <PackageVersion Include="iNKORE.UI.WPF.Modern" Version="0.10.2.1" />
+    <PackageVersion Include="Markdig.Wpf" Version="0.5.0.1" />
+    <PackageVersion Include="Microsoft.Data.Sqlite" Version="10.0.9" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.9" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.9" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="10.0.9" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.7" />
+    <PackageVersion Include="Microsoft.Extensions.Http" Version="10.0.9" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.9" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.7.0" />
+    <PackageVersion Include="Microsoft.Toolkit.Uwp.Notifications" Version="7.1.3" />
+    <PackageVersion Include="Microsoft.Windows.CsWin32" Version="0.3.298" />
+    <PackageVersion Include="MouseKeyHook" Version="5.7.1" />
+    <PackageVersion Include="NAudio" Version="2.3.0" />
+    <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageVersion Include="NHotkey.Wpf" Version="4.0.0" />
+    <PackageVersion Include="ObservableCollections" Version="3.3.4" />
+    <PackageVersion Include="PracticalToolkit.WPF" Version="1.0.4" />
+    <PackageVersion Include="ScreenGrab" Version="1.0.17" />
+    <PackageVersion Include="SemanticVersioning" Version="3.0.0" />
+    <PackageVersion Include="Serilog.Extensions.Logging" Version="10.0.0" />
+    <PackageVersion Include="Serilog.Sinks.Console" Version="6.0.0" />
+    <PackageVersion Include="Serilog.Sinks.Debug" Version="3.0.0" />
+    <PackageVersion Include="Serilog.Sinks.File" Version="7.0.0" />
+    <PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="8.19.1" />
+    <PackageVersion Include="System.Reflection.MetadataLoadContext" Version="10.0.9" />
+    <PackageVersion Include="Velopack" Version="1.2.0" />
+    <PackageVersion Include="WebDav.Client" Version="2.9.0" />
+    <PackageVersion Include="WeChatOcr" Version="1.0.5" />
+    <PackageVersion Include="WpfMath" Version="2.1.0" />
+    <PackageVersion Include="XamlFlair.WPF" Version="1.2.13" />
+    <PackageVersion Include="xunit" Version="2.9.3" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.5" />
+    <PackageVersion Include="ZXing.Net.Bindings.ZKWeb.System.Drawing" Version="0.16.9" />
+  </ItemGroup>
+</Project>

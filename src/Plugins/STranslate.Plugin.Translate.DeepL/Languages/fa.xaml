@@ -1,0 +1,18 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+    <sys:String x:Key="STranslate_Plugin_Translate_DeepL_ApiKey">کلید API</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_DeepL_ApiKey_Placeholder">لطفا کلید API خود را وارد کنید</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_DeepL_ApiKey_Description">کلید DeepL خود را وارد کنید</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_DeepL_ApiType">نشانی API</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_DeepL_ApiType_Description">یک نشانی پایه API برای DeepL انتخاب کرده یا یک نقطه پایانی سفارشی سازگار وارد کنید</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_DeepL_CustomApiUrl_Placeholder">نشانی پایه API را وارد کنید، مانند https://api-us.deepl.com</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_DeepL_InvalidApiUrl">یک نشانی پایه API معتبر HTTP(S) بدون پارامترهای پرس‌وجو یا فرگمنت وارد کنید</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_DeepL_Usage">وضعیت استفاده</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_DeepL_Query">استعلام</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_DeepL_Query_Success">استعلام موفقیت‌آمیز بود</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_DeepL_Query_Fail">استعلام ناموفق بود</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_DeepL_Query_Cancel">لغو استعلام</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_DeepL_Query_Error1">مقدار استفاده خالی است</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_DeepL_Query_Error2">سقف استفاده خالی است</sys:String>
+</ResourceDictionary>

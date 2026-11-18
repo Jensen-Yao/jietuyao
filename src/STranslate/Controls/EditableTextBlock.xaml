@@ -1,0 +1,72 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:cnvt="clr-namespace:STranslate.Converters"
+    xmlns:control="clr-namespace:STranslate.Controls"
+    xmlns:ui="http://schemas.inkore.net/lib/ui/wpf/modern">
+
+    <Style TargetType="{x:Type control:EditableTextBlock}">
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static ui:ThemeKeys.TextFillColorPrimaryBrushKey}}" />
+        <Setter Property="FontSize" Value="{DynamicResource STControlFontSize12}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type control:EditableTextBlock}">
+                    <Grid>
+                        <Grid.Resources>
+                            <Style BasedOn="{StaticResource {x:Type TextBlock}}" TargetType="TextBlock">
+                                <Setter Property="Foreground" Value="{Binding Foreground, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}" />
+                                <Setter Property="Background" Value="Transparent" />
+                                <Setter Property="HorizontalAlignment" Value="Stretch" />
+                                <Setter Property="VerticalAlignment" Value="Center" />
+                                <Setter Property="FontSize" Value="{Binding FontSize, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}" />
+                                <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+                                <Setter Property="Margin" Value="2,0,0,0" />
+                            </Style>
+                            <Style BasedOn="{StaticResource {x:Type TextBox}}" TargetType="TextBox">
+                                <Setter Property="Background" Value="Transparent" />
+                                <Setter Property="BorderThickness" Value="0,0,0,1" />
+                                <Setter Property="Padding" Value="0" />
+                                <Setter Property="Margin" Value="0" />
+                                <Setter Property="Opacity" Value="0.7" />
+                                <Setter Property="HorizontalAlignment" Value="Stretch" />
+                                <Setter Property="VerticalAlignment" Value="Center" />
+                                <Setter Property="VerticalContentAlignment" Value="Center" />
+                                <Setter Property="FontSize" Value="{Binding FontSize, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}" />
+                                <Setter Property="HorizontalContentAlignment" Value="Left" />
+                                <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                                <Setter Property="Foreground" Value="{Binding Foreground, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}" />
+                                <Setter Property="CaretBrush" Value="{DynamicResource AccentBrush}" />
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="TextBox">
+                                            <ScrollViewer
+                                                x:Name="PART_ContentHost"
+                                                Background="Transparent"
+                                                Focusable="false" />
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Grid.Resources>
+
+                        <!--  https://learn.microsoft.com/zh-cn/dotnet/desktop/wpf/advanced/templatebinding-markup-extension#remarks  -->
+                        <!--  TemplateBinding 是 OneWay 绑定的简化写法，只能从控件属性传递到模板元素，不能反向传递  -->
+                        <TextBlock
+                            x:Name="PART_TextBlock"
+                            SnapsToDevicePixels="True"
+                            Text="{Binding Text, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                            Visibility="{Binding IsEditing, RelativeSource={RelativeSource TemplatedParent}, Converter={cnvt:EqualToVisibilityConverter}, ConverterParameter=False}" />
+
+                        <TextBox
+                            x:Name="PART_TextBox"
+                            HorizontalAlignment="Stretch"
+                            control:DisallowSpecialCharactersTextboxBehavior.DisallowSpecialCharacters="{TemplateBinding DisallowSpecialCharacters}"
+                            SnapsToDevicePixels="True"
+                            Text="{Binding Text, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                            Visibility="{Binding IsEditing, RelativeSource={RelativeSource TemplatedParent}, Converter={cnvt:EqualToVisibilityConverter}, ConverterParameter=True}" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

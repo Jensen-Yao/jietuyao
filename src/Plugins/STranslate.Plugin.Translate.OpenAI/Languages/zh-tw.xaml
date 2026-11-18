@@ -1,0 +1,13 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+    <sys:String x:Key="STranslate_Plugin_Translate_OpenAI_ApiMode">API 模式</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_OpenAI_ApiMode_Description">Chat Completions 相容更多 OpenAI 格式服務，Responses 使用新版 Responses API。</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_OpenAI_ApiMode_ChatCompletions">Chat Completions</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_OpenAI_ApiMode_Responses">Responses</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_OpenAI_NoTextOutput">API 未傳回任何文字內容。</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_OpenAI_AdditionalParameters">附加請求參數</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_OpenAI_AdditionalParameters_Description">填寫要合併到請求根物件的 JSON。不能覆寫外掛程式產生的內建欄位。</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_OpenAI_SendTemperature">傳送溫度參數</sys:String>
+</ResourceDictionary>

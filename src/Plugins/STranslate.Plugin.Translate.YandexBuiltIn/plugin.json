@@ -1,0 +1,10 @@
+﻿{
+  "PluginID": "2c1b2a2fa1e24ae79b7dc73bdea35159",
+  "Name": "Yandex (Built-in)",
+  "Description": "Free Yandex translation plugin",
+  "Author": "zggsong",
+  "Version": "1.0.1",
+  "Website": "https://github.com/ZGGSONG/STranslate",
+  "ExecuteFileName": "STranslate.Plugin.Translate.YandexBuiltIn.dll",
+  "IconPath": "icon.png"
+}

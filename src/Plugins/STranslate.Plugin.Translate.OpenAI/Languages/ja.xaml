@@ -1,0 +1,13 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+    <sys:String x:Key="STranslate_Plugin_Translate_OpenAI_ApiMode">API モード</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_OpenAI_ApiMode_Description">幅広い OpenAI 互換サービスには Chat Completions、Responses API には Responses を選択します。</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_OpenAI_ApiMode_ChatCompletions">Chat Completions</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_OpenAI_ApiMode_Responses">Responses</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_OpenAI_NoTextOutput">API からテキストが返されませんでした。</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_OpenAI_AdditionalParameters">追加リクエストパラメーター</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_OpenAI_AdditionalParameters_Description">リクエストのルートにマージする JSON オブジェクトを入力します。プラグインが生成する組み込みフィールドは上書きできません。</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_OpenAI_SendTemperature">温度パラメーターを送信</sys:String>
+</ResourceDictionary>

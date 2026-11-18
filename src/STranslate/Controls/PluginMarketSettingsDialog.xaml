@@ -1,0 +1,69 @@
+<ui:ContentDialog
+    x:Class="STranslate.Controls.PluginMarketSettingsDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:cnvt="clr-namespace:STranslate.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:ikw="http://schemas.inkore.net/lib/ui/wpf"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:sys="clr-namespace:System;assembly=System.Runtime"
+    xmlns:ui="http://schemas.inkore.net/lib/ui/wpf/modern"
+    xmlns:vm="clr-namespace:STranslate.Controls"
+    Title="{DynamicResource PluginMarketSettings}"
+    d:DataContext="{d:DesignInstance Type=vm:PluginMarketSettingsViewModel,
+                                     IsDesignTimeCreatable=False}"
+    d:DesignHeight="300"
+    d:DesignWidth="500"
+    CloseButtonText="{DynamicResource Cancel}"
+    DefaultButton="Primary"
+    PrimaryButtonClick="OnPrimaryButtonClick"
+    PrimaryButtonStyle="{DynamicResource {x:Static ui:ThemeKeys.AccentButtonStyleKey}}"
+    PrimaryButtonText="{DynamicResource Save}"
+    mc:Ignorable="d">
+
+    <ui:ContentDialog.Resources>
+        <sys:Double x:Key="ContentDialogMaxWidth">500</sys:Double>
+        <sys:Double x:Key="ContentDialogMaxHeight">400</sys:Double>
+        <sys:Double x:Key="ContentDialogMinWidth">450</sys:Double>
+        <sys:Double x:Key="ContentDialogMinHeight">300</sys:Double>
+    </ui:ContentDialog.Resources>
+
+    <ui:ScrollViewerEx VerticalScrollBarVisibility="Auto">
+        <ikw:SimpleStackPanel Spacing="16">
+            <ui:SettingsCard Description="{DynamicResource General_PluginMarketCdnSourceDescription}" Header="{DynamicResource General_PluginMarketCdnSource}">
+                <ComboBox
+                    MinWidth="200"
+                    DisplayMemberPath="Display"
+                    ItemsSource="{Binding DataProvider.PluginMarketCdnSources}"
+                    SelectedValue="{Binding SelectedCdnSource, Mode=TwoWay}"
+                    SelectedValuePath="Value" />
+            </ui:SettingsCard>
+
+            <ui:SettingsCard
+                Description="{DynamicResource General_CustomCdnUrlDescription}"
+                Header="{DynamicResource General_CustomCdnUrl}"
+                Visibility="{Binding IsCustomCdnSource, Converter={cnvt:BoolToVisibilityConverter}}">
+                <TextBox MinWidth="350" Text="{Binding CustomCdnUrl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            </ui:SettingsCard>
+
+            <ui:SettingsCard Description="{DynamicResource PluginDownloadProxyDescription}" Header="{DynamicResource PluginDownloadProxy}">
+                <ComboBox
+                    MinWidth="200"
+                    DisplayMemberPath="Display"
+                    ItemsSource="{Binding DataProvider.PluginDownloadProxies}"
+                    SelectedValue="{Binding SelectedDownloadProxy, Mode=TwoWay}"
+                    SelectedValuePath="Value" />
+            </ui:SettingsCard>
+
+            <ui:SettingsCard
+                Description="{DynamicResource PluginDownloadProxyUrlDescription}"
+                Header="{DynamicResource PluginDownloadProxyUrl}"
+                Visibility="{Binding IsCustomDownloadProxy, Converter={cnvt:BoolToVisibilityConverter}}">
+                <TextBox
+                    MinWidth="350"
+                    Text="{Binding CustomDownloadProxyUrl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    ToolTipService.ToolTip="{DynamicResource PluginDownloadProxyUrlExample}" />
+            </ui:SettingsCard>
+        </ikw:SimpleStackPanel>
+    </ui:ScrollViewerEx>
+</ui:ContentDialog>

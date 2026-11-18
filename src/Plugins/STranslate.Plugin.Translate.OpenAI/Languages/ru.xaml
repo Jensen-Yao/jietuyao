@@ -1,0 +1,13 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+    <sys:String x:Key="STranslate_Plugin_Translate_OpenAI_ApiMode">Режим API</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_OpenAI_ApiMode_Description">Выберите Chat Completions для широкой совместимости с OpenAI-совместимыми сервисами или Responses для Responses API.</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_OpenAI_ApiMode_ChatCompletions">Chat Completions</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_OpenAI_ApiMode_Responses">Responses</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_OpenAI_NoTextOutput">API не вернул текст.</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_OpenAI_AdditionalParameters">Дополнительные параметры запроса</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_OpenAI_AdditionalParameters_Description">Укажите объект JSON, который будет добавлен в корень запроса. Встроенные поля, которые формирует плагин, переопределить нельзя.</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_OpenAI_SendTemperature">Отправлять параметр temperature</sys:String>
+</ResourceDictionary>

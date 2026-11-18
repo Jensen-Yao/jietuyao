@@ -1,0 +1,25 @@
+<Application
+    x:Class="STranslate.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:ui="http://schemas.inkore.net/lib/ui/wpf/modern"
+    ShutdownMode="OnExplicitShutdown">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ui:ThemeResources />
+                <ui:XamlControlsResources />
+
+                <!--  // Animations //  -->
+                <ResourceDictionary Source="pack://application:,,,/XamlFlair.WPF;component/DefaultAnimations.xaml" />
+
+                <ResourceDictionary Source="pack://application:,,,/STranslate;component/Resources/CustomStyles.xaml" />
+
+                <!--  // 在应用程序启动时立即加载 Generic.xaml 避免CustomControl里引入第三方主题StyleResourceKey报错/BaseOn失效的问题 //  -->
+                <ResourceDictionary Source="pack://application:,,,/STranslate;component/Themes/Generic.xaml" />
+
+                <ResourceDictionary Source="pack://application:,,,/STranslate;component/Languages/en.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

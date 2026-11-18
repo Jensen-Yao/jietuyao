@@ -1,0 +1,130 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <UseWPF>true</UseWPF>
+        <StartupObject>STranslate.App</StartupObject>
+        <!--// Avoid generating redundant assembly attributes //-->
+        <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <ApplicationIcon>Resources\app.ico</ApplicationIcon>
+        <ApplicationManifest>app.manifest</ApplicationManifest>
+        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+        <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+        <PlatformTarget>AnyCPU</PlatformTarget>
+        <DebugSymbols>true</DebugSymbols>
+        <DebugType>portable</DebugType>
+        <Optimize>false</Optimize>
+        <OutputPath>..\.artifacts\Debug\</OutputPath>
+        <DefineConstants>DEBUG;TRACE</DefineConstants>
+        <ErrorReport>prompt</ErrorReport>
+        <WarningLevel>4</WarningLevel>
+        <UseVSHostingProcess>true</UseVSHostingProcess>
+        <Prefer32Bit>false</Prefer32Bit>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+        <PlatformTarget>AnyCPU</PlatformTarget>
+        <DebugType>none</DebugType>
+        <Optimize>true</Optimize>
+        <OutputPath>..\.artifacts\Release\</OutputPath>
+        <DefineConstants>TRACE;RELEASE</DefineConstants>
+        <ErrorReport>prompt</ErrorReport>
+        <WarningLevel>4</WarningLevel>
+        <Prefer32Bit>false</Prefer32Bit>
+    </PropertyGroup>
+
+    <ItemGroup Condition="'$(Configuration)' == 'Release'">
+        <PackageReference Include="Costura.Fody" PrivateAssets="all" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ApplicationDefinition Remove="App.xaml" />
+        <Page Include="App.xaml" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Include="..\SolutionAssemblyInfo.cs" Link="Properties\SolutionAssemblyInfo.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Content Include="Languages\*.xaml">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <Generator>MSBuild:Compile</Generator>
+            <SubType>Designer</SubType>
+        </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Resource Include="Resources\*.ani" />
+        <Resource Include="Resources\*.ico" />
+        <Resource Include="Resources\*.png" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <AdditionalFiles Include="Core\NativeMethods.txt" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Content Include="Images\*.*">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="Resources\z_stranslate_host.exe">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <TargetPath>z_stranslate_host.exe</TargetPath>
+        </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="ChefKeys" />
+        <PackageReference Include="Dapper.Contrib" />
+        <PackageReference Include="gong-wpf-dragdrop" />
+        <PackageReference Include="H.InputSimulator" />
+        <PackageReference Include="Hardcodet.NotifyIcon.Wpf" />
+        <PackageReference Include="Markdig.Wpf" />
+        <PackageReference Include="Microsoft.Data.Sqlite" />
+        <PackageReference Include="Microsoft.Toolkit.Uwp.Notifications" />
+        <PackageReference Include="MouseKeyHook" />
+        <PackageReference Include="NAudio" />
+        <PackageReference Include="NHotkey.Wpf" />
+        <PackageReference Include="ObservableCollections" />
+        <PackageReference Include="PracticalToolkit.WPF" />
+        <PackageReference Include="ScreenGrab" />
+        <PackageReference Include="SemanticVersioning" />
+        <PackageReference Include="Serilog.Extensions.Logging" />
+        <PackageReference Include="Serilog.Sinks.File" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+        <PackageReference Include="Microsoft.Extensions.Hosting" />
+        <PackageReference Include="Microsoft.Extensions.Http" />
+        <PackageReference Include="Microsoft.Windows.CsWin32">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
+        <PackageReference Include="System.Reflection.MetadataLoadContext" />
+        <PackageReference Include="Velopack" />
+        <PackageReference Include="WebDav.Client" />
+        <PackageReference Include="WpfMath" />
+        <PackageReference Include="XamlFlair.WPF" />
+        <PackageReference Include="ZXing.Net.Bindings.ZKWeb.System.Drawing" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\STranslate.Plugin\STranslate.Plugin.csproj" />
+    </ItemGroup>
+
+    <!-- 构建前根据配置复制对应的 FodyWeavers 文件 -->
+    <Target Name="SelectFodyWeaversConfig" BeforeTargets="BeforeBuild">
+        <Message Text="Selecting FodyWeavers configuration for $(Configuration)" Importance="high" />
+        <Copy SourceFiles="FodyWeavers.$(Configuration).xml" DestinationFiles="FodyWeavers.xml" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
+        <Message Text="FodyWeavers.xml updated for $(Configuration) configuration" Importance="high" />
+    </Target>
+
+</Project>

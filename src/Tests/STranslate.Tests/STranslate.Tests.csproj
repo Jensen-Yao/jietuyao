@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\STranslate\STranslate.csproj" />
+    <ProjectReference Include="..\..\Plugins\STranslate.Plugin.Ocr.OcrSpace\STranslate.Plugin.Ocr.OcrSpace.csproj" />
+    <ProjectReference Include="..\..\Plugins\STranslate.Plugin.Translate.OpenAI\STranslate.Plugin.Translate.OpenAI.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+    <Compile Include="..\..\Plugins\STranslate.Plugin.Translate.Youdao\TranslationResponse.cs" Link="Youdao\TranslationResponse.cs" />
+  </ItemGroup>
+
+</Project>

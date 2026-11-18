@@ -1,0 +1,10 @@
+﻿{
+  "PluginID": "7a3ab25875294602b3afc4ae15fec627",
+  "Name": "Edge TTS",
+  "Description": "Microsoft Edge Text-to-Speech plugin for STranslate",
+  "Author": "zggsong",
+  "Version": "1.0.0",
+  "Website": "https://github.com/ZGGSONG/STranslate",
+  "ExecuteFileName": "STranslate.Plugin.Tts.MicrosoftEdge.dll",
+  "IconPath": "icon.png"
+}

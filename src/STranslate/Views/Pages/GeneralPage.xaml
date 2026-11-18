@@ -1,0 +1,1143 @@
+<ui:Page
+    x:Class="STranslate.Views.Pages.GeneralPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:cnvt="clr-namespace:STranslate.Converters"
+    xmlns:componentmodel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+    xmlns:control="clr-namespace:STranslate.Controls"
+    xmlns:core="clr-namespace:STranslate.Core"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:dd="urn:gong-wpf-dragdrop"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:ikw="http://schemas.inkore.net/lib/ui/wpf"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="http://schemas.inkore.net/lib/ui/wpf/modern"
+    xmlns:vm="clr-namespace:STranslate.ViewModels.Pages"
+    Title="General"
+    d:DataContext="{d:DesignInstance Type=vm:GeneralViewModel,
+                                     IsDesignTimeCreatable=False}"
+    d:DesignHeight="3450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+    <ui:Page.Resources>
+        <ResourceDictionary>
+            <CollectionViewSource x:Key="SortedFonts" Source="{Binding Source={x:Static Fonts.SystemFontFamilies}}">
+                <CollectionViewSource.SortDescriptions>
+                    <componentmodel:SortDescription PropertyName="Source" />
+                </CollectionViewSource.SortDescriptions>
+            </CollectionViewSource>
+            <control:HeaderActionFixedOrderDropHandler x:Key="HeaderActionFixedOrderDropHandler" />
+            <control:HeaderActionLiveReorderDropHandler x:Key="HeaderActionLiveReorderDropHandler" />
+
+            <Style x:Key="HeaderActionListBoxItemStyle" TargetType="ListBoxItem">
+                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                <Setter Property="VerticalContentAlignment" Value="Stretch" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ListBoxItem">
+                            <ContentPresenter />
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <DataTemplate x:Key="HeaderActionPreviewTemplate">
+                <Grid Margin="0,0,6,0">
+                    <Border
+                        x:Name="PreviewSingleButton"
+                        Padding="6,4"
+                        Background="{DynamicResource ControlFillColorDefaultBrush}"
+                        BorderBrush="{DynamicResource ControlElevationBorderBrush}"
+                        BorderThickness="1"
+                        CornerRadius="6">
+                        <ui:FontIcon x:Name="PreviewSingleIcon" FontSize="{DynamicResource STControlFontSize14}" />
+                    </Border>
+                    <ikw:SimpleStackPanel
+                        x:Name="PreviewHistoryGroup"
+                        Orientation="Horizontal"
+                        Spacing="0"
+                        Visibility="Collapsed">
+                        <Border
+                            Padding="6,4"
+                            Background="{DynamicResource ControlFillColorDefaultBrush}"
+                            BorderBrush="{DynamicResource ControlElevationBorderBrush}"
+                            BorderThickness="1,1,0,1"
+                            CornerRadius="6,0,0,6">
+                            <ui:FontIcon FontSize="{DynamicResource STControlFontSize14}" Icon="{x:Static ui:FluentSystemIcons.ChevronCircleLeft_20_Regular}" />
+                        </Border>
+                        <Border
+                            Margin="-0.5,0,0,0"
+                            Padding="6,4"
+                            Background="{DynamicResource ControlFillColorDefaultBrush}"
+                            BorderBrush="{DynamicResource ControlElevationBorderBrush}"
+                            BorderThickness="0.5,1,1,1"
+                            CornerRadius="0,6,6,0">
+                            <ui:FontIcon FontSize="{DynamicResource STControlFontSize14}" Icon="{x:Static ui:FluentSystemIcons.ChevronCircleRight_20_Regular}" />
+                        </Border>
+                    </ikw:SimpleStackPanel>
+                </Grid>
+                <DataTemplate.Triggers>
+                    <DataTrigger Binding="{Binding}" Value="{x:Static core:MainHeaderActions.ClipboardMonitor}">
+                        <Setter TargetName="PreviewSingleIcon" Property="Icon" Value="{x:Static ui:FluentSystemIcons.ClipboardMore_20_Regular}" />
+                        <Setter TargetName="PreviewSingleButton" Property="ToolTip" Value="{DynamicResource General_ShowClipboardMonitor}" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding}" Value="{x:Static core:MainHeaderActions.AutoTranslate}">
+                        <Setter TargetName="PreviewSingleIcon" Property="Icon" Value="{x:Static ui:FluentSystemIcons.TranslateAuto_20_Regular}" />
+                        <Setter TargetName="PreviewSingleButton" Property="ToolTip" Value="{DynamicResource General_AutoTranslate}" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding}" Value="{x:Static core:MainHeaderActions.Ocr}">
+                        <Setter TargetName="PreviewSingleIcon" Property="Icon" Value="{x:Static ui:FluentSystemIcons.ScanType_20_Regular}" />
+                        <Setter TargetName="PreviewSingleButton" Property="ToolTip" Value="{DynamicResource Ocr}" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding}" Value="{x:Static core:MainHeaderActions.ImageTranslate}">
+                        <Setter TargetName="PreviewSingleIcon" Property="Icon" Value="{x:Static ui:FluentSystemIcons.DrawImage_20_Regular}" />
+                        <Setter TargetName="PreviewSingleButton" Property="ToolTip" Value="{DynamicResource General_ShowImageTranslate}" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding}" Value="{x:Static core:MainHeaderActions.ScreenshotTranslate}">
+                        <Setter TargetName="PreviewSingleIcon" Property="Icon" Value="{x:Static ui:FluentSystemIcons.ScreenCut_20_Regular}" />
+                        <Setter TargetName="PreviewSingleButton" Property="ToolTip" Value="{DynamicResource General_ShowScreenshotTranslate}" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding}" Value="{x:Static core:MainHeaderActions.MouseSelectionTranslation}">
+                        <Setter TargetName="PreviewSingleIcon" Property="Icon" Value="{x:Static ui:FluentSystemIcons.KeyboardMouse_16_Regular}" />
+                        <Setter TargetName="PreviewSingleButton" Property="ToolTip" Value="{DynamicResource General_ShowMouseSelectionTranslation}" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding}" Value="{x:Static core:MainHeaderActions.ColorScheme}">
+                        <Setter TargetName="PreviewSingleIcon" Property="Icon" Value="{x:Static ui:FluentSystemIcons.Color_20_Regular}" />
+                        <Setter TargetName="PreviewSingleButton" Property="ToolTip" Value="{DynamicResource General_ColorTheme}" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding}" Value="{x:Static core:MainHeaderActions.HideInput}">
+                        <Setter TargetName="PreviewSingleIcon" Property="Icon" Value="{x:Static ui:FluentSystemIcons.SlideHide_20_Regular}" />
+                        <Setter TargetName="PreviewSingleButton" Property="ToolTip" Value="{DynamicResource General_HideInputBox}" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding}" Value="{x:Static core:MainHeaderActions.HistoryNavigation}">
+                        <Setter TargetName="PreviewSingleButton" Property="Visibility" Value="Collapsed" />
+                        <Setter TargetName="PreviewHistoryGroup" Property="Visibility" Value="Visible" />
+                        <Setter TargetName="PreviewHistoryGroup" Property="ToolTip" Value="{DynamicResource General_ShowHistoryNavigation}" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding}" Value="{x:Static core:MainHeaderActions.ServiceSwitcher}">
+                        <Setter TargetName="PreviewSingleIcon" Property="Icon" Value="{x:Static ui:FluentSystemIcons.Apps_20_Regular}" />
+                        <Setter TargetName="PreviewSingleButton" Property="ToolTip" Value="{DynamicResource ServiceQuickSwitcher}" />
+                    </DataTrigger>
+                </DataTemplate.Triggers>
+            </DataTemplate>
+
+            <DataTemplate x:Key="HeaderActionPoolTemplate">
+                <Border
+                    Margin="0,0,8,8"
+                    Padding="10,6"
+                    Background="{DynamicResource ControlFillColorDefaultBrush}"
+                    BorderBrush="{DynamicResource ControlElevationBorderBrush}"
+                    BorderThickness="1"
+                    CornerRadius="6">
+                    <ikw:SimpleStackPanel Orientation="Horizontal" Spacing="8">
+                        <ui:FontIcon
+                            x:Name="PoolActionIcon"
+                            VerticalAlignment="Center"
+                            FontSize="{DynamicResource STControlFontSize14}" />
+                        <TextBlock x:Name="PoolActionText" VerticalAlignment="Center" />
+                    </ikw:SimpleStackPanel>
+                </Border>
+                <DataTemplate.Triggers>
+                    <DataTrigger Binding="{Binding}" Value="{x:Static core:MainHeaderActions.ClipboardMonitor}">
+                        <Setter TargetName="PoolActionIcon" Property="Icon" Value="{x:Static ui:FluentSystemIcons.ClipboardMore_20_Regular}" />
+                        <Setter TargetName="PoolActionText" Property="Text" Value="{DynamicResource General_ShowClipboardMonitor}" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding}" Value="{x:Static core:MainHeaderActions.AutoTranslate}">
+                        <Setter TargetName="PoolActionIcon" Property="Icon" Value="{x:Static ui:FluentSystemIcons.TranslateAuto_20_Regular}" />
+                        <Setter TargetName="PoolActionText" Property="Text" Value="{DynamicResource General_AutoTranslate}" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding}" Value="{x:Static core:MainHeaderActions.Ocr}">
+                        <Setter TargetName="PoolActionIcon" Property="Icon" Value="{x:Static ui:FluentSystemIcons.ScanType_20_Regular}" />
+                        <Setter TargetName="PoolActionText" Property="Text" Value="{DynamicResource Ocr}" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding}" Value="{x:Static core:MainHeaderActions.ImageTranslate}">
+                        <Setter TargetName="PoolActionIcon" Property="Icon" Value="{x:Static ui:FluentSystemIcons.DrawImage_20_Regular}" />
+                        <Setter TargetName="PoolActionText" Property="Text" Value="{DynamicResource General_ShowImageTranslate}" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding}" Value="{x:Static core:MainHeaderActions.ScreenshotTranslate}">
+                        <Setter TargetName="PoolActionIcon" Property="Icon" Value="{x:Static ui:FluentSystemIcons.ScreenCut_20_Regular}" />
+                        <Setter TargetName="PoolActionText" Property="Text" Value="{DynamicResource General_ShowScreenshotTranslate}" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding}" Value="{x:Static core:MainHeaderActions.MouseSelectionTranslation}">
+                        <Setter TargetName="PoolActionIcon" Property="Icon" Value="{x:Static ui:FluentSystemIcons.KeyboardMouse_16_Regular}" />
+                        <Setter TargetName="PoolActionText" Property="Text" Value="{DynamicResource General_ShowMouseSelectionTranslation}" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding}" Value="{x:Static core:MainHeaderActions.ColorScheme}">
+                        <Setter TargetName="PoolActionIcon" Property="Icon" Value="{x:Static ui:FluentSystemIcons.Color_20_Regular}" />
+                        <Setter TargetName="PoolActionText" Property="Text" Value="{DynamicResource General_ColorTheme}" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding}" Value="{x:Static core:MainHeaderActions.HideInput}">
+                        <Setter TargetName="PoolActionIcon" Property="Icon" Value="{x:Static ui:FluentSystemIcons.SlideHide_20_Regular}" />
+                        <Setter TargetName="PoolActionText" Property="Text" Value="{DynamicResource General_HideInputBox}" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding}" Value="{x:Static core:MainHeaderActions.ServiceSwitcher}">
+                        <Setter TargetName="PoolActionIcon" Property="Icon" Value="{x:Static ui:FluentSystemIcons.Apps_20_Regular}" />
+                        <Setter TargetName="PoolActionText" Property="Text" Value="{DynamicResource ServiceQuickSwitcher}" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding}" Value="{x:Static core:MainHeaderActions.HistoryNavigation}">
+                        <Setter TargetName="PoolActionIcon" Property="Icon" Value="{x:Static ui:FluentSystemIcons.AppRecent_20_Regular}" />
+                        <Setter TargetName="PoolActionText" Property="Text" Value="{DynamicResource General_ShowHistoryNavigation}" />
+                    </DataTrigger>
+                </DataTemplate.Triggers>
+            </DataTemplate>
+        </ResourceDictionary>
+    </ui:Page.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <DockPanel Margin="20,10,20,12">
+            <TextBlock Style="{DynamicResource {x:Static ui:ThemeKeys.SubtitleTextBlockStyleKey}}" Text="{DynamicResource General}" />
+
+            <ui:AutoSuggestBox
+                x:Name="PART_AutoSuggestBox"
+                MinWidth="200"
+                MaxWidth="500"
+                HorizontalAlignment="Right"
+                DockPanel.Dock="Right"
+                PlaceholderText="{DynamicResource SearchFunction}"
+                ToolTip="{DynamicResource SearchFunctionToolTip}"
+                ToolTipService.InitialShowDelay="200"
+                ToolTipService.Placement="Top">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="TextChanged">
+                        <i:InvokeCommandAction
+                            Command="{Binding TextChangedCommand}"
+                            EventArgsConverter="{cnvt:EventArgsConverter}"
+                            EventArgsConverterParameter="{Binding ElementName=PART_AutoSuggestBox}"
+                            PassEventArgsToCommand="True" />
+                    </i:EventTrigger>
+                    <i:EventTrigger EventName="SuggestionChosen">
+                        <i:InvokeCommandAction
+                            Command="{Binding SuggestionChosenCommand}"
+                            EventArgsConverter="{cnvt:EventArgsConverter}"
+                            EventArgsConverterParameter="{Binding ElementName=PART_AutoSuggestBox}"
+                            PassEventArgsToCommand="True" />
+                    </i:EventTrigger>
+                    <i:EventTrigger EventName="QuerySubmitted">
+                        <i:InvokeCommandAction
+                            Command="{Binding QuerySubmittedCommand}"
+                            EventArgsConverter="{cnvt:EventArgsConverter}"
+                            EventArgsConverterParameter="{Binding ElementName=PART_ScrollViewer}"
+                            PassEventArgsToCommand="True" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+                <ui:AutoSuggestBox.QueryIcon>
+                    <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Search_20_Regular}" />
+                </ui:AutoSuggestBox.QueryIcon>
+            </ui:AutoSuggestBox>
+        </DockPanel>
+
+        <ui:ScrollViewerEx x:Name="PART_ScrollViewer" Grid.Row="1">
+            <ikw:SimpleStackPanel Margin="20,10" Spacing="4">
+                <!--#region Function-->
+
+                <TextBlock
+                    Margin="0,8,0,4"
+                    Style="{DynamicResource BodyStrongTextBlockStyle}"
+                    Text="{DynamicResource Function}" />
+                <control:CardGroup>
+                    <ui:SettingsCard Description="{DynamicResource General_AutoStartupDescription}" Header="{DynamicResource General_AutoStartup}">
+                        <ui:SettingsCard.HeaderIcon>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Power_20_Regular}" />
+                        </ui:SettingsCard.HeaderIcon>
+                        <ui:ToggleSwitch
+                            IsOn="{Binding Settings.AutoStartup}"
+                            OffContent="{DynamicResource Disable}"
+                            OnContent="{DynamicResource Enable}" />
+                    </ui:SettingsCard>
+
+                    <ui:SettingsCard Description="{DynamicResource General_StartModeDescription}" Header="{DynamicResource General_StartMode}">
+                        <ui:SettingsCard.HeaderIcon>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.ShieldTask_20_Regular}" />
+                        </ui:SettingsCard.HeaderIcon>
+                        <ComboBox
+                            DisplayMemberPath="Display"
+                            ItemsSource="{Binding DataProvider.StartModes}"
+                            SelectedValue="{Binding Settings.StartMode}"
+                            SelectedValuePath="Value" />
+                    </ui:SettingsCard>
+
+                    <ui:SettingsCard Description="{DynamicResource General_AutoCheckUpdateDescription}" Header="{DynamicResource General_AutoCheckUpdate}">
+                        <ui:SettingsCard.HeaderIcon>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.GlobeArrowUp_20_Regular}" />
+                        </ui:SettingsCard.HeaderIcon>
+                        <ui:ToggleSwitch
+                            IsOn="{Binding Settings.AutoCheckUpdate}"
+                            OffContent="{DynamicResource Disable}"
+                            OnContent="{DynamicResource Enable}" />
+                    </ui:SettingsCard>
+                </control:CardGroup>
+
+                <control:CardGroup>
+                    <ui:SettingsCard Header="{DynamicResource General_DisableGlobalHotkeys}">
+                        <ui:SettingsCard.HeaderIcon>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Keyboard_20_Regular}" />
+                        </ui:SettingsCard.HeaderIcon>
+                        <ui:ToggleSwitch
+                            IsOn="{Binding Settings.DisableGlobalHotkeys}"
+                            OffContent="{DynamicResource Disable}"
+                            OnContent="{DynamicResource Enable}" />
+                    </ui:SettingsCard>
+
+                    <ui:SettingsCard
+                        Description="{DynamicResource General_IgnoreHotkeysOnFullscreenDescription}"
+                        Header="{DynamicResource General_IgnoreHotkeysOnFullscreen}"
+                        IsEnabled="{Binding Settings.DisableGlobalHotkeys, Converter={cnvt:BoolInverseConverter}}">
+                        <ui:SettingsCard.HeaderIcon>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Games_20_Regular}" />
+                        </ui:SettingsCard.HeaderIcon>
+                        <ui:ToggleSwitch
+                            IsOn="{Binding Settings.IgnoreHotkeysOnFullscreen}"
+                            OffContent="{DynamicResource Disable}"
+                            OnContent="{DynamicResource Enable}" />
+                    </ui:SettingsCard>
+                </control:CardGroup>
+
+                <ui:SettingsExpander Header="{DynamicResource General_LanguageDetector}">
+                    <ui:SettingsExpander.HeaderIcon>
+                        <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.SlideSearch_20_Regular}" />
+                    </ui:SettingsExpander.HeaderIcon>
+                    <ComboBox
+                        DisplayMemberPath="Display"
+                        ItemsSource="{Binding DataProvider.LanguageDetectors}"
+                        SelectedValue="{Binding Settings.LanguageDetector}"
+                        SelectedValuePath="Value" />
+
+                    <ui:SettingsExpander.Items>
+                        <ui:SettingsCard
+                            Description="{DynamicResource General_LocalDetectorDescription}"
+                            Header="{DynamicResource General_LocalDetector}"
+                            Visibility="{Binding Settings.LanguageDetector, Converter={cnvt:LanguageDetectorTypeVisibilityConverter}, ConverterParameter=Local}">
+                            <ikw:SimpleStackPanel Orientation="Horizontal" Spacing="12">
+                                <Slider
+                                    x:Name="PART_DetectorRate"
+                                    IsSnapToTickEnabled="True"
+                                    Maximum="0.99"
+                                    Minimum="0.01"
+                                    TickFrequency="0.01"
+                                    Value="{Binding Settings.LocalDetectorRate}" />
+                                <TextBlock VerticalAlignment="Center" Text="{Binding ElementName=PART_DetectorRate, Path=Value, StringFormat={}{0:0.00}}" />
+                            </ikw:SimpleStackPanel>
+                        </ui:SettingsCard>
+
+                        <ui:SettingsCard Description="{DynamicResource General_DefaultSourceLanguageDescription}" Header="{DynamicResource General_DefaultSourceLanguage}">
+                            <ComboBox
+                                DisplayMemberPath="Display"
+                                ItemsSource="{Binding DataProvider.LangEnums}"
+                                SelectedValue="{Binding Settings.SourceLangIfAuto}"
+                                SelectedValuePath="Value" />
+                        </ui:SettingsCard>
+
+                        <ui:SettingsCard Description="{DynamicResource General_FirstLanguageDescription}" Header="{DynamicResource General_FirstLanguage}">
+                            <ComboBox
+                                DisplayMemberPath="Display"
+                                ItemsSource="{Binding DataProvider.LangEnums}"
+                                SelectedValue="{Binding Settings.FirstLanguage}"
+                                SelectedValuePath="Value" />
+                        </ui:SettingsCard>
+
+                        <ui:SettingsCard Description="{DynamicResource General_SecondLanguageDescription}" Header="{DynamicResource General_SecondLanguage}">
+                            <ComboBox
+                                DisplayMemberPath="Display"
+                                ItemsSource="{Binding DataProvider.LangEnums}"
+                                SelectedValue="{Binding Settings.SecondLanguage}"
+                                SelectedValuePath="Value" />
+                        </ui:SettingsCard>
+                    </ui:SettingsExpander.Items>
+                </ui:SettingsExpander>
+
+                <ui:SettingsCard Header="{DynamicResource General_HistoryCount}">
+                    <ui:SettingsCard.HeaderIcon>
+                        <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.History_20_Regular}" />
+                    </ui:SettingsCard.HeaderIcon>
+                    <ComboBox
+                        DisplayMemberPath="Display"
+                        ItemsSource="{Binding DataProvider.HistoryLimits}"
+                        SelectedValue="{Binding Settings.HistoryLimit}"
+                        SelectedValuePath="Value" />
+                </ui:SettingsCard>
+
+                <control:CardGroup>
+                    <ui:SettingsCard Description="{DynamicResource General_CopyAfterTranslationDescription}" Header="{DynamicResource General_CopyAfterTranslation}">
+                        <ui:SettingsCard.HeaderIcon>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.CropSparkle_24_Regular}" />
+                        </ui:SettingsCard.HeaderIcon>
+                        <ComboBox
+                            DisplayMemberPath="Display"
+                            ItemsSource="{Binding DataProvider.CopyAfterTranslations}"
+                            SelectedValue="{Binding Settings.CopyAfterTranslation}"
+                            SelectedValuePath="Value" />
+                    </ui:SettingsCard>
+                    <ui:SettingsCard Header="{DynamicResource General_CopyAfterTranslationNotAutomatic}">
+                        <ui:SettingsCard.HeaderIcon>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Crop_20_Regular}" />
+                        </ui:SettingsCard.HeaderIcon>
+                        <ui:ToggleSwitch
+                            IsOn="{Binding Settings.CopyAfterTranslationNotAutomatic}"
+                            OffContent="{DynamicResource Disable}"
+                            OnContent="{DynamicResource Enable}" />
+                    </ui:SettingsCard>
+                    <ui:SettingsCard Description="{DynamicResource General_CopyAfterOcrDescription}" Header="{DynamicResource General_CopyAfterOcr}">
+                        <ui:SettingsCard.HeaderIcon>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.CropInterim_20_Filled}" />
+                        </ui:SettingsCard.HeaderIcon>
+                        <ui:ToggleSwitch
+                            IsOn="{Binding Settings.CopyAfterOcr}"
+                            OffContent="{DynamicResource Disable}"
+                            OnContent="{DynamicResource Enable}" />
+                    </ui:SettingsCard>
+                    <ui:SettingsCard Description="{DynamicResource General_ScreenshotOcrLanguageDescription}" Header="{DynamicResource General_ScreenshotOcrLanguageHeader}">
+                        <ui:SettingsCard.HeaderIcon>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.ScanType_20_Regular}" />
+                        </ui:SettingsCard.HeaderIcon>
+                        <ComboBox
+                            DisplayMemberPath="Display"
+                            ItemsSource="{Binding DataProvider.LangEnums}"
+                            SelectedValue="{Binding Settings.ScreenshotOcrLanguage}"
+                            SelectedValuePath="Value" />
+                    </ui:SettingsCard>
+                    <ui:SettingsCard Description="{DynamicResource General_FocusInputAfterScreenshotTranslateDescription}" Header="{DynamicResource General_FocusInputAfterScreenshotTranslate}">
+                        <ui:SettingsCard.HeaderIcon>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.CursorHover_20_Regular}" />
+                        </ui:SettingsCard.HeaderIcon>
+                        <ui:ToggleSwitch
+                            IsOn="{Binding Settings.FocusInputAfterScreenshotTranslate}"
+                            OffContent="{DynamicResource Disable}"
+                            OnContent="{DynamicResource Enable}" />
+                    </ui:SettingsCard>
+                </control:CardGroup>
+
+                <ui:SettingsExpander Description="{DynamicResource General_AutoTranslateDescription}" Header="{DynamicResource General_AutoTranslate}">
+                    <ui:SettingsExpander.HeaderIcon>
+                        <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.TranslateAuto_20_Regular}" />
+                    </ui:SettingsExpander.HeaderIcon>
+                    <ui:ToggleSwitch
+                        IsOn="{Binding Settings.AutoTranslate}"
+                        OffContent="{DynamicResource Disable}"
+                        OnContent="{DynamicResource Enable}" />
+
+                    <ui:SettingsExpander.Items>
+                        <ui:SettingsCard
+                            Description="{DynamicResource General_AutoTranslateDelayDescription}"
+                            Header="{DynamicResource General_AutoTranslateDelay}"
+                            IsEnabled="{Binding Settings.AutoTranslate}">
+                            <ikw:SimpleStackPanel
+                                FlowDirection="RightToLeft"
+                                Orientation="Horizontal"
+                                Spacing="12">
+                                <TextBlock
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center"
+                                    Text="{Binding ElementName=PART_AutoTransDelay, Path=Value, StringFormat={}{0}ms}" />
+                                <Slider
+                                    x:Name="PART_AutoTransDelay"
+                                    FlowDirection="LeftToRight"
+                                    IsSnapToTickEnabled="True"
+                                    Maximum="2000"
+                                    Minimum="50"
+                                    TickFrequency="1"
+                                    Value="{Binding Settings.AutoTranslateDelayMs}" />
+                                <Button Command="{Binding ResetAutoTransDelayCommand}" Content="{DynamicResource Reset}" />
+                            </ikw:SimpleStackPanel>
+                        </ui:SettingsCard>
+                    </ui:SettingsExpander.Items>
+                </ui:SettingsExpander>
+
+                <ui:SettingsExpander Description="{DynamicResource General_InstantTranslateDescription}" Header="{DynamicResource General_InstantTranslate}">
+                    <ui:SettingsExpander.HeaderIcon>
+                        <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.TopSpeed_20_Regular}" />
+                    </ui:SettingsExpander.HeaderIcon>
+                    <ui:SettingsExpander.Items>
+                        <ui:SettingsCard Description="{DynamicResource General_TranslateOnPasteDescription}" Header="{DynamicResource General_TranslateOnPaste}">
+                            <ui:ToggleSwitch
+                                IsOn="{Binding Settings.TranslateOnPaste}"
+                                OffContent="{DynamicResource Disable}"
+                                OnContent="{DynamicResource Enable}" />
+                        </ui:SettingsCard>
+
+                        <ui:SettingsCard Description="{DynamicResource General_AutoTranslateOnPromptChangedDescription}" Header="{DynamicResource General_AutoTranslateOnPromptChanged}">
+                            <ui:ToggleSwitch
+                                IsOn="{Binding Settings.AutoTranslateOnPromptChanged}"
+                                OffContent="{DynamicResource Disable}"
+                                OnContent="{DynamicResource Enable}" />
+                        </ui:SettingsCard>
+
+                        <ui:SettingsCard Header="{DynamicResource General_ImageTranslateOnOcrServiceChanged}">
+                            <ui:ToggleSwitch
+                                IsOn="{Binding Settings.ImageTranslateOnOcrServiceChanged}"
+                                OffContent="{DynamicResource Disable}"
+                                OnContent="{DynamicResource Enable}" />
+                        </ui:SettingsCard>
+
+                        <ui:SettingsCard Header="{DynamicResource General_ImageTranslateOnTranslateServiceChanged}">
+                            <ui:ToggleSwitch
+                                IsOn="{Binding Settings.ImageTranslateOnTranslateServiceChanged}"
+                                OffContent="{DynamicResource Disable}"
+                                OnContent="{DynamicResource Enable}" />
+                        </ui:SettingsCard>
+
+                        <ui:SettingsCard Header="{DynamicResource General_ImageTranslateOnLanguageChanged}">
+                            <ui:ToggleSwitch
+                                IsOn="{Binding Settings.ImageTranslateOnLanguageChanged}"
+                                OffContent="{DynamicResource Disable}"
+                                OnContent="{DynamicResource Enable}" />
+                        </ui:SettingsCard>
+
+                        <ui:SettingsCard Header="{DynamicResource General_ImageTranslateOnLayoutChanged}">
+                            <ui:ToggleSwitch
+                                IsOn="{Binding Settings.ImageTranslateOnLayoutChanged}"
+                                OffContent="{DynamicResource Disable}"
+                                OnContent="{DynamicResource Enable}" />
+                        </ui:SettingsCard>
+
+                        <ui:SettingsCard Header="{DynamicResource General_OcrOnServiceChanged}">
+                            <ui:ToggleSwitch
+                                IsOn="{Binding Settings.OcrOnServiceChanged}"
+                                OffContent="{DynamicResource Disable}"
+                                OnContent="{DynamicResource Enable}" />
+                        </ui:SettingsCard>
+
+                        <ui:SettingsCard Header="{DynamicResource General_OcrOnLanguageChanged}">
+                            <ui:ToggleSwitch
+                                IsOn="{Binding Settings.OcrOnLanguageChanged}"
+                                OffContent="{DynamicResource Disable}"
+                                OnContent="{DynamicResource Enable}" />
+                        </ui:SettingsCard>
+                    </ui:SettingsExpander.Items>
+                </ui:SettingsExpander>
+
+                <ui:SettingsCard Description="{DynamicResource General_UseClipboardOutputDescription}" Header="{DynamicResource General_UseClipboardOutput}">
+                    <ui:SettingsCard.HeaderIcon>
+                        <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.ClipboardPaste_20_Regular}" />
+                    </ui:SettingsCard.HeaderIcon>
+                    <ui:ToggleSwitch
+                        IsOn="{Binding Settings.UseClipboardOutput}"
+                        OffContent="{DynamicResource Disable}"
+                        OnContent="{DynamicResource Enable}" />
+                </ui:SettingsCard>
+
+                <ui:SettingsCard Header="{DynamicResource General_TextPreprocessing}"
+                    Description="{DynamicResource General_TextPreprocessingDescription}">
+                    <ui:SettingsCard.HeaderIcon>
+                        <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.TextEditStyle_20_Regular}" />
+                    </ui:SettingsCard.HeaderIcon>
+                    <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="{Binding TextPreprocessingStatus}" ToolTip="{Binding TextPreprocessingStatus}"
+                        MaxWidth="200" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" Margin="0,0,12,0" Opacity="0.7" />
+                    <Button Content="{DynamicResource General_TextPreprocessingManage}"
+                        Command="{Binding EditTextPreprocessingCommand}"
+                        CommandParameter="{Binding RelativeSource={RelativeSource Self}}" />
+                    </StackPanel>
+                </ui:SettingsCard>
+
+                <ui:SettingsExpander
+                    d:IsExpanded="True"
+                    Description="{DynamicResource General_TextSeparatorHandleTypeDescription}"
+                    Header="{DynamicResource General_TextSeparatorHandleType}">
+                    <ui:SettingsExpander.HeaderIcon>
+                        <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.TextUnderlineDouble_20_Regular}" />
+                    </ui:SettingsExpander.HeaderIcon>
+                    <ComboBox
+                        MinWidth="160"
+                        DisplayMemberPath="Display"
+                        ItemsSource="{Binding DataProvider.TextSeparatorHandleTypes}"
+                        SelectedValue="{Binding Settings.TextSeparatorHandleType}"
+                        SelectedValuePath="Value" />
+                    <ui:SettingsExpander.Items>
+                        <ui:SettingsCard Header="{DynamicResource TextSeparatorHandleScopeMouseSelection}">
+                            <ui:SettingsCard.HeaderIcon>
+                                <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.KeyboardMouse_16_Regular}" />
+                            </ui:SettingsCard.HeaderIcon>
+                            <ui:ToggleSwitch
+                                IsOn="{Binding IsTextSeparatorMouseSelectionScopeEnabled, Mode=TwoWay}"
+                                OffContent="{DynamicResource Disable}"
+                                OnContent="{DynamicResource Enable}" />
+                        </ui:SettingsCard>
+                        <ui:SettingsCard Header="{DynamicResource TextSeparatorHandleScopeCrossword}">
+                            <ui:SettingsCard.HeaderIcon>
+                                <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.CursorClick_20_Regular}" />
+                            </ui:SettingsCard.HeaderIcon>
+                            <ui:ToggleSwitch
+                                IsOn="{Binding IsTextSeparatorCrosswordScopeEnabled, Mode=TwoWay}"
+                                OffContent="{DynamicResource Disable}"
+                                OnContent="{DynamicResource Enable}" />
+                        </ui:SettingsCard>
+                        <ui:SettingsCard Header="{DynamicResource TextSeparatorHandleScopeIncremental}">
+                            <ui:SettingsCard.HeaderIcon>
+                                <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.TextIndentIncrease_20_Regular}" />
+                            </ui:SettingsCard.HeaderIcon>
+                            <ui:ToggleSwitch
+                                IsOn="{Binding IsTextSeparatorIncrementalScopeEnabled, Mode=TwoWay}"
+                                OffContent="{DynamicResource Disable}"
+                                OnContent="{DynamicResource Enable}" />
+                        </ui:SettingsCard>
+                        <ui:SettingsCard Header="{DynamicResource TextSeparatorHandleScopeClipboardMonitor}">
+                            <ui:SettingsCard.HeaderIcon>
+                                <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.ClipboardMore_20_Regular}" />
+                            </ui:SettingsCard.HeaderIcon>
+                            <ui:ToggleSwitch
+                                IsOn="{Binding IsTextSeparatorClipboardMonitorScopeEnabled, Mode=TwoWay}"
+                                OffContent="{DynamicResource Disable}"
+                                OnContent="{DynamicResource Enable}" />
+                        </ui:SettingsCard>
+                        <ui:SettingsCard Header="{DynamicResource TextSeparatorHandleScopeScreenshotTranslate}">
+                            <ui:SettingsCard.HeaderIcon>
+                                <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.ScreenCut_20_Regular}" />
+                            </ui:SettingsCard.HeaderIcon>
+                            <ui:ToggleSwitch
+                                IsOn="{Binding IsTextSeparatorScreenshotTranslateScopeEnabled, Mode=TwoWay}"
+                                OffContent="{DynamicResource Disable}"
+                                OnContent="{DynamicResource Enable}" />
+                        </ui:SettingsCard>
+                        <ui:SettingsCard Header="{DynamicResource TextSeparatorHandleScopeSilentOcr}">
+                            <ui:SettingsCard.HeaderIcon>
+                                <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.ScanType_20_Regular}" />
+                            </ui:SettingsCard.HeaderIcon>
+                            <ui:ToggleSwitch
+                                IsOn="{Binding IsTextSeparatorSilentOcrScopeEnabled, Mode=TwoWay}"
+                                OffContent="{DynamicResource Disable}"
+                                OnContent="{DynamicResource Enable}" />
+                        </ui:SettingsCard>
+                    </ui:SettingsExpander.Items>
+                </ui:SettingsExpander>
+
+                <control:CardGroup>
+                    <ui:SettingsCard Description="{DynamicResource General_EnableMouseSelectionTranslationDescription}" Header="{DynamicResource General_EnableMouseSelectionTranslation}">
+                        <ui:SettingsCard.HeaderIcon>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.KeyboardMouse_16_Regular}" />
+                        </ui:SettingsCard.HeaderIcon>
+                        <ui:ToggleSwitch
+                            IsOn="{Binding Settings.IsMouseSelectionTranslationEnabled}"
+                            OffContent="{DynamicResource Disable}"
+                            OnContent="{DynamicResource Enable}" />
+                    </ui:SettingsCard>
+
+                    <ui:SettingsCard Description="{DynamicResource General_EnableMouseSelectionIconDescription}" Header="{DynamicResource General_EnableMouseSelectionIcon}">
+                        <ui:SettingsCard.HeaderIcon>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.CursorClick_20_Regular}" />
+                        </ui:SettingsCard.HeaderIcon>
+                        <ui:ToggleSwitch
+                            IsOn="{Binding Settings.IsMouseSelectionIconEnabled}"
+                            OffContent="{DynamicResource Disable}"
+                            OnContent="{DynamicResource Enable}" />
+                    </ui:SettingsCard>
+                </control:CardGroup>
+
+                <control:CardGroup>
+                    <ui:SettingsCard Description="{DynamicResource General_LineBreakHandleTypeDescription}" Header="{DynamicResource General_LineBreakHandleType}">
+                        <ui:SettingsCard.HeaderIcon>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.TextWrapOff_20_Regular}" />
+                        </ui:SettingsCard.HeaderIcon>
+                        <ComboBox
+                            DisplayMemberPath="Display"
+                            ItemsSource="{Binding DataProvider.LineBreakHandleTypes}"
+                            SelectedValue="{Binding Settings.LineBreakHandleType}"
+                            SelectedValuePath="Value" />
+                    </ui:SettingsCard>
+
+                    <ui:SettingsCard Description="{DynamicResource General_SelectedTextFetchTimeoutDescription}" Header="{DynamicResource General_SelectedTextFetchTimeout}">
+                        <ui:SettingsCard.HeaderIcon>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Timer_24_Regular}" />
+                        </ui:SettingsCard.HeaderIcon>
+                        <ui:NumberBox
+                            MinWidth="120"
+                            ui:ControlHelper.PlaceholderText="{DynamicResource General_SelectedTextFetchTimeoutPlaceholder}"
+                            LargeChange="500"
+                            Maximum="5000"
+                            Minimum="50"
+                            SmallChange="50"
+                            SpinButtonPlacementMode="Inline"
+                            ValidationMode="InvalidInputOverwritten"
+                            Value="{Binding Settings.SelectedTextFetchTimeoutMs}" />
+                    </ui:SettingsCard>
+
+                    <ui:SettingsCard Description="{DynamicResource General_CrosswordFetchFailedFallbackTargetDescription}" Header="{DynamicResource General_CrosswordFetchFailedFallbackTarget}">
+                        <ui:SettingsCard.HeaderIcon>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.ArrowHookUpLeft_20_Regular}" />
+                        </ui:SettingsCard.HeaderIcon>
+                        <ComboBox
+                            DisplayMemberPath="Display"
+                            ItemsSource="{Binding DataProvider.CrosswordFetchFailedFallbackTargets}"
+                            SelectedValue="{Binding Settings.CrosswordFetchFailedFallbackTarget}"
+                            SelectedValuePath="Value" />
+                    </ui:SettingsCard>
+
+                    <ui:SettingsCard Description="{DynamicResource General_IncrementalClearInputDescription}" Header="{DynamicResource General_IncrementalClearInput}">
+                        <ui:SettingsCard.HeaderIcon>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Eraser_20_Regular}" />
+                        </ui:SettingsCard.HeaderIcon>
+                        <ui:ToggleSwitch
+                            IsOn="{Binding Settings.IncrementalClearInput}"
+                            OffContent="{DynamicResource Disable}"
+                            OnContent="{DynamicResource Enable}" />
+                    </ui:SettingsCard>
+                </control:CardGroup>
+
+                <ui:SettingsCard Description="{DynamicResource General_AudioPlaybackWarmupDescription}" Header="{DynamicResource General_AudioPlaybackWarmup}">
+                    <ui:SettingsCard.HeaderIcon>
+                        <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Timer_24_Regular}" />
+                    </ui:SettingsCard.HeaderIcon>
+                    <ui:NumberBox
+                        MinWidth="120"
+                        LargeChange="500"
+                        Maximum="5000"
+                        Minimum="0"
+                        SmallChange="100"
+                        SpinButtonPlacementMode="Inline"
+                        ValidationMode="InvalidInputOverwritten"
+                        Value="{Binding Settings.AudioPlaybackWarmupMs}" />
+                </ui:SettingsCard>
+
+                <ui:SettingsCard Description="{DynamicResource General_ImageQualityDescription}" Header="{DynamicResource General_ImageQuality}">
+                    <ui:SettingsCard.HeaderIcon>
+                        <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.ImageTable_20_Regular}" />
+                    </ui:SettingsCard.HeaderIcon>
+                    <ComboBox
+                        DisplayMemberPath="Display"
+                        ItemsSource="{Binding DataProvider.ImageQualities}"
+                        SelectedValue="{Binding Settings.ImageQuality}"
+                        SelectedValuePath="Value" />
+                </ui:SettingsCard>
+
+                <ui:SettingsCard Description="{DynamicResource General_DoubleClickTrayFunctionDescription}" Header="{DynamicResource General_DoubleClickTrayFunction}">
+                    <ui:SettingsCard.HeaderIcon>
+                        <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.WindowApps_20_Regular}" />
+                    </ui:SettingsCard.HeaderIcon>
+                    <ComboBox
+                        DisplayMemberPath="Display"
+                        ItemsSource="{Binding DataProvider.DoubleClickTrayFunctions}"
+                        SelectedValue="{Binding Settings.DoubleClickTrayFunction}"
+                        SelectedValuePath="Value" />
+                </ui:SettingsCard>
+
+                <!--#endregion-->
+
+                <!--#region Appearance-->
+
+                <TextBlock
+                    Margin="0,16,0,4"
+                    Style="{DynamicResource BodyStrongTextBlockStyle}"
+                    Text="{DynamicResource Appearance}" />
+
+                <ui:SettingsCard Description="{DynamicResource General_HideOnStartupDescription}" Header="{DynamicResource General_HideOnStartup}">
+                    <ui:SettingsCard.HeaderIcon>
+                        <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.EyeOff_20_Regular}" />
+                    </ui:SettingsCard.HeaderIcon>
+                    <ui:ToggleSwitch
+                        IsOn="{Binding Settings.HideOnStartup}"
+                        OffContent="{DynamicResource Show}"
+                        OnContent="{DynamicResource Hide}" />
+                </ui:SettingsCard>
+
+                <ui:SettingsExpander Header="{DynamicResource General_AutoHideAtTopEdge}" Description="{DynamicResource General_AutoHideAtTopEdgeDescription}">
+                    <ui:SettingsExpander.HeaderIcon>
+                        <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.PanelTopGallery_20_Regular}" />
+                    </ui:SettingsExpander.HeaderIcon>
+                    <ui:ToggleSwitch
+                        IsOn="{Binding Settings.AutoHideAtTopEdge}"
+                        OffContent="{DynamicResource Disable}"
+                        OnContent="{DynamicResource Enable}" />
+                    <ui:SettingsExpander.Items>
+                        <ui:SettingsCard
+                            Header="{DynamicResource General_TopEdgeAutoHideDelay}"
+                            Description="{DynamicResource General_TopEdgeAutoHideDelayDescription}"
+                            IsEnabled="{Binding Settings.AutoHideAtTopEdge}">
+                            <ui:NumberBox
+                                MinWidth="120"
+                                LargeChange="500"
+                                Maximum="10000"
+                                Minimum="100"
+                                SmallChange="100"
+                                SpinButtonPlacementMode="Inline"
+                                ValidationMode="InvalidInputOverwritten"
+                                Value="{Binding Settings.TopEdgeAutoHideDelayMs}" />
+                        </ui:SettingsCard>
+                    </ui:SettingsExpander.Items>
+                </ui:SettingsExpander>
+
+                <ui:SettingsCard Header="{DynamicResource General_HideWhenDeactivated}">
+                    <ui:SettingsCard.HeaderIcon>
+                        <ui:FontIcon FontFamily="{StaticResource {x:Static ui:ThemeKeys.FluentSystemIconsKey}}" Glyph="&#xF05EB;" />
+                    </ui:SettingsCard.HeaderIcon>
+                    <ui:ToggleSwitch
+                        IsOn="{Binding Settings.HideWhenDeactivated}"
+                        OffContent="{DynamicResource Disable}"
+                        OnContent="{DynamicResource Enable}" />
+                </ui:SettingsCard>
+
+                <control:CardGroup>
+                    <ui:SettingsCard Header="{DynamicResource General_WindowPosition}">
+                        <ui:SettingsCard.HeaderIcon>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Desktop_20_Regular}" />
+                        </ui:SettingsCard.HeaderIcon>
+                        <StackPanel Orientation="Horizontal">
+                            <ComboBox
+                                MinWidth="220"
+                                VerticalAlignment="Center"
+                                DisplayMemberPath="Display"
+                                ItemsSource="{Binding DataProvider.WindowScreenTypes}"
+                                SelectedValue="{Binding Settings.WindowScreen}"
+                                SelectedValuePath="Value" />
+                            <ComboBox
+                                MinWidth="160"
+                                Margin="18,0,0,0"
+                                VerticalAlignment="Center"
+                                ItemsSource="{Binding ScreenNumbers}"
+                                SelectedValue="{Binding Settings.CustomScreenNumber}"
+                                Visibility="{Binding Settings.WindowScreen, Converter={cnvt:EqualToVisibilityConverter}, ConverterParameter={x:Static core:WindowScreenType.Custom}}" />
+                        </StackPanel>
+                    </ui:SettingsCard>
+
+                    <ui:SettingsCard Header="{DynamicResource General_WindowAlign}" Visibility="{Binding Settings.IsWindowAlignVisible, Converter={cnvt:BoolToVisibilityConverter}}">
+                        <ui:SettingsCard.HeaderIcon>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.DesktopCursor_20_Regular}" />
+                        </ui:SettingsCard.HeaderIcon>
+                        <StackPanel Orientation="Horizontal">
+                            <ComboBox
+                                MinWidth="160"
+                                VerticalAlignment="Center"
+                                DisplayMemberPath="Display"
+                                ItemsSource="{Binding DataProvider.WindowAlignTypes}"
+                                SelectedValue="{Binding Settings.WindowAlign}"
+                                SelectedValuePath="Value" />
+
+                            <StackPanel
+                                Margin="18,0,0,0"
+                                VerticalAlignment="Center"
+                                Orientation="Horizontal"
+                                Visibility="{Binding Settings.WindowAlign, Converter={cnvt:EqualToVisibilityConverter}, ConverterParameter={x:Static core:WindowAlignType.Custom}}">
+                                <TextBox
+                                    MinWidth="80"
+                                    VerticalAlignment="Center"
+                                    Text="{Binding Settings.CustomWindowLeft}" />
+                                <TextBlock
+                                    Margin="10"
+                                    VerticalAlignment="Center"
+                                    Text="x" />
+                                <TextBox
+                                    MinWidth="80"
+                                    VerticalAlignment="Center"
+                                    Text="{Binding Settings.CustomWindowTop}"
+                                    TextWrapping="NoWrap" />
+                            </StackPanel>
+                        </StackPanel>
+                    </ui:SettingsCard>
+                </control:CardGroup>
+
+                <ui:SettingsCard Description="{DynamicResource General_MainWindowMaxHeightRatioDescription}" Header="{DynamicResource General_MainWindowMaxHeightRatio}">
+                    <ui:SettingsCard.HeaderIcon>
+                        <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.DesktopPulse_20_Regular}" />
+                    </ui:SettingsCard.HeaderIcon>
+                    <ikw:SimpleStackPanel Orientation="Horizontal" Spacing="12">
+                        <Button Command="{Binding ResetMainWindowMaxHeightRatioCommand}" Content="{DynamicResource Reset}" />
+                        <Slider
+                            x:Name="PART_MainWindowMaxHeightRatio"
+                            IsSnapToTickEnabled="True"
+                            Maximum="1"
+                            Minimum="0.6"
+                            TickFrequency="0.05"
+                            TickPlacement="BottomRight"
+                            Value="{Binding Settings.MainWindowMaxHeightRatio, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBlock VerticalAlignment="Center" Text="{Binding ElementName=PART_MainWindowMaxHeightRatio, Path=Value, StringFormat={}{0:P0}}" />
+                    </ikw:SimpleStackPanel>
+                </ui:SettingsCard>
+
+                <ui:SettingsExpander Header="{DynamicResource General_HideNotifyIcon}">
+                    <ui:SettingsExpander.HeaderIcon>
+                        <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.AlertOff_20_Regular}" />
+                    </ui:SettingsExpander.HeaderIcon>
+                    <ui:ToggleSwitch
+                        IsOn="{Binding Settings.HideNotifyIcon}"
+                        OffContent="{DynamicResource Disable}"
+                        OnContent="{DynamicResource Enable}" />
+
+                    <ui:SettingsExpander.Items>
+                        <ui:SettingsCard Header="{DynamicResource General_ShowScreenshotItemInNotifyIconMenu}" IsEnabled="{Binding Settings.HideNotifyIcon, Converter={cnvt:BoolInverseConverter}}">
+                            <ui:SettingsCard.HeaderIcon>
+                                <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.ScreenCut_20_Regular}" />
+                            </ui:SettingsCard.HeaderIcon>
+                            <ui:ToggleSwitch
+                                IsOn="{Binding Settings.ShowScreenshotItemInNotifyIconMenu}"
+                                OffContent="{DynamicResource Hide}"
+                                OnContent="{DynamicResource Show}" />
+                        </ui:SettingsCard>
+                        <ui:SettingsCard Header="{DynamicResource General_ShowImageTranslateItemInNotifyIconMenu}" IsEnabled="{Binding Settings.HideNotifyIcon, Converter={cnvt:BoolInverseConverter}}">
+                            <ui:SettingsCard.HeaderIcon>
+                                <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.DrawImage_20_Regular}" />
+                            </ui:SettingsCard.HeaderIcon>
+                            <ui:ToggleSwitch
+                                IsOn="{Binding Settings.ShowImageTranslateItemInNotifyIconMenu}"
+                                OffContent="{DynamicResource Hide}"
+                                OnContent="{DynamicResource Show}" />
+                        </ui:SettingsCard>
+                        <ui:SettingsCard Header="{DynamicResource General_ShowOcrItemInNotifyIconMenu}" IsEnabled="{Binding Settings.HideNotifyIcon, Converter={cnvt:BoolInverseConverter}}">
+                            <ui:SettingsCard.HeaderIcon>
+                                <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.ScanType_20_Regular}" />
+                            </ui:SettingsCard.HeaderIcon>
+                            <ui:ToggleSwitch
+                                IsOn="{Binding Settings.ShowOcrItemInNotifyIconMenu}"
+                                OffContent="{DynamicResource Hide}"
+                                OnContent="{DynamicResource Show}" />
+                        </ui:SettingsCard>
+                        <ui:SettingsCard Header="{DynamicResource General_ShowQrCodeItemInNotifyIconMenu}" IsEnabled="{Binding Settings.HideNotifyIcon, Converter={cnvt:BoolInverseConverter}}">
+                            <ui:SettingsCard.HeaderIcon>
+                                <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.QrCode_20_Regular}" />
+                            </ui:SettingsCard.HeaderIcon>
+                            <ui:ToggleSwitch
+                                IsOn="{Binding Settings.ShowQrCodeItemInNotifyIconMenu}"
+                                OffContent="{DynamicResource Hide}"
+                                OnContent="{DynamicResource Show}" />
+                        </ui:SettingsCard>
+                    </ui:SettingsExpander.Items>
+                </ui:SettingsExpander>
+
+                <ui:SettingsCard Description="{DynamicResource General_ColorThemeDescription}" Header="{DynamicResource General_ColorTheme}">
+                    <ui:SettingsCard.HeaderIcon>
+                        <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Color_20_Regular}" />
+                    </ui:SettingsCard.HeaderIcon>
+                    <ComboBox
+                        MaxWidth="200"
+                        DisplayMemberPath="Display"
+                        ItemsSource="{Binding DataProvider.ColorSchemes}"
+                        SelectedValue="{Binding Settings.ColorScheme}"
+                        SelectedValuePath="Value" />
+                </ui:SettingsCard>
+
+                <ui:SettingsExpander Description="{DynamicResource General_HideInputBoxDescription}" Header="{DynamicResource General_HideInputBox}">
+                    <ui:SettingsExpander.HeaderIcon>
+                        <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.SlideHide_20_Regular}" />
+                    </ui:SettingsExpander.HeaderIcon>
+                    <ui:ToggleSwitch
+                        IsOn="{Binding Settings.HideInput}"
+                        OffContent="{DynamicResource Show}"
+                        OnContent="{DynamicResource Hide}" />
+                    <ui:SettingsExpander.Items>
+                        <ui:SettingsCard
+                            Description="{DynamicResource General_HideLanguageControlDescription}"
+                            Header="{DynamicResource General_HideLanguageControl}"
+                            IsEnabled="{Binding Settings.HideInput}">
+                            <ui:ToggleSwitch
+                                IsOn="{Binding Settings.HideInputWithLangSelectControl}"
+                                OffContent="{DynamicResource Disable}"
+                                OnContent="{DynamicResource Enable}" />
+                        </ui:SettingsCard>
+                    </ui:SettingsExpander.Items>
+                </ui:SettingsExpander>
+
+                <control:CardGroup>
+                    <ui:SettingsCard Description="{DynamicResource General_ShowCloseButtonDescription}" Header="{DynamicResource General_ShowCloseButton}">
+                        <ui:SettingsCard.HeaderIcon>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Dismiss_20_Regular}" />
+                        </ui:SettingsCard.HeaderIcon>
+                        <ui:ToggleSwitch
+                            IsOn="{Binding Settings.IsCloseButtonVisible}"
+                            OffContent="{DynamicResource Hide}"
+                            OnContent="{DynamicResource Show}" />
+                    </ui:SettingsCard>
+
+                    <ui:SettingsCard Description="{DynamicResource General_MainHeaderConfigDescription}" Header="{DynamicResource General_MainHeaderConfig}">
+                        <ui:SettingsCard.HeaderIcon>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.PanelTopGallery_20_Regular}" />
+                        </ui:SettingsCard.HeaderIcon>
+                        <ikw:SimpleStackPanel
+                            HorizontalAlignment="Right"
+                            Orientation="Horizontal"
+                            Spacing="8">
+                            <Button Command="{Binding ShowAllHeaderActionsCommand}" Content="{DynamicResource General_MainHeaderShowAll}" />
+                            <Button Command="{Binding HideAllHeaderActionsCommand}" Content="{DynamicResource General_MainHeaderHideAll}" />
+                        </ikw:SimpleStackPanel>
+                    </ui:SettingsCard>
+
+                    <ui:SettingsCard HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+                        <ListBox
+                            Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ui:SettingsCard}}"
+                            MinHeight="42"
+                            Padding="8,6"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"
+                            control:ListBoxReorderAnimationBehavior.AnimationDuration="0:0:0.18"
+                            control:ListBoxReorderAnimationBehavior.EnableAnimation="True"
+                            dd:DragDrop.DropHandler="{StaticResource HeaderActionLiveReorderDropHandler}"
+                            dd:DragDrop.IsDragSource="True"
+                            dd:DragDrop.IsDropTarget="True"
+                            dd:DragDrop.UseDefaultDragAdorner="False"
+                            dd:DragDrop.UseDefaultEffectDataTemplate="False"
+                            Background="Transparent"
+                            BorderBrush="{DynamicResource ControlElevationBorderBrush}"
+                            BorderThickness="1"
+                            ItemContainerStyle="{StaticResource HeaderActionListBoxItemStyle}"
+                            ItemTemplate="{StaticResource HeaderActionPreviewTemplate}"
+                            ItemsSource="{Binding VisibleHeaderActions}"
+                            ScrollViewer.CanContentScroll="False"
+                            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                            ScrollViewer.VerticalScrollBarVisibility="Disabled">
+                            <ListBox.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal" />
+                                </ItemsPanelTemplate>
+                            </ListBox.ItemsPanel>
+                        </ListBox>
+                    </ui:SettingsCard>
+
+                    <ui:SettingsCard HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+                        <ListBox
+                            Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ui:SettingsCard}}"
+                            MinHeight="42"
+                            Padding="8,8"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"
+                            dd:DragDrop.DropHandler="{StaticResource HeaderActionFixedOrderDropHandler}"
+                            dd:DragDrop.IsDragSource="True"
+                            dd:DragDrop.IsDropTarget="True"
+                            dd:DragDrop.UseDefaultDragAdorner="False"
+                            dd:DragDrop.UseDefaultEffectDataTemplate="False"
+                            Background="Transparent"
+                            BorderBrush="{DynamicResource ControlElevationBorderBrush}"
+                            BorderThickness="1"
+                            ItemContainerStyle="{StaticResource HeaderActionListBoxItemStyle}"
+                            ItemTemplate="{StaticResource HeaderActionPoolTemplate}"
+                            ItemsSource="{Binding AvailableHeaderActions}"
+                            ScrollViewer.CanContentScroll="False"
+                            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                            ScrollViewer.VerticalScrollBarVisibility="Disabled">
+                            <ListBox.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ListBox}}" />
+                                </ItemsPanelTemplate>
+                            </ListBox.ItemsPanel>
+                        </ListBox>
+                    </ui:SettingsCard>
+                </control:CardGroup>
+
+                <ui:SettingsCard Description="{DynamicResource General_ShowScreenshotAuxiliaryLinesDescription}" Header="{DynamicResource General_ShowScreenshotAuxiliaryLines}">
+                    <ui:SettingsCard.HeaderIcon>
+                        <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.LineStyle_20_Regular}" />
+                    </ui:SettingsCard.HeaderIcon>
+                    <ui:ToggleSwitch
+                        IsOn="{Binding Settings.ShowScreenshotAuxiliaryLines}"
+                        OffContent="{DynamicResource Hide}"
+                        OnContent="{DynamicResource Show}" />
+                </ui:SettingsCard>
+
+                <control:CardGroup>
+
+                    <ui:SettingsCard Header="{DynamicResource General_FontFamily}">
+                        <ui:SettingsCard.HeaderIcon>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.TextFont_20_Regular}" />
+                        </ui:SettingsCard.HeaderIcon>
+                        <ikw:SimpleStackPanel Orientation="Horizontal" Spacing="12">
+                            <Button Command="{Binding ResetFontFamilyCommand}" Content="{DynamicResource Reset}" />
+                            <ComboBox
+                                DisplayMemberPath="Source"
+                                FontFamily="Microsoft YaHei UI"
+                                ItemsSource="{Binding Source={StaticResource SortedFonts}}"
+                                SelectedValue="{Binding Settings.FontFamily, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                SelectedValuePath="Source" />
+                        </ikw:SimpleStackPanel>
+                    </ui:SettingsCard>
+
+                    <ui:SettingsCard Description="{DynamicResource General_FontSizeDescription}" Header="{DynamicResource General_FontSize}">
+                        <ui:SettingsCard.HeaderIcon>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.TextFontSize_20_Regular}" />
+                        </ui:SettingsCard.HeaderIcon>
+                        <ikw:SimpleStackPanel Orientation="Horizontal" Spacing="12">
+                            <Button Command="{Binding ResetFontSizeCommand}" Content="{DynamicResource Reset}" />
+                            <Slider
+                                x:Name="PART_FontSize"
+                                IsSnapToTickEnabled="True"
+                                Maximum="20"
+                                Minimum="10"
+                                TickFrequency="1"
+                                TickPlacement="Both"
+                                Value="{Binding Settings.FontSize}" />
+                            <TextBlock VerticalAlignment="Center" Text="{Binding ElementName=PART_FontSize, Path=Value, StringFormat={}{0}}" />
+                        </ikw:SimpleStackPanel>
+                    </ui:SettingsCard>
+
+                </control:CardGroup>
+
+                <ui:SettingsExpander d:IsExpanded="True" Header="{DynamicResource General_OutputShowingControl}">
+                    <ui:SettingsExpander.HeaderIcon>
+                        <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.PanelBottom_20_Regular}" />
+                    </ui:SettingsExpander.HeaderIcon>
+                    <ui:SettingsExpander.Items>
+                        <ui:SettingsCard Header="{DynamicResource General_ShowPascalCase}">
+                            <ui:SettingsCard.HeaderIcon>
+                                <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.TextCaseTitle_20_Regular}" />
+                            </ui:SettingsCard.HeaderIcon>
+                            <ui:ToggleSwitch
+                                IsOn="{Binding Settings.ShowPascalCase}"
+                                OffContent="{DynamicResource Hide}"
+                                OnContent="{DynamicResource Show}" />
+                        </ui:SettingsCard>
+
+                        <ui:SettingsCard Header="{DynamicResource General_ShowCamelCase}">
+                            <ui:SettingsCard.HeaderIcon>
+                                <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.TextChangeCase_20_Regular}" />
+                            </ui:SettingsCard.HeaderIcon>
+                            <ui:ToggleSwitch
+                                IsOn="{Binding Settings.ShowCamelCase}"
+                                OffContent="{DynamicResource Hide}"
+                                OnContent="{DynamicResource Show}" />
+                        </ui:SettingsCard>
+
+                        <ui:SettingsCard Header="{DynamicResource General_ShowSnakeCase}">
+                            <ui:SettingsCard.HeaderIcon>
+                                <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.TextCaseLowercase_20_Regular}" />
+                            </ui:SettingsCard.HeaderIcon>
+                            <ui:ToggleSwitch
+                                IsOn="{Binding Settings.ShowSnakeCase}"
+                                OffContent="{DynamicResource Hide}"
+                                OnContent="{DynamicResource Show}" />
+                        </ui:SettingsCard>
+
+                        <ui:SettingsCard Header="{DynamicResource General_ShowInsert}">
+                            <ui:SettingsCard.HeaderIcon>
+                                <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.TextHanging_20_Regular}" />
+                            </ui:SettingsCard.HeaderIcon>
+                            <ui:ToggleSwitch
+                                IsOn="{Binding Settings.ShowInsert}"
+                                OffContent="{DynamicResource Hide}"
+                                OnContent="{DynamicResource Show}" />
+                        </ui:SettingsCard>
+
+                        <ui:SettingsCard Header="{DynamicResource General_ShowBackTranslation}">
+                            <ui:SettingsCard.HeaderIcon>
+                                <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Flash_20_Regular}" />
+                            </ui:SettingsCard.HeaderIcon>
+                            <ui:ToggleSwitch
+                                IsOn="{Binding Settings.ShowBackTranslation}"
+                                OffContent="{DynamicResource Hide}"
+                                OnContent="{DynamicResource Show}" />
+                        </ui:SettingsCard>
+
+                        <ui:SettingsCard Description="{DynamicResource General_ShowPromptDescription}" Header="{DynamicResource General_ShowPrompt}">
+                            <ui:SettingsCard.HeaderIcon>
+                                <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Chat_20_Regular}" />
+                            </ui:SettingsCard.HeaderIcon>
+                            <ui:ToggleSwitch
+                                IsOn="{Binding Settings.ShowPromptButton}"
+                                OffContent="{DynamicResource Hide}"
+                                OnContent="{DynamicResource Show}" />
+                        </ui:SettingsCard>
+                    </ui:SettingsExpander.Items>
+                </ui:SettingsExpander>
+
+                <ui:SettingsCard Header="{DynamicResource General_Language}">
+                    <ui:SettingsCard.HeaderIcon>
+                        <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.LocalLanguage_20_Regular}" />
+                    </ui:SettingsCard.HeaderIcon>
+                    <ComboBox
+                        DisplayMemberPath="Display"
+                        ItemsSource="{Binding Languages}"
+                        SelectedValue="{Binding Settings.Language}"
+                        SelectedValuePath="LanguageCode" />
+                </ui:SettingsCard>
+
+                <!--#endregion-->
+            </ikw:SimpleStackPanel>
+        </ui:ScrollViewerEx>
+    </Grid>
+</ui:Page>

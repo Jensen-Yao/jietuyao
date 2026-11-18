@@ -1,0 +1,12 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+    <sys:String x:Key="STranslate_Plugin_Translate_GoogleBuiltIn_RequestMode">請求模式</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_GoogleBuiltIn_RequestMode_Description">自訂 API 適合使用自行部署的中轉服務；直接連線 Google 需要目前電腦能夠存取 Google 網路。</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_GoogleBuiltIn_RequestMode_CustomApi">自訂 API</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_GoogleBuiltIn_RequestMode_Direct">直接連線 Google</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_GoogleBuiltIn_ApiUrl">API 位址</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_GoogleBuiltIn_ApiUrl_Description">填寫相容中轉協定的完整翻譯介面位址，例如 https://example.deno.dev/translate。</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_GoogleBuiltIn_ApiUrl_Invalid">請填寫有效的 HTTP 或 HTTPS API 位址。</sys:String>
+</ResourceDictionary>

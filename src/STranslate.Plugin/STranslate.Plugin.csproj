@@ -1,0 +1,61 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0-windows</TargetFramework>
+        <UseWPF>true</UseWPF>
+        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+        <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+
+        <!-- NuGet 包信息 -->
+        <!--<GeneratePackageOnBuild>true</GeneratePackageOnBuild>-->
+        <PackageId>STranslate.Plugin</PackageId>
+        <PackageVersion>1.0.15</PackageVersion>
+        <Authors>zggsong</Authors>
+        <Description>STranslate plugin framework with auto-packaging support</Description>
+        <PackageTags>stranslate</PackageTags>
+        <RepositoryUrl>https://github.com/STranslate/STranslate</RepositoryUrl>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+        <DebugSymbols>true</DebugSymbols>
+        <DebugType>portable</DebugType>
+        <Optimize>false</Optimize>
+        <OutputPath>..\.artifacts\Debug\</OutputPath>
+        <DefineConstants>DEBUG;TRACE</DefineConstants>
+        <ErrorReport>prompt</ErrorReport>
+        <WarningLevel>4</WarningLevel>
+        <PlatformTarget>AnyCPU</PlatformTarget>
+        <Prefer32Bit>false</Prefer32Bit>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+        <DebugType>none</DebugType>
+        <Optimize>true</Optimize>
+        <OutputPath>..\.artifacts\Release\</OutputPath>
+        <DefineConstants>TRACE</DefineConstants>
+        <ErrorReport>prompt</ErrorReport>
+        <WarningLevel>4</WarningLevel>
+        <Prefer32Bit>false</Prefer32Bit>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <InternalsVisibleTo Include="STranslate" />
+        <InternalsVisibleTo Include="STranslate.Tests" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="CommunityToolkit.Mvvm" />
+        <PackageReference Include="iNKORE.UI.WPF.Modern" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+    </ItemGroup>
+
+    <!-- 将 .targets 文件包含到 NuGet 包中 -->
+    <ItemGroup>
+        <None Include="build\STranslate.Plugin.targets" Pack="true" PackagePath="build\STranslate.Plugin.targets" />
+        <None Include="buildTransitive\STranslate.Plugin.targets" Pack="true" PackagePath="buildTransitive\STranslate.Plugin.targets" />
+        <None Include="README.md" Pack="true" PackagePath="\" />
+    </ItemGroup>
+</Project>

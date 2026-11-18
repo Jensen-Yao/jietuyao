@@ -1,0 +1,12 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+    <sys:String x:Key="STranslate_Plugin_Translate_GoogleBuiltIn_RequestMode">リクエストモード</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_GoogleBuiltIn_RequestMode_Description">カスタム API はセルフホストの中継サービスを使用します。Google に直接接続するには、この PC から Google にアクセスできる必要があります。</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_GoogleBuiltIn_RequestMode_CustomApi">カスタム API</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_GoogleBuiltIn_RequestMode_Direct">Google に直接接続</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_GoogleBuiltIn_ApiUrl">API アドレス</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_GoogleBuiltIn_ApiUrl_Description">互換性のある中継サービスの完全な翻訳エンドポイントを入力してください（例：https://example.deno.dev/translate）。</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_GoogleBuiltIn_ApiUrl_Invalid">有効な HTTP または HTTPS API アドレスを入力してください。</sys:String>
+</ResourceDictionary>

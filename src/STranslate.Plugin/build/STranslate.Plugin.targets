@@ -1,0 +1,46 @@
+<Project>
+    <!-- 通用插件打包目标 -->
+    <Target Name="PackageAsSpkg" DependsOnTargets="Build">
+        <PropertyGroup>
+            <PluginName>$(AssemblyName)</PluginName>
+            <PluginOutputDir>$(OutputPath)</PluginOutputDir>
+            <TempPackageDir>$(OutputPath)temp_package</TempPackageDir>
+            <SpkgOutputPath>$(OutputPath)plugins\$(PluginName).spkg</SpkgOutputPath>
+        </PropertyGroup>
+
+        <!-- 清理临时目录 -->
+        <RemoveDir Directories="$(TempPackageDir)" Condition="Exists('$(TempPackageDir)')"/>
+        <MakeDir Directories="$(TempPackageDir)"/>
+
+        <!-- 清理plugins目录 -->
+        <RemoveDir Directories="$(OutputPath)plugins" Condition="Exists('$(OutputPath)plugins')"/>
+
+        <!-- 确保目标目录存在 -->
+        <MakeDir Directories="$(OutputPath)plugins"/>
+
+        <!-- 复制所有输出文件到临时目录 -->
+        <ItemGroup>
+            <PluginFiles Include="$(PluginOutputDir)**\*.*"/>
+        </ItemGroup>
+
+        <Copy SourceFiles="@(PluginFiles)"
+              DestinationFiles="@(PluginFiles->'$(TempPackageDir)\%(RecursiveDir)%(Filename)%(Extension)')"
+              SkipUnchangedFiles="false"/>
+
+        <!-- 创建ZIP压缩包（.spkg格式） -->
+        <ZipDirectory
+                SourceDirectory="$(TempPackageDir)"
+                DestinationFile="$(SpkgOutputPath)"
+                Overwrite="true"/>
+
+        <!-- 清理临时目录 -->
+        <RemoveDir Directories="$(TempPackageDir)"/>
+
+        <Message Text="Created plugin package: $(SpkgOutputPath)" Importance="high"/>
+    </Target>
+
+    <!-- 自动打包目标 -->
+    <Target Name="AutoPackagePlugin" AfterTargets="Build" Condition="'$(EnableAutoPackage)' == 'true'">
+        <CallTarget Targets="PackageAsSpkg"/>
+    </Target>
+</Project>

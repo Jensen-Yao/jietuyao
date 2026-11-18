@@ -1,0 +1,10 @@
+{
+  "PluginID": "2cc83275790ba8ce96b31c4fe0655743",
+  "Name": "Transmart (Built-in)",
+  "Description": "Free Tencent Transmart plugin for STranslate",
+  "Author": "zggsong",
+  "Version": "1.0.1",
+  "Website": "https://github.com/ZGGSONG/STranslate",
+  "ExecuteFileName": "STranslate.Plugin.Translate.TransmartBuiltIn.dll",
+  "IconPath": "icon.png"
+}

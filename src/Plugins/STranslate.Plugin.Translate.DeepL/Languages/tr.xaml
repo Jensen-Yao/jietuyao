@@ -1,0 +1,21 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+    <sys:String x:Key="STranslate_Plugin_Translate_DeepL_ApiKey">ApiKey</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_DeepL_ApiKey_Placeholder">Lütfen API anahtarınızı girin.</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_DeepL_ApiKey_Description">DeepL API anahtarınızı girin.</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_DeepL_ApiType">API Uç Noktası</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_DeepL_ApiType_Description">Bir DeepL API temel URL'si seçin veya uyumlu özel bir uç nokta girin.</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_DeepL_CustomApiUrl_Placeholder">API temel URL'sini girin. Örneğin: https://api-us.deepl.com</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_DeepL_InvalidApiUrl">Sorgu parametreleri veya parçalar içermeyen geçerli bir HTTP(S) API temel URL'si girin.</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_DeepL_Usage">Kullanım Durumu</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_DeepL_Query">Sorgula</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_DeepL_Query_Success">Sorgu başarılı.</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_DeepL_Query_Fail">Sorgu başarısız oldu.</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_DeepL_Query_Cancel">Sorguyu iptal et.</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_DeepL_Query_Error1">Kullanım bilgisi boş.</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_DeepL_Query_Error2">Kullanım limiti boş.</sys:String>
+
+</ResourceDictionary>

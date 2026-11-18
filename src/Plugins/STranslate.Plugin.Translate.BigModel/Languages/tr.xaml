@@ -1,0 +1,9 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+    <sys:String x:Key="STranslate_Plugin_Translate_BigModel_Thinking">Düşünme Modu</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_BigModel_Thinking_Description">Modelin daha derin düşünme ve akıl yürütme yapıp yapmayacağını kontrol eder. GLM-4.5 ve üzeri sürümler tarafından desteklenir.</sys:String>
+
+</ResourceDictionary>

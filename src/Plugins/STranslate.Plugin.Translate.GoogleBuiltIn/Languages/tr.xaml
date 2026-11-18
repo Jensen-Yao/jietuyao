@@ -1,0 +1,12 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+    <sys:String x:Key="STranslate_Plugin_Translate_GoogleBuiltIn_RequestMode">İstek Modu</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_GoogleBuiltIn_RequestMode_Description">Özel API, kendi barındırdığınız bir ara sunucuyu kullanır. Doğrudan Google bağlantısı için bu bilgisayarın Google ağına erişebilmesi gerekir.</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_GoogleBuiltIn_RequestMode_CustomApi">Özel API</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_GoogleBuiltIn_RequestMode_Direct">Doğrudan Google</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_GoogleBuiltIn_ApiUrl">API Adresi</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_GoogleBuiltIn_ApiUrl_Description">Uyumlu bir ara sunucunun tam çeviri uç noktasını girin. Örnek: https://example.deno.dev/translate.</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_GoogleBuiltIn_ApiUrl_Invalid">Geçerli bir HTTP veya HTTPS API adresi girin.</sys:String>
+</ResourceDictionary>

@@ -1,0 +1,10 @@
+﻿{
+  "PluginID": "86ec10628e754d41921d24387ec6e815",
+  "Name": "Baidu",
+  "Description": "Baidu plugin for stranslate",
+  "Author": "zggsong",
+  "Version": "1.0.1",
+  "Website": "https://github.com/ZGGSONG/STranslate",
+  "ExecuteFileName": "STranslate.Plugin.Translate.Baidu.dll",
+  "IconPath": "icon.png"
+}

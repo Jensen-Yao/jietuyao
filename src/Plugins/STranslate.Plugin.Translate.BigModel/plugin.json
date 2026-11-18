@@ -1,0 +1,10 @@
+{
+  "PluginID": "474b5fe844d9455ba0c59f75c1424f0d",
+  "Name": "BigModel",
+  "Description": "Official BigModel plugin for STranslate",
+  "Author": "zggsong",
+  "Version": "1.0.5",
+  "Website": "https://github.com/STranslate/STranslate",
+  "ExecuteFileName": "STranslate.Plugin.Translate.BigModel.dll",
+  "IconPath": "icon.png"
+}

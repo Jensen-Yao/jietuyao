@@ -1,0 +1,13 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+    <sys:String x:Key="STranslate_Plugin_Translate_OpenAI_ApiMode">API 모드</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_OpenAI_ApiMode_Description">다양한 OpenAI 호환 서비스에는 Chat Completions를, Responses API에는 Responses를 선택하세요.</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_OpenAI_ApiMode_ChatCompletions">Chat Completions</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_OpenAI_ApiMode_Responses">Responses</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_OpenAI_NoTextOutput">API에서 텍스트 출력을 반환하지 않았습니다.</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_OpenAI_AdditionalParameters">추가 요청 매개 변수</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_OpenAI_AdditionalParameters_Description">요청 루트에 병합할 JSON 개체를 입력하세요. 플러그인이 생성하는 기본 필드는 재정의할 수 없습니다.</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_OpenAI_SendTemperature">온도 매개변수 전송</sys:String>
+</ResourceDictionary>

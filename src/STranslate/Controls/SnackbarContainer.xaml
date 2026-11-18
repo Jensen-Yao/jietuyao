@@ -1,0 +1,62 @@
+<UserControl
+    x:Class="STranslate.Controls.SnackbarContainer"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:STranslate.Controls"
+    x:Name="SnackbarRoot"
+    Background="{x:Null}"
+    WindowChrome.IsHitTestVisibleInChrome="True">
+    <UserControl.Resources>
+        <Storyboard x:Key="ShowStoryboard">
+            <DoubleAnimation
+                Storyboard.TargetName="NoticeBarHost"
+                Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                To="0"
+                Duration="0:0:0.3">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseOut" />
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation
+                Storyboard.TargetName="NoticeBarHost"
+                Storyboard.TargetProperty="Opacity"
+                To="1"
+                Duration="0:0:0.3" />
+        </Storyboard>
+        <Storyboard x:Key="HideStoryboard">
+            <DoubleAnimation
+                Storyboard.TargetName="NoticeBarHost"
+                Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                To="-100"
+                Duration="0:0:0.25">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseIn" />
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation
+                Storyboard.TargetName="NoticeBarHost"
+                Storyboard.TargetProperty="Opacity"
+                To="0"
+                Duration="0:0:0.25" />
+        </Storyboard>
+    </UserControl.Resources>
+
+    <Grid Margin="16,16,16,0" VerticalAlignment="Top">
+        <Grid
+            x:Name="NoticeBarHost"
+            MaxWidth="568"
+            HorizontalAlignment="Center"
+            IsHitTestVisible="False"
+            Opacity="0"
+            RenderTransformOrigin="0.5,0">
+            <Grid.RenderTransform>
+                <TranslateTransform Y="-100" />
+            </Grid.RenderTransform>
+
+            <local:NoticeBar
+                x:Name="NoticeBarControl"
+                IsClosable="True"
+                IsOpen="False" />
+        </Grid>
+    </Grid>
+</UserControl>

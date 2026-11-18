@@ -1,0 +1,304 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:cnvt="clr-namespace:STranslate.Converters"
+    xmlns:control="clr-namespace:STranslate.Controls"
+    xmlns:core="clr-namespace:STranslate.Core"
+    xmlns:ikw="http://schemas.inkore.net/lib/ui/wpf"
+    xmlns:ui="http://schemas.inkore.net/lib/ui/wpf/modern">
+
+    <Style TargetType="{x:Type control:HeaderControl}">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Stretch" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type control:HeaderControl}">
+                    <Border
+                        x:Name="PART_Border"
+                        Padding="{TemplateBinding Padding}"
+                        HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+                        VerticalAlignment="{TemplateBinding VerticalAlignment}"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        WindowChrome.IsHitTestVisibleInChrome="True">
+                        <Border.Resources>
+                            <Style BasedOn="{StaticResource {x:Type control:IconButton}}" TargetType="control:IconButton">
+                                <Setter Property="Padding" Value="5" />
+                            </Style>
+                        </Border.Resources>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <control:IconButton
+                                Grid.Column="0"
+                                Icon="{x:Static ui:FluentSystemIcons.Pin_24_Regular}"
+                                IsOn="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsTopmost}"
+                                ToolTip="{DynamicResource ToggleTopmost}"
+                                Type="Toggle" />
+
+                            <ItemsControl
+                                Grid.Column="1"
+                                HorizontalAlignment="Right"
+                                ItemsSource="{TemplateBinding VisibleActions}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Horizontal" />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid Margin="0,0,3,0">
+                                            <control:IconButton
+                                                x:Name="ClipboardMonitorButton"
+                                                Icon="{x:Static ui:FluentSystemIcons.ClipboardMore_20_Regular}"
+                                                IsOn="{Binding RelativeSource={RelativeSource AncestorType={x:Type control:HeaderControl}}, Path=IsClipboardMonitoring}"
+                                                ToolTip="{DynamicResource ClipboardMonitorButtonTooltip}"
+                                                Type="Toggle"
+                                                Visibility="Collapsed" />
+                                            <control:IconButton
+                                                x:Name="AutoTranslateButton"
+                                                Icon="{x:Static ui:FluentSystemIcons.TranslateAuto_20_Regular}"
+                                                IsOn="{Binding RelativeSource={RelativeSource AncestorType={x:Type control:HeaderControl}}, Path=IsAutoTranslate}"
+                                                ToolTip="{DynamicResource General_AutoTranslate}"
+                                                Type="Toggle"
+                                                Visibility="Collapsed" />
+                                            <control:IconButton
+                                                x:Name="OcrButton"
+                                                Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type control:HeaderControl}}, Path=OcrCommand}"
+                                                Icon="{x:Static ui:FluentSystemIcons.ScanType_20_Regular}"
+                                                ToolTip="{DynamicResource Ocr}"
+                                                Visibility="Collapsed" />
+                                            <control:IconButton
+                                                x:Name="ImageTranslateButton"
+                                                Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type control:HeaderControl}}, Path=ImageTranslateCommand}"
+                                                Icon="{x:Static ui:FluentSystemIcons.DrawImage_20_Regular}"
+                                                ToolTip="{DynamicResource General_ImageTranslate}"
+                                                Visibility="Collapsed" />
+                                            <control:IconButton
+                                                x:Name="ScreenshotTranslateButton"
+                                                Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type control:HeaderControl}}, Path=ScreenshotTranslateCommand}"
+                                                Icon="{x:Static ui:FluentSystemIcons.ScreenCut_20_Regular}"
+                                                ToolTip="{DynamicResource General_ScreenshotTranslate}"
+                                                Visibility="Collapsed" />
+                                            <control:IconButton
+                                                x:Name="MouseSelectionTranslationButton"
+                                                Icon="{x:Static ui:FluentSystemIcons.KeyboardMouse_16_Regular}"
+                                                IsOn="{Binding RelativeSource={RelativeSource AncestorType={x:Type control:HeaderControl}}, Path=IsMouseSelectionTranslationEnabled}"
+                                                ToolTip="{DynamicResource Hotkey_MouseSelectionTranslation}"
+                                                Type="Toggle"
+                                                Visibility="Collapsed" />
+                                            <control:IconButton
+                                                x:Name="ColorSchemeButton"
+                                                Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type control:HeaderControl}}, Path=ColorSchemeCommand}"
+                                                Icon="{x:Static ui:FluentSystemIcons.Color_20_Regular}"
+                                                ToolTip="{DynamicResource Hotkey_ToggleColorTheme}"
+                                                Visibility="Collapsed" />
+                                            <control:IconButton
+                                                x:Name="HideInputButton"
+                                                Icon="{x:Static ui:FluentSystemIcons.SlideHide_20_Regular}"
+                                                IsOn="{Binding RelativeSource={RelativeSource AncestorType={x:Type control:HeaderControl}}, Path=IsHideInput}"
+                                                ToolTip="{DynamicResource Hotkey_ShowHideInputBox}"
+                                                Type="Toggle"
+                                                Visibility="Collapsed" />
+                                            <Grid x:Name="ServiceSwitcherGroup" Visibility="Collapsed">
+                                                <control:IconButton
+                                                    x:Name="ServiceSwitcherButton"
+                                                    Icon="{x:Static ui:FluentSystemIcons.Apps_20_Regular}"
+                                                    Tag="{Binding RelativeSource={RelativeSource AncestorType={x:Type control:HeaderControl}}}"
+                                                    ToolTip="{DynamicResource ServiceQuickSwitcher}"
+                                                    Type="Toggle" />
+                                                <control:ServiceSwitcherPopup
+                                                    x:Name="ServiceSwitcherPopup"
+                                                    AllowsTransparency="True"
+                                                    DataContext="{Binding Tag, ElementName=ServiceSwitcherButton}"
+                                                    Focusable="True"
+                                                    IsOpen="{Binding IsOn, ElementName=ServiceSwitcherButton, Mode=TwoWay}"
+                                                    Placement="Bottom"
+                                                    PlacementTarget="{Binding ElementName=ServiceSwitcherButton}"
+                                                    PopupAnimation="Fade"
+                                                    StaysOpen="False"
+                                                    VerticalOffset="4">
+                                                    <Border
+                                                        MinWidth="220"
+                                                        MaxWidth="320"
+                                                        Background="{DynamicResource {x:Static ui:ThemeKeys.SolidBackgroundFillColorBaseBrushKey}}"
+                                                        CornerRadius="6">
+                                                        <Border
+                                                            Padding="4"
+                                                            Background="{DynamicResource SettingsCardBackground}"
+                                                            BorderBrush="{DynamicResource SettingsCardBorderBrush}"
+                                                            BorderThickness="{DynamicResource SettingsCardBorderThickness}"
+                                                            CornerRadius="6">
+                                                            <ui:ScrollViewerEx
+                                                                MaxHeight="420"
+                                                                CanContentScroll="False"
+                                                                HorizontalScrollBarVisibility="Disabled">
+                                                                <Grid>
+                                                                    <ItemsControl
+                                                                        x:Name="QuickServiceItemsControl"
+                                                                        HorizontalAlignment="Stretch"
+                                                                        ItemsSource="{Binding QuickServiceItems}">
+                                                                        <ItemsControl.ItemContainerStyle>
+                                                                            <Style TargetType="ContentPresenter">
+                                                                                <Setter Property="HorizontalAlignment" Value="Stretch" />
+                                                                            </Style>
+                                                                        </ItemsControl.ItemContainerStyle>
+                                                                        <ItemsControl.ItemTemplate>
+                                                                            <DataTemplate>
+                                                                                <StackPanel>
+                                                                                    <Separator Margin="8,4" Visibility="{Binding ShowSeparatorBefore, Converter={cnvt:BoolToVisibilityConverter}}" />
+                                                                                    <Button
+                                                                                        Padding="8,7"
+                                                                                        HorizontalAlignment="Stretch"
+                                                                                        HorizontalContentAlignment="Stretch"
+                                                                                        Command="{Binding DataContext.ToggleQuickServiceCommand, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"
+                                                                                        CommandParameter="{Binding Service}">
+                                                                                        <Button.Style>
+                                                                                            <Style BasedOn="{StaticResource {x:Type Button}}" TargetType="Button">
+                                                                                                <Setter Property="Background" Value="Transparent" />
+                                                                                                <Setter Property="BorderThickness" Value="0" />
+                                                                                                <Setter Property="ui:ControlHelper.CornerRadius" Value="4" />
+                                                                                                <Style.Triggers>
+                                                                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                                                                        <Setter Property="Background" Value="{DynamicResource {x:Static ui:ThemeKeys.SubtleFillColorSecondaryBrushKey}}" />
+                                                                                                    </Trigger>
+                                                                                                    <Trigger Property="IsPressed" Value="True">
+                                                                                                        <Setter Property="Background" Value="{DynamicResource {x:Static ui:ThemeKeys.SubtleFillColorTertiaryBrushKey}}" />
+                                                                                                    </Trigger>
+                                                                                                </Style.Triggers>
+                                                                                            </Style>
+                                                                                        </Button.Style>
+                                                                                        <Grid>
+                                                                                            <Grid.ColumnDefinitions>
+                                                                                                <ColumnDefinition Width="24" />
+                                                                                                <ColumnDefinition Width="24" />
+                                                                                                <ColumnDefinition Width="Auto" />
+                                                                                                <ColumnDefinition Width="Auto" />
+                                                                                            </Grid.ColumnDefinitions>
+                                                                                            <ui:FontIcon
+                                                                                                Grid.Column="0"
+                                                                                                VerticalAlignment="Center"
+                                                                                                Foreground="{DynamicResource {x:Static ui:ThemeKeys.AccentTextFillColorPrimaryBrushKey}}"
+                                                                                                Icon="{x:Static ui:FluentSystemIcons.Checkmark_20_Regular}"
+                                                                                                Visibility="{Binding Service.IsEnabled, Converter={cnvt:BoolToVisibilityConverter}}" />
+                                                                                            <Image
+                                                                                                Grid.Column="1"
+                                                                                                Width="20"
+                                                                                                Height="20"
+                                                                                                Source="{Binding Service.IconPath, Converter={cnvt:ImagePathToSourceConverter}}" />
+                                                                                            <TextBlock
+                                                                                                Grid.Column="2"
+                                                                                                MaxWidth="180"
+                                                                                                Margin="8,0"
+                                                                                                VerticalAlignment="Center"
+                                                                                                Text="{Binding Service.DisplayName}"
+                                                                                                TextTrimming="CharacterEllipsis"
+                                                                                                ToolTipService.ToolTip="{Binding Service.DisplayName}" />
+                                                                                            <control:Badge
+                                                                                                Grid.Column="3"
+                                                                                                Margin="3,0"
+                                                                                                VerticalAlignment="Center"
+                                                                                                IsOfficial="{Binding Service.MetaData.IsPrePlugin}" />
+                                                                                        </Grid>
+                                                                                    </Button>
+                                                                                </StackPanel>
+                                                                            </DataTemplate>
+                                                                        </ItemsControl.ItemTemplate>
+                                                                    </ItemsControl>
+                                                                    <TextBlock
+                                                                        Margin="16,20"
+                                                                        HorizontalAlignment="Center"
+                                                                        VerticalAlignment="Center"
+                                                                        Foreground="{DynamicResource {x:Static ui:ThemeKeys.TextFillColorSecondaryBrushKey}}"
+                                                                        Text="{DynamicResource NoConfiguredServices}"
+                                                                        Visibility="{Binding ElementName=QuickServiceItemsControl, Path=HasItems, Converter={cnvt:BoolToVisibilityInverseConverter}}" />
+                                                                </Grid>
+                                                            </ui:ScrollViewerEx>
+                                                        </Border>
+                                                    </Border>
+                                                </control:ServiceSwitcherPopup>
+                                            </Grid>
+                                            <ikw:SimpleStackPanel
+                                                x:Name="HistoryNavigationGroup"
+                                                Orientation="Horizontal"
+                                                Spacing="0"
+                                                Visibility="Collapsed">
+                                                <control:IconButton
+                                                    ui:ControlHelper.CornerRadius="6,0,0,6"
+                                                    BorderThickness="1,1,0,1"
+                                                    Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type control:HeaderControl}}, Path=HistoryPreviousCommand}"
+                                                    Icon="{x:Static ui:FluentSystemIcons.ChevronCircleLeft_20_Regular}"
+                                                    ToolTip="{DynamicResource Previous}" />
+                                                <control:IconButton
+                                                    Margin="-0.5,0,0,0"
+                                                    ui:ControlHelper.CornerRadius="0,6,6,0"
+                                                    BorderThickness="0.5,1,1,1"
+                                                    Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type control:HeaderControl}}, Path=HistoryNextCommand}"
+                                                    Icon="{x:Static ui:FluentSystemIcons.ChevronCircleRight_20_Regular}"
+                                                    ToolTip="{DynamicResource Next}" />
+                                            </ikw:SimpleStackPanel>
+                                        </Grid>
+                                        <DataTemplate.Triggers>
+                                            <DataTrigger Binding="{Binding}" Value="{x:Static core:MainHeaderActions.ClipboardMonitor}">
+                                                <Setter TargetName="ClipboardMonitorButton" Property="Visibility" Value="Visible" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding}" Value="{x:Static core:MainHeaderActions.AutoTranslate}">
+                                                <Setter TargetName="AutoTranslateButton" Property="Visibility" Value="Visible" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding}" Value="{x:Static core:MainHeaderActions.Ocr}">
+                                                <Setter TargetName="OcrButton" Property="Visibility" Value="Visible" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding}" Value="{x:Static core:MainHeaderActions.ImageTranslate}">
+                                                <Setter TargetName="ImageTranslateButton" Property="Visibility" Value="Visible" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding}" Value="{x:Static core:MainHeaderActions.ScreenshotTranslate}">
+                                                <Setter TargetName="ScreenshotTranslateButton" Property="Visibility" Value="Visible" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding}" Value="{x:Static core:MainHeaderActions.MouseSelectionTranslation}">
+                                                <Setter TargetName="MouseSelectionTranslationButton" Property="Visibility" Value="Visible" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding}" Value="{x:Static core:MainHeaderActions.ColorScheme}">
+                                                <Setter TargetName="ColorSchemeButton" Property="Visibility" Value="Visible" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding}" Value="{x:Static core:MainHeaderActions.HideInput}">
+                                                <Setter TargetName="HideInputButton" Property="Visibility" Value="Visible" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding}" Value="{x:Static core:MainHeaderActions.ServiceSwitcher}">
+                                                <Setter TargetName="ServiceSwitcherGroup" Property="Visibility" Value="Visible" />
+                                                <Setter TargetName="ServiceSwitcherButton" Property="IsOn" Value="{Binding RelativeSource={RelativeSource AncestorType={x:Type control:HeaderControl}}, Path=IsServiceSwitcherOpen, Mode=TwoWay}" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding}" Value="{x:Static core:MainHeaderActions.HistoryNavigation}">
+                                                <Setter TargetName="HistoryNavigationGroup" Property="Visibility" Value="Visible" />
+                                            </DataTrigger>
+                                        </DataTemplate.Triggers>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+
+                            <StackPanel Grid.Column="2" Orientation="Horizontal">
+                                <control:IconButton
+                                    Command="{TemplateBinding SettingCommand}"
+                                    Icon="{x:Static ui:FluentSystemIcons.Settings_20_Regular}"
+                                    ToolTip="{DynamicResource Settings}"
+                                    Visibility="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsSettingVisible, Converter={cnvt:BoolToVisibilityConverter}}" />
+                                <control:IconButton
+                                    Margin="3,0,0,0"
+                                    Command="{TemplateBinding CloseCommand}"
+                                    CommandParameter="{TemplateBinding CloseCommandParameter}"
+                                    Icon="{x:Static ui:FluentSystemIcons.Dismiss_20_Regular}"
+                                    ToolTip="{DynamicResource Close}"
+                                    Visibility="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsCloseVisible, Converter={cnvt:BoolToVisibilityConverter}}" />
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

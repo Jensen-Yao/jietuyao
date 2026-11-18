@@ -1,0 +1,27 @@
+<Project>
+    <PropertyGroup>
+        <LangVersion>preview</LangVersion>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <EnableWindowsTargeting>true</EnableWindowsTargeting>
+        <RepositoryUrl>https://github.com/STranslate/STranslate/</RepositoryUrl>
+        <CETCompat>false</CETCompat>
+
+        <!--// 禁用 SourceLink 功能以避免编译警报 //-->
+        <EnableSourceLink>false</EnableSourceLink>
+        <!--// 集中管理编译输出，将 bin 和 obj 统一放入 .artifacts 目录 //-->
+        <ArtifactsPath>$(MSBuildThisFileDirectory).artifacts</ArtifactsPath>
+    </PropertyGroup>
+
+    <!--// 清理 WPF 临时编译文件夹 //-->
+    <Target Name="CleanupWpfTempFolders" AfterTargets="Build;Rebuild">
+        <PropertyGroup>
+            <_ArtifactsBinPath>$([System.IO.Path]::Combine('$(ArtifactsPath)', 'bin'))</_ArtifactsBinPath>
+        </PropertyGroup>
+        <ItemGroup>
+            <WpfTempFolders Include="$([System.IO.Directory]::GetDirectories('$(_ArtifactsBinPath)', '*_wpftmp*'))" Condition="Exists('$(_ArtifactsBinPath)')" />
+        </ItemGroup>
+        <RemoveDir Directories="@(WpfTempFolders)" ContinueOnError="true" />
+        <Message Text="已清理 WPF 临时文件夹: %(WpfTempFolders.Identity)" Condition="'@(WpfTempFolders)' != ''" Importance="high" />
+    </Target>
+</Project>

@@ -1,0 +1,491 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:cnvt="clr-namespace:STranslate.Converters"
+    xmlns:control="clr-namespace:STranslate.Controls"
+    xmlns:core="clr-namespace:STranslate.Core"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:ikw="http://schemas.inkore.net/lib/ui/wpf"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="http://schemas.inkore.net/lib/ui/wpf/modern">
+
+    <DataTemplate x:Key="TranslateHisTemplate" DataType="{x:Type core:HistoryData}">
+        <Border
+            Margin="0,10"
+            Background="{DynamicResource {x:Static ui:ThemeKeys.CardBackgroundFillColorDefaultBrushKey}}"
+            ClipToBounds="True"
+            CornerRadius="4">
+            <ikw:SimpleStackPanel Spacing="3">
+                <StackPanel Orientation="Horizontal" Margin="8,4,8,0" Opacity="0.7"
+                    Visibility="{Binding EffectiveSourceLang, Converter={cnvt:EqualToVisibilityInverseConverter}}">
+                    <TextBlock>
+                        <TextBlock.Text>
+                            <MultiBinding Converter="{cnvt:HistoryLanguageDisplayConverter}"><Binding Path="EffectiveSourceLang" /></MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
+                    <TextBlock Text=" → " />
+                    <TextBlock>
+                        <TextBlock.Text>
+                            <MultiBinding Converter="{cnvt:HistoryLanguageDisplayConverter}"><Binding Path="EffectiveTargetLang" /></MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
+                </StackPanel>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <TextBox
+                        Background="Transparent"
+                        Foreground="{DynamicResource {x:Static ui:ThemeKeys.TextControlForegroundKey}}"
+                        BorderBrush="{x:Null}"
+                        BorderThickness="0"
+                        IsReadOnly="True"
+                        SnapsToDevicePixels="True"
+                        Text="{Binding TransResult.Text}"
+                        TextWrapping="Wrap">
+                        <TextBox.FlowDirection>
+                            <MultiBinding Converter="{cnvt:TextAndLanguageToFlowDirectionConverter}">
+                                <Binding Path="TransResult.Text" />
+                            </MultiBinding>
+                        </TextBox.FlowDirection>
+                    </TextBox>
+                    <Grid
+                        Grid.Row="1"
+                        Margin="6,2"
+                        VerticalAlignment="Center">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <control:IconButton
+                            Command="{Binding RelativeSource={RelativeSource AncestorType=ui:Page}, Path=DataContext.CopyCommand}"
+                            CommandParameter="{Binding TransResult.Text}"
+                            Icon="{x:Static ui:FluentSystemIcons.Copy_20_Regular}" />
+                        <TextBlock
+                            Grid.Column="1"
+                            Margin="8,0,0,0"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            FontSize="{DynamicResource STControlFontSize12}"
+                            Opacity="0.7">
+                            <TextBlock.Text>
+                                <MultiBinding Converter="{cnvt:HistoryServiceDisplayNameConverter}">
+                                    <Binding Path="ServiceDisplayName" />
+                                    <Binding Path="ServiceID" />
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
+                    </Grid>
+                </Grid>
+                <ikw:SimpleStackPanel
+                    x:Name="PART_TransBackPanel"
+                    Spacing="3"
+                    Visibility="{Binding TransBackResult, Converter={cnvt:EqualToVisibilityInverseConverter}}">
+                    <Separator Background="{DynamicResource {x:Static ui:ThemeKeys.ContentDialogSeparatorBorderBrushKey}}" />
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <TextBox
+                            Background="Transparent"
+                            Foreground="{DynamicResource {x:Static ui:ThemeKeys.TextControlForegroundKey}}"
+                            BorderBrush="{x:Null}"
+                            BorderThickness="0"
+                            IsReadOnly="True"
+                            Text="{Binding TransBackResult.Text}"
+                            TextWrapping="Wrap">
+                            <TextBox.FlowDirection>
+                                <MultiBinding Converter="{cnvt:TextAndLanguageToFlowDirectionConverter}">
+                                    <Binding Path="TransBackResult.Text" />
+                                </MultiBinding>
+                            </TextBox.FlowDirection>
+                        </TextBox>
+                        <ikw:SimpleStackPanel
+                            Grid.Row="1"
+                            Margin="6,2"
+                            Orientation="Horizontal"
+                            Spacing="4">
+                            <control:IconButton
+                                Command="{Binding RelativeSource={RelativeSource AncestorType=ui:Page}, Path=DataContext.CopyCommand}"
+                                CommandParameter="{Binding TransBackResult.Text}"
+                                Icon="{x:Static ui:FluentSystemIcons.Copy_20_Regular}" />
+                        </ikw:SimpleStackPanel>
+                    </Grid>
+                </ikw:SimpleStackPanel>
+            </ikw:SimpleStackPanel>
+        </Border>
+    </DataTemplate>
+    <DataTemplate x:Key="DictionaryHisTemplate" DataType="{x:Type core:HistoryData}">
+        <Border
+            Margin="0,10"
+            Background="{DynamicResource {x:Static ui:ThemeKeys.CardBackgroundFillColorDefaultBrushKey}}"
+            ClipToBounds="True"
+            CornerRadius="4"
+            Visibility="{Binding DictResult.ResultType, Converter={cnvt:DictionaryResultTypeVisibilityConverter}, ConverterParameter=Success}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <StackPanel Margin="8,8,8,4">
+                    <!--  单词显示  -->
+                    <TextBox
+                        Margin="0,0,0,12"
+                        FontSize="{DynamicResource STControlFontSize16}"
+                        FontWeight="SemiBold"
+                        Foreground="{DynamicResource {x:Static ui:ThemeKeys.TextControlForegroundKey}}"
+                        IsReadOnly="True"
+                        Style="{DynamicResource TextBlockSimilarStyle}"
+                        Text="{Binding DictResult.Text}"
+                        TextWrapping="Wrap">
+                        <TextBox.FlowDirection>
+                            <MultiBinding Converter="{cnvt:TextAndLanguageToFlowDirectionConverter}">
+                                <Binding Path="DictResult.Text" />
+                            </MultiBinding>
+                        </TextBox.FlowDirection>
+                    </TextBox>
+                    <!--  音标显示  -->
+                    <ItemsControl
+                        Margin="0,0,0,4"
+                        ItemsSource="{Binding DictResult.Symbols}"
+                        Visibility="{Binding DictResult.Symbols.Count, Converter={cnvt:CountToVisibilityConverter}}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <ikw:SimpleStackPanel Orientation="Horizontal" Spacing="15" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <ikw:SimpleStackPanel Orientation="Horizontal" Spacing="5">
+                                    <!--  音标标签 (uk/us/zh)  -->
+                                    <Border
+                                        Margin="0,3"
+                                        Padding="4,0"
+                                        Background="{DynamicResource {x:Static ui:ThemeKeys.AccentAAFillColorDefaultBrushKey}}"
+                                        CornerRadius="2">
+                                        <TextBlock
+                                            VerticalAlignment="Center"
+                                            FontSize="{DynamicResource STControlFontSize10}"
+                                            Foreground="{DynamicResource {x:Static ui:ThemeKeys.TextOnAccentFillColorPrimaryBrushKey}}"
+                                            Text="{Binding Label}" />
+                                    </Border>
+                                    <!--  音标文本  -->
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        FontFamily="Consolas, 'Courier New'"
+                                        FontSize="{DynamicResource STControlFontSize12}"
+                                        Text="{Binding Phonetic, StringFormat='/\{0\}/'}" />
+                                    <!--  音频播放按钮  -->
+                                    <!--<Button
+                                        Padding="4"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        Command="{Binding RelativeSource={RelativeSource AncestorType=control:OutputControl}, Path=PlayAudioUrlCommand}"
+                                        CommandParameter="{Binding AudioUrl}"
+                                        ToolTip="{DynamicResource PlayPronunciation}"
+                                        Visibility="{Binding AudioUrl, Converter={cnvt:EqualToVisibilityInverseConverter}}">
+                                        <ui:FontIcon FontSize="{DynamicResource STControlFontSize12}" Icon="{x:Static ui:FluentSystemIcons.Speaker1_24_Regular}" />
+                                    </Button>-->
+                                </ikw:SimpleStackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <!--  词性和释义  -->
+                    <ItemsControl
+                        Margin="0,0,0,8"
+                        ItemsSource="{Binding DictResult.DictMeans}"
+                        Visibility="{Binding DictResult.DictMeans.Count, Converter={cnvt:CountToVisibilityConverter}}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="0,4">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <!--  词性  -->
+                                    <TextBlock
+                                        Margin="0,3,0,0"
+                                        FontSize="{DynamicResource STControlFontSize12}"
+                                        FontWeight="Medium"
+                                        Foreground="{DynamicResource {x:Static ui:ThemeKeys.AccentTextFillColorPrimaryBrushKey}}"
+                                        Text="{Binding PartOfSpeech}"
+                                        Visibility="{Binding PartOfSpeech, Converter={cnvt:EqualToVisibilityInverseConverter}}" />
+                                    <!--  释义  -->
+                                    <TextBox
+                                        Grid.Column="1"
+                                        Margin="4,0,0,0"
+                                        IsReadOnly="True"
+                                        Style="{DynamicResource TextBlockSimilarStyle}"
+                                        Text="{Binding Means, Converter={cnvt:CollectionToStringConverter}, ConverterParameter=；}"
+                                        TextWrapping="Wrap">
+                                        <TextBox.FlowDirection>
+                                            <MultiBinding Converter="{cnvt:TextAndLanguageToFlowDirectionConverter}">
+                                                <Binding Path="Means" Converter="{cnvt:CollectionToStringConverter}" ConverterParameter="；" />
+                                            </MultiBinding>
+                                        </TextBox.FlowDirection>
+                                    </TextBox>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <!--#region // 词汇变形 //-->
+
+                    <!--  复数形式  -->
+                    <control:WordExchange
+                        Title="{DynamicResource Plural}"
+                        IsEnabled="False"
+                        ItemsSource="{Binding DictResult.Plurals}" />
+
+                    <!--  过去式  -->
+                    <control:WordExchange
+                        Title="{DynamicResource PastTense}"
+                        IsEnabled="False"
+                        ItemsSource="{Binding DictResult.PastTense}" />
+
+                    <!--  过去分词  -->
+                    <control:WordExchange
+                        Title="{DynamicResource PastParticiple}"
+                        IsEnabled="False"
+                        ItemsSource="{Binding DictResult.PastParticiple}" />
+
+                    <!--  现在分词  -->
+                    <control:WordExchange
+                        Title="{DynamicResource PresentParticiple}"
+                        IsEnabled="False"
+                        ItemsSource="{Binding DictResult.PresentParticiple}" />
+
+                    <!--  第三人称单数  -->
+                    <control:WordExchange
+                        Title="{DynamicResource ThirdPersonSingular}"
+                        IsEnabled="False"
+                        ItemsSource="{Binding DictResult.ThirdPersonSingular}" />
+
+                    <!--  比较级  -->
+                    <control:WordExchange
+                        Title="{DynamicResource Comparative}"
+                        IsEnabled="False"
+                        ItemsSource="{Binding DictResult.Comparative}" />
+
+                    <!--  最高级  -->
+                    <control:WordExchange
+                        Title="{DynamicResource Superlative}"
+                        IsEnabled="False"
+                        ItemsSource="{Binding DictResult.Superlative}" />
+
+                    <!--#endregion-->
+
+                    <!--  例句显示  -->
+                    <ItemsControl
+                        Margin="0,8,0,0"
+                        ItemsSource="{Binding DictResult.Sentences}"
+                        Visibility="{Binding DictResult.Sentences.Count, Converter={cnvt:CountToVisibilityConverter}}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border
+                                    Margin="0,2"
+                                    Padding="8,6"
+                                    Background="{DynamicResource {x:Static ui:ThemeKeys.CardBackgroundFillColorSecondaryBrushKey}}"
+                                    CornerRadius="4">
+                                    <TextBlock
+                                        FontStyle="Italic"
+                                        Text="{Binding}"
+                                        TextWrapping="Wrap">
+                                        <TextBlock.FlowDirection>
+                                            <MultiBinding Converter="{cnvt:TextAndLanguageToFlowDirectionConverter}">
+                                                <Binding />
+                                            </MultiBinding>
+                                        </TextBlock.FlowDirection>
+                                    </TextBlock>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+                <Grid
+                    Grid.Row="1"
+                    Margin="6,2"
+                    VerticalAlignment="Center">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <control:IconButton
+                        Command="{Binding RelativeSource={RelativeSource AncestorType=ui:Page}, Path=DataContext.CopyCommand}"
+                        CommandParameter="{Binding DictResult.Text}"
+                        Icon="{x:Static ui:FluentSystemIcons.Copy_20_Regular}" />
+                    <TextBlock
+                        Grid.Column="1"
+                        Margin="8,0,0,0"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        FontSize="{DynamicResource STControlFontSize12}"
+                        Opacity="0.7">
+                        <TextBlock.Text>
+                            <MultiBinding Converter="{cnvt:HistoryServiceDisplayNameConverter}">
+                                <Binding Path="ServiceDisplayName" />
+                                <Binding Path="ServiceID" />
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
+                </Grid>
+            </Grid>
+        </Border>
+    </DataTemplate>
+
+    <control:HistoryControlSelector
+        x:Key="HistoryControlSelector"
+        DictionaryTemplate="{StaticResource DictionaryHisTemplate}"
+        TranslateTemplate="{StaticResource TranslateHisTemplate}" />
+
+    <Style TargetType="{x:Type control:HistoryControl}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type control:HistoryControl}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="40" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <Grid VerticalAlignment="Top">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                VerticalAlignment="Center"
+                                FontFamily="{DynamicResource {x:Static ui:ThemeKeys.FluentSystemIconsKey}}"
+                                FontSize="{DynamicResource STControlFontSize18}"
+                                Text="&#xF0284;" />
+
+                            <TextBlock
+                                Grid.Column="1"
+                                Margin="5,0"
+                                VerticalAlignment="Center"
+                                Text="{Binding Time, StringFormat=yyyy/MM/dd HH:mm:ss}" />
+
+                            <control:IconButton
+                                Grid.Column="2"
+                                Command="{Binding RelativeSource={RelativeSource AncestorType=ui:Page}, Path=DataContext.DeleteCommand}"
+                                CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=control:HistoryControl}, Path=DataContext}"
+                                Icon="{x:Static ui:FluentSystemIcons.Delete_20_Regular}" />
+                        </Grid>
+                        <StackPanel Grid.Row="1">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="auto" />
+                                </Grid.RowDefinitions>
+                                <Border
+                                    Margin="0,10"
+                                    Background="{DynamicResource {x:Static ui:ThemeKeys.CardBackgroundFillColorDefaultBrushKey}}"
+                                    ClipToBounds="True"
+                                    CornerRadius="4">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+                                        <control:ReplacementTextBox
+                                            MinHeight="50"
+                                            Background="Transparent"
+                                            BorderBrush="{x:Null}"
+                                            BorderThickness="0"
+                                            IsReadOnly="True"
+                                            SnapsToDevicePixels="True"
+                                            Text="{Binding SourceText, Mode=OneWay}"
+                                            Requests="{Binding ReplacementRequests}"
+                                            TextWrapping="Wrap">
+                                            <control:ReplacementTextBox.FlowDirection>
+                                                <MultiBinding Converter="{cnvt:TextAndLanguageToFlowDirectionConverter}">
+                                                    <Binding Path="SourceText" />
+                                                </MultiBinding>
+                                            </control:ReplacementTextBox.FlowDirection>
+                                        </control:ReplacementTextBox>
+                                        <ikw:SimpleStackPanel
+                                            Grid.Row="1"
+                                            Margin="6,2"
+                                            Orientation="Horizontal"
+                                            Spacing="4">
+                                            <control:IconButton
+                                                Command="{Binding RelativeSource={RelativeSource AncestorType=ui:Page}, Path=DataContext.CopyCommand}"
+                                                CommandParameter="{Binding SourceText}"
+                                                Icon="{x:Static ui:FluentSystemIcons.Copy_20_Regular}" />
+                                        </ikw:SimpleStackPanel>
+                                    </Grid>
+                                </Border>
+                            </Grid>
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.Resources>
+                                    <Style BasedOn="{StaticResource {x:Type TextBlock}}" TargetType="TextBlock">
+                                        <Setter Property="VerticalAlignment" Value="Center" />
+                                        <Setter Property="HorizontalAlignment" Value="Center" />
+                                        <Setter Property="Margin" Value="0,5" />
+                                    </Style>
+                                    <Style TargetType="Border">
+                                        <Setter Property="CornerRadius" Value="6" />
+                                        <Setter Property="Background" Value="{DynamicResource {x:Static ui:ThemeKeys.CardBackgroundFillColorDefaultBrushKey}}" />
+                                    </Style>
+                                </Grid.Resources>
+                                <Border>
+                                    <TextBlock>
+                                        <TextBlock.Text>
+                                            <MultiBinding Converter="{cnvt:HistoryLanguageDisplayConverter}">
+                                                <Binding Path="SourceLang" />
+                                                <Binding Path="EffectiveSourceLang" />
+                                            </MultiBinding>
+                                        </TextBlock.Text>
+                                    </TextBlock>
+                                </Border>
+                                <TextBlock
+                                    Grid.Column="1"
+                                    Margin="5,0"
+                                    FontFamily="{DynamicResource {x:Static ui:ThemeKeys.FluentSystemIconsKey}}"
+                                    FontSize="{DynamicResource STControlFontSize18}"
+                                    FontWeight="Medium"
+                                    Text="&#xE32B;" />
+                                <Border Grid.Column="2">
+                                    <TextBlock>
+                                        <TextBlock.Text>
+                                            <MultiBinding Converter="{cnvt:HistoryLanguageDisplayConverter}">
+                                                <Binding Path="TargetLang" />
+                                                <Binding Path="EffectiveTargetLang" />
+                                            </MultiBinding>
+                                        </TextBlock.Text>
+                                    </TextBlock>
+                                </Border>
+                            </Grid>
+                            <ItemsControl
+                                Background="Transparent"
+                                ItemTemplateSelector="{StaticResource HistoryControlSelector}"
+                                ItemsSource="{Binding Data}">
+                                <ItemsControl.Resources>
+                                    <Style TargetType="ListBoxItem">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="ListBoxItem">
+                                                    <ContentPresenter />
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </ItemsControl.Resources>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

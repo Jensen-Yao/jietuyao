@@ -1,0 +1,10 @@
+﻿{
+  "PluginID": "09d6beef9b1f4891a4a0d8a8dbf510d1",
+  "Name": "DeepL",
+  "Description": "DeepL plugin for stranslate",
+  "Author": "zggsong",
+  "Version": "1.0.2",
+  "Website": "https://github.com/ZGGSONG/STranslate",
+  "ExecuteFileName": "STranslate.Plugin.Translate.DeepL.dll",
+  "IconPath": "icon.png"
+}

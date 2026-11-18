@@ -1,0 +1,698 @@
+<ui:Page
+    x:Class="STranslate.Views.Pages.PluginPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:cnvt="clr-namespace:STranslate.Converters"
+    xmlns:control="clr-namespace:STranslate.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:ikw="http://schemas.inkore.net/lib/ui/wpf"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:plugin="clr-namespace:STranslate.Plugin;assembly=STranslate.Plugin"
+    xmlns:s="https://github.com/zggsong/2022/xaml"
+    xmlns:ui="http://schemas.inkore.net/lib/ui/wpf/modern"
+    xmlns:vm="clr-namespace:STranslate.ViewModels.Pages"
+    Title="Plugin"
+    d:DataContext="{d:DesignInstance Type=vm:PluginViewModel,
+                                     IsDesignTimeCreatable=False}"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+    <ui:Page.Resources>
+        <s:BindingProxy x:Key="ViewModelProxy" Data="{Binding .}" />
+
+        <!--  卡片容器样式  -->
+        <Style x:Key="CardBorderStyle" TargetType="Border">
+            <Setter Property="Width" Value="280" />
+            <Setter Property="MinHeight" Value="90" />
+            <Setter Property="Padding" Value="12" />
+            <Setter Property="Background" Value="{DynamicResource {x:Static ui:ThemeKeys.CardBackgroundFillColorDefaultBrushKey}}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource {x:Static ui:ThemeKeys.CardStrokeColorDefaultBrushKey}}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="8" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{DynamicResource {x:Static ui:ThemeKeys.SystemFillColorAttentionBackgroundBrushKey}}" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!--  插件名称文本样式  -->
+        <Style x:Key="PluginNameStyle" TargetType="TextBlock">
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="FontSize" Value="{DynamicResource STControlFontSize13}" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+        </Style>
+
+        <!--  插件描述文本样式  -->
+        <Style x:Key="PluginDescriptionStyle" TargetType="TextBlock">
+            <Setter Property="MaxHeight" Value="32" />
+            <Setter Property="Margin" Value="0,3,0,0" />
+            <Setter Property="FontSize" Value="{DynamicResource STControlFontSize12}" />
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static ui:ThemeKeys.TextFillColorSecondaryBrushKey}}" />
+            <Setter Property="LineHeight" Value="16" />
+            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="ToolTip" Value="{Binding Description}" />
+            <Setter Property="ToolTipService.InitialShowDelay" Value="200" />
+        </Style>
+
+        <!--  插件元信息文本样式  -->
+        <Style x:Key="PluginMetaStyle" TargetType="TextBlock">
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="FontSize" Value="{DynamicResource STControlFontSize11}" />
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static ui:ThemeKeys.TextFillColorTertiaryBrushKey}}" />
+            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+        </Style>
+
+        <!--  图标按钮基础样式  -->
+        <Style x:Key="IconButtonStyle" TargetType="TextBlock">
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="FontFamily" Value="{DynamicResource FluentSystemIcons}" />
+            <Setter Property="FontSize" Value="{DynamicResource STControlFontSize16}" />
+            <Setter Property="Padding" Value="4" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+
+        <!--  已安装插件操作图标样式  -->
+        <Style
+            x:Key="ActionIconStyle"
+            BasedOn="{StaticResource IconButtonStyle}"
+            TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static ui:ThemeKeys.TextFillColorSecondaryBrushKey}}" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Foreground" Value="{DynamicResource {x:Static ui:ThemeKeys.TextFillColorPrimaryBrushKey}}" />
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Foreground" Value="{DynamicResource {x:Static ui:ThemeKeys.TextFillColorDisabledBrushKey}}" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!--  市场插件状态图标样式  -->
+        <Style
+            x:Key="MarketActionIconStyle"
+            BasedOn="{StaticResource IconButtonStyle}"
+            TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static ui:ThemeKeys.TextFillColorSecondaryBrushKey}}" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Foreground" Value="{DynamicResource {x:Static ui:ThemeKeys.TextFillColorPrimaryBrushKey}}" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!--  已安装插件 DataTemplate  -->
+        <DataTemplate x:Key="InstalledPluginTemplate" DataType="plugin:PluginMetaData">
+            <Border Style="{StaticResource CardBorderStyle}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="10" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Image
+                        Grid.Column="0"
+                        Width="32"
+                        Height="32"
+                        VerticalAlignment="Center"
+                        Source="{Binding IconPath}"
+                        Stretch="Uniform" />
+
+                    <Grid Grid.Column="2">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" MinHeight="20" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <Grid Grid.Row="0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock
+                                Grid.Column="0"
+                                Style="{StaticResource PluginNameStyle}"
+                                Text="{Binding Name}" />
+
+                            <ikw:SimpleStackPanel
+                                Grid.Column="1"
+                                Margin="8,0,0,0"
+                                VerticalAlignment="Center"
+                                Orientation="Horizontal"
+                                Spacing="8">
+                                <TextBlock
+                                    Style="{StaticResource ActionIconStyle}"
+                                    Text="&#xF480;"
+                                    ToolTip="{DynamicResource PluginActionWebsite}">
+                                    <TextBlock.InputBindings>
+                                        <MouseBinding
+                                            Command="{Binding Source={StaticResource ViewModelProxy}, Path=Data.OpenOfficialLinkCommand}"
+                                            CommandParameter="{Binding Website}"
+                                            MouseAction="LeftClick" />
+                                    </TextBlock.InputBindings>
+                                </TextBlock>
+                                <TextBlock
+                                    IsEnabled="{Binding IsPrePlugin, Converter={cnvt:BoolInverseConverter}}"
+                                    Style="{StaticResource ActionIconStyle}"
+                                    Text="&#xF34C;"
+                                    ToolTip="{DynamicResource Delete}">
+                                    <TextBlock.InputBindings>
+                                        <MouseBinding
+                                            Command="{Binding Source={StaticResource ViewModelProxy}, Path=Data.DeletePluginCommand}"
+                                            CommandParameter="{Binding}"
+                                            MouseAction="LeftClick" />
+                                    </TextBlock.InputBindings>
+                                </TextBlock>
+                                <TextBlock
+                                    Style="{StaticResource ActionIconStyle}"
+                                    Text="&#xF418;"
+                                    ToolTip="{DynamicResource OpenDirectory}">
+                                    <TextBlock.InputBindings>
+                                        <MouseBinding
+                                            Command="{Binding Source={StaticResource ViewModelProxy}, Path=Data.OpenPluginDirectoryCommand}"
+                                            CommandParameter="{Binding}"
+                                            MouseAction="LeftClick" />
+                                    </TextBlock.InputBindings>
+                                </TextBlock>
+                            </ikw:SimpleStackPanel>
+                        </Grid>
+
+                        <TextBlock
+                            Grid.Row="1"
+                            Style="{StaticResource PluginDescriptionStyle}"
+                            Text="{Binding Description}" />
+
+                        <TextBlock
+                            Grid.Row="2"
+                            Margin="0,6,0,0"
+                            Style="{StaticResource PluginMetaStyle}">
+                            <TextBlock.Text>
+                                <MultiBinding StringFormat="{}{0} · v{1}">
+                                    <Binding Path="Author" />
+                                    <Binding Path="Version" />
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
+                    </Grid>
+                </Grid>
+            </Border>
+        </DataTemplate>
+
+        <!--  插件市场 DataTemplate  -->
+        <DataTemplate x:Key="MarketPluginTemplate" DataType="vm:PluginMarketInfo">
+            <Border Style="{StaticResource CardBorderStyle}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="10" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Image
+                        Grid.Column="0"
+                        Width="32"
+                        Height="32"
+                        VerticalAlignment="Center"
+                        Source="{Binding IconUrl}"
+                        Stretch="Uniform" />
+
+                    <Grid Grid.Column="2">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" MinHeight="20" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <Grid Grid.Row="0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock
+                                Grid.Column="0"
+                                Style="{StaticResource PluginNameStyle}"
+                                Text="{Binding Name}" />
+
+                            <ikw:SimpleStackPanel
+                                Grid.Column="1"
+                                Margin="8,0,0,0"
+                                VerticalAlignment="Center"
+                                Orientation="Horizontal"
+                                Spacing="8">
+                                <ikw:SimpleStackPanel.Resources>
+                                    <Style
+                                        x:Key="DownloadIconStyle"
+                                        BasedOn="{StaticResource MarketActionIconStyle}"
+                                        TargetType="TextBlock">
+                                        <Setter Property="Foreground" Value="#0078D4" />
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Foreground" Value="#106EBE" />
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                    <Style
+                                        x:Key="UpgradeIconStyle"
+                                        BasedOn="{StaticResource MarketActionIconStyle}"
+                                        TargetType="TextBlock">
+                                        <Setter Property="Foreground" Value="#E74856" />
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Foreground" Value="#F1707A" />
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                    <Style
+                                        x:Key="StatusIconStyle"
+                                        BasedOn="{StaticResource IconButtonStyle}"
+                                        TargetType="TextBlock">
+                                        <Setter Property="Foreground" Value="{DynamicResource {x:Static ui:ThemeKeys.TextFillColorDisabledBrushKey}}" />
+                                    </Style>
+                                    <Style
+                                        x:Key="PendingIconStyle"
+                                        BasedOn="{StaticResource IconButtonStyle}"
+                                        TargetType="TextBlock">
+                                        <Setter Property="Foreground" Value="#FF8C00" />
+                                        <Setter Property="Opacity" Value="0.8" />
+                                    </Style>
+                                </ikw:SimpleStackPanel.Resources>
+
+                                <TextBlock
+                                    Style="{StaticResource MarketActionIconStyle}"
+                                    Text="&#xF480;"
+                                    ToolTip="{DynamicResource PluginActionWebsite}">
+                                    <TextBlock.InputBindings>
+                                        <MouseBinding
+                                            Command="{Binding Data.OpenOfficialLinkCommand, Source={StaticResource ViewModelProxy}}"
+                                            CommandParameter="{Binding Website}"
+                                            MouseAction="LeftClick" />
+                                    </TextBlock.InputBindings>
+                                </TextBlock>
+
+                                <TextBlock
+                                    Style="{StaticResource DownloadIconStyle}"
+                                    Text="&#xF150;"
+                                    ToolTip="{DynamicResource PluginActionDownload}"
+                                    Visibility="{Binding ActionStatus, Converter={cnvt:PluginActionStatusToVisibilityConverter}, ConverterParameter=Download}">
+                                    <TextBlock.InputBindings>
+                                        <MouseBinding
+                                            Command="{Binding Data.DownloadPluginCommand, Source={StaticResource ViewModelProxy}}"
+                                            CommandParameter="{Binding}"
+                                            MouseAction="LeftClick" />
+                                    </TextBlock.InputBindings>
+                                </TextBlock>
+
+                                <TextBlock
+                                    Style="{StaticResource UpgradeIconStyle}"
+                                    Text="&#xF19B;"
+                                    ToolTip="{DynamicResource PluginActionUpgrade}"
+                                    Visibility="{Binding ActionStatus, Converter={cnvt:PluginActionStatusToVisibilityConverter}, ConverterParameter=Upgrade}">
+                                    <TextBlock.InputBindings>
+                                        <MouseBinding
+                                            Command="{Binding Data.DownloadPluginCommand, Source={StaticResource ViewModelProxy}}"
+                                            CommandParameter="{Binding}"
+                                            MouseAction="LeftClick" />
+                                    </TextBlock.InputBindings>
+                                </TextBlock>
+
+                                <TextBlock
+                                    Style="{StaticResource StatusIconStyle}"
+                                    Text="&#xF294;"
+                                    ToolTip="{DynamicResource PluginActionInstalled}"
+                                    Visibility="{Binding ActionStatus, Converter={cnvt:PluginActionStatusToVisibilityConverter}, ConverterParameter=Installed}" />
+
+                                <TextBlock
+                                    Style="{StaticResource PendingIconStyle}"
+                                    Text="&#xED88;"
+                                    ToolTip="{DynamicResource PluginActionPendingRestart}"
+                                    Visibility="{Binding ActionStatus, Converter={cnvt:PluginActionStatusToVisibilityConverter}, ConverterParameter=PendingRestart}" />
+
+                                <TextBlock
+                                    Style="{StaticResource MarketActionIconStyle}"
+                                    Text="&#xF369;"
+                                    ToolTip="{DynamicResource Cancel}"
+                                    Visibility="{Binding IsDownloading, Converter={cnvt:BoolToVisibilityConverter}}">
+                                    <TextBlock.InputBindings>
+                                        <MouseBinding
+                                            Command="{Binding Data.CancelDownloadCommand, Source={StaticResource ViewModelProxy}}"
+                                            CommandParameter="{Binding}"
+                                            MouseAction="LeftClick" />
+                                    </TextBlock.InputBindings>
+                                </TextBlock>
+                            </ikw:SimpleStackPanel>
+                        </Grid>
+
+                        <TextBlock
+                            Grid.Row="1"
+                            Style="{StaticResource PluginDescriptionStyle}"
+                            Text="{Binding Description}" />
+
+                        <Grid Grid.Row="2" Margin="0,6,0,0">
+                            <TextBlock Style="{StaticResource PluginMetaStyle}" Visibility="{Binding IsDownloading, Converter={cnvt:BoolInverseToVisibilityConverter}}">
+                                <TextBlock.Text>
+                                    <MultiBinding StringFormat="{}{0} · v{1}">
+                                        <Binding Path="Author" />
+                                        <Binding Path="Version" />
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
+
+                            <StackPanel VerticalAlignment="Center" Visibility="{Binding IsDownloading, Converter={cnvt:BoolToVisibilityConverter}}">
+                                <ProgressBar
+                                    Height="2"
+                                    Maximum="100"
+                                    Value="{Binding DownloadProgress}" />
+                                <TextBlock
+                                    Margin="0,2,0,0"
+                                    HorizontalAlignment="Right"
+                                    FontSize="{DynamicResource STControlFontSize10}"
+                                    Foreground="{DynamicResource {x:Static ui:ThemeKeys.TextFillColorSecondaryBrushKey}}"
+                                    Text="{Binding DownloadStatus}" />
+                            </StackPanel>
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </Border>
+        </DataTemplate>
+    </ui:Page.Resources>
+    <Grid AllowDrop="True">
+        <i:Interaction.Triggers>
+            <i:EventTrigger EventName="DragEnter">
+                <i:ChangePropertyAction
+                    PropertyName="Visibility"
+                    TargetObject="{Binding ElementName=PART_DropPanel}"
+                    Value="Visible" />
+            </i:EventTrigger>
+            <i:EventTrigger EventName="DragLeave">
+                <i:ChangePropertyAction
+                    PropertyName="Visibility"
+                    TargetObject="{Binding ElementName=PART_DropPanel}"
+                    Value="Collapsed" />
+            </i:EventTrigger>
+            <i:EventTrigger EventName="Drop">
+                <i:ChangePropertyAction
+                    PropertyName="Visibility"
+                    TargetObject="{Binding ElementName=PART_DropPanel}"
+                    Value="Collapsed" />
+                <i:InvokeCommandAction Command="{Binding InstallPluginsCommand}" PassEventArgsToCommand="True" />
+            </i:EventTrigger>
+        </i:Interaction.Triggers>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!--  标题栏  -->
+        <DockPanel Grid.Row="0" Margin="20,10,0,12">
+            <TextBlock DockPanel.Dock="Left">
+                <TextBlock.Style>
+                    <Style BasedOn="{StaticResource {x:Static ui:ThemeKeys.SubtitleTextBlockStyleKey}}" TargetType="TextBlock">
+                        <Setter Property="Text" Value="{DynamicResource Plugins}" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsMarketView}" Value="True">
+                                <Setter Property="Text" Value="{DynamicResource Market}" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+            <ikw:SimpleStackPanel
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                DockPanel.Dock="Right"
+                Orientation="Horizontal"
+                Spacing="10">
+                <!--  视图切换按钮  -->
+                <Button
+                    Command="{Binding ToggleMarketViewCommand}"
+                    Style="{DynamicResource {x:Static ui:ThemeKeys.AccentButtonStyleKey}}"
+                    Visibility="{Binding IsMarketView, Converter={cnvt:BoolInverseToVisibilityConverter}}">
+                    <ui:IconAndText Content="{DynamicResource Market}" Icon="{x:Static ui:FluentSystemIcons.Apps_20_Regular}" />
+                </Button>
+                <Button
+                    Command="{Binding ToggleMarketViewCommand}"
+                    Style="{DynamicResource {x:Static ui:ThemeKeys.AccentButtonStyleKey}}"
+                    Visibility="{Binding IsMarketView, Converter={cnvt:BoolToVisibilityConverter}}">
+                    <ui:IconAndText Content="{DynamicResource Back}" Icon="{x:Static ui:FluentSystemIcons.ArrowLeft_20_Regular}" />
+                </Button>
+
+                <!--  功能按钮  -->
+                <Button Command="{Binding AddPluginCommand}" Visibility="{Binding IsMarketView, Converter={cnvt:BoolInverseToVisibilityConverter}}">
+                    <ui:IconAndText Content="{DynamicResource AddPlugin}" Icon="{x:Static ui:FluentSystemIcons.FolderZip_20_Regular}" />
+                </Button>
+                <Button
+                    Command="{Binding LoadPluginsCommand}"
+                    IsEnabled="{Binding IsLoading, Converter={cnvt:BoolInverseConverter}}"
+                    Visibility="{Binding IsMarketView, Converter={cnvt:BoolToVisibilityConverter}}">
+                    <ui:IconAndText Content="{DynamicResource PluginMarketRefresh}" Icon="{x:Static ui:FluentSystemIcons.ArrowClockwise_20_Regular}" />
+                </Button>
+                <Button Command="{Binding OpenMarketSettingsCommand}" Visibility="{Binding IsMarketView, Converter={cnvt:BoolToVisibilityConverter}}">
+                    <ui:IconAndText Content="{DynamicResource PluginMarketSettings}" Icon="{x:Static ui:FluentSystemIcons.Settings_20_Regular}" />
+                </Button>
+
+                <!--  分类筛选  -->
+                <ComboBox
+                    MinWidth="120"
+                    DisplayMemberPath="Display"
+                    ItemsSource="{Binding DataProvider.PluginTypes}"
+                    SelectedValue="{Binding PluginType, Mode=TwoWay}"
+                    SelectedValuePath="Value"
+                    Visibility="{Binding IsMarketView, Converter={cnvt:BoolInverseToVisibilityConverter}}" />
+                <ComboBox
+                    MinWidth="120"
+                    DisplayMemberPath="Display"
+                    ItemsSource="{Binding DataProvider.PluginTypes}"
+                    SelectedValue="{Binding SelectedPluginType, Mode=TwoWay}"
+                    SelectedValuePath="Value"
+                    Visibility="{Binding IsMarketView, Converter={cnvt:BoolToVisibilityConverter}}" />
+
+                <!--  搜索框  -->
+                <TextBox
+                    x:Name="PluginFilterTextbox"
+                    Width="150"
+                    VerticalAlignment="Center"
+                    ui:ControlHelper.PlaceholderText="{DynamicResource SearchPlugin}"
+                    Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged}"
+                    ToolTip="{DynamicResource SearchPluginToolTip}"
+                    ToolTipService.InitialShowDelay="200"
+                    ToolTipService.Placement="Top"
+                    Visibility="{Binding IsMarketView, Converter={cnvt:BoolInverseToVisibilityConverter}}" />
+                <TextBox
+                    x:Name="MarketFilterTextbox"
+                    Width="150"
+                    VerticalAlignment="Center"
+                    ui:ControlHelper.PlaceholderText="{DynamicResource SearchPlugin}"
+                    Text="{Binding MarketFilterText, UpdateSourceTrigger=PropertyChanged}"
+                    ToolTip="{DynamicResource SearchPluginToolTip}"
+                    ToolTipService.InitialShowDelay="200"
+                    ToolTipService.Placement="Top"
+                    Visibility="{Binding IsMarketView, Converter={cnvt:BoolToVisibilityConverter}}" />
+            </ikw:SimpleStackPanel>
+        </DockPanel>
+
+        <!--  内容区  -->
+        <Grid Grid.Row="1" Margin="20,0,20,0">
+            <!--  已安装插件视图  -->
+            <Border Visibility="{Binding IsMarketView, Converter={cnvt:BoolInverseToVisibilityConverter}}">
+                <ListBox
+                    x:Name="PART_PluginListBox"
+                    control:ListBoxSelectionBehavior.AutoDeselectPrePlugins="True"
+                    Background="Transparent"
+                    ItemTemplate="{StaticResource InstalledPluginTemplate}"
+                    ItemsSource="{Binding PluginCollectionView}"
+                    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                    ScrollViewer.VerticalScrollBarVisibility="Auto">
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel HorizontalAlignment="Center" IsItemsHost="True" />
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="Padding" Value="0" />
+                            <Setter Property="Margin" Value="0,0,12,12" />
+                            <Setter Property="Background" Value="Transparent" />
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ListBoxItem">
+                                        <ContentPresenter />
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                </ListBox>
+            </Border>
+
+            <!--  插件市场视图  -->
+            <Border Visibility="{Binding IsMarketView, Converter={cnvt:BoolToVisibilityConverter}}">
+                <Grid>
+                    <!--  空状态/加载状态  -->
+                    <StackPanel
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Visibility="{Binding IsLoading, Converter={cnvt:BoolToVisibilityConverter}}">
+                        <ui:ProgressRing
+                            Width="40"
+                            Height="40"
+                            IsActive="{Binding IsLoading}" />
+                        <TextBlock
+                            Margin="0,10,0,0"
+                            Foreground="{DynamicResource {x:Static ui:ThemeKeys.TextFillColorSecondaryBrushKey}}"
+                            Text="{Binding LoadingStatus}" />
+                    </StackPanel>
+
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Foreground="{DynamicResource {x:Static ui:ThemeKeys.TextFillColorSecondaryBrushKey}}"
+                        Text="{Binding LoadingStatus}"
+                        Visibility="{Binding IsLoading, Converter={cnvt:BoolInverseToVisibilityConverter}}" />
+
+                    <!--  插件列表  -->
+                    <ListBox
+                        x:Name="PART_MarketPluginListBox"
+                        Background="Transparent"
+                        ItemTemplate="{StaticResource MarketPluginTemplate}"
+                        ItemsSource="{Binding PluginsView}"
+                        ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                        ScrollViewer.VerticalScrollBarVisibility="Auto"
+                        Visibility="{Binding IsLoading, Converter={cnvt:BoolInverseToVisibilityConverter}}">
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel HorizontalAlignment="Center" IsItemsHost="True" />
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="ListBoxItem">
+                                <Setter Property="Padding" Value="0" />
+                                <Setter Property="Margin" Value="0,0,12,12" />
+                                <Setter Property="Background" Value="Transparent" />
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="ListBoxItem">
+                                            <ContentPresenter />
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+                    </ListBox>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!--  底部统计  -->
+        <Grid
+            Grid.Row="2"
+            Margin="0,4"
+            HorizontalAlignment="Center">
+            <Grid.Resources>
+                <Style BasedOn="{StaticResource {x:Type TextBlock}}" TargetType="TextBlock">
+                    <Setter Property="Foreground" Value="{DynamicResource {x:Static ui:ThemeKeys.TextFillColorSecondaryBrushKey}}" />
+                    <Setter Property="FontSize" Value="{DynamicResource STControlFontSize12}" />
+                </Style>
+            </Grid.Resources>
+
+            <ikw:SimpleStackPanel
+                Orientation="Horizontal"
+                Spacing="12"
+                Visibility="{Binding IsMarketView, Converter={cnvt:BoolInverseToVisibilityConverter}}">
+                <TextBlock>
+                    <Run Text="{DynamicResource PluginTypeAll}" />
+                    <Run Text=": " />
+                    <Run Text="{Binding TotalPluginCount, Mode=OneWay}" />
+                </TextBlock>
+                <TextBlock>
+                    <Run Text="{DynamicResource PluginTypeTranslate}" />
+                    <Run Text=": " />
+                    <Run Text="{Binding TranslatePluginCount, Mode=OneWay}" />
+                </TextBlock>
+                <TextBlock>
+                    <Run Text="{DynamicResource PluginTypeOcr}" />
+                    <Run Text=": " />
+                    <Run Text="{Binding OcrPluginCount, Mode=OneWay}" />
+                </TextBlock>
+                <TextBlock>
+                    <Run Text="{DynamicResource PluginTypeTts}" />
+                    <Run Text=": " />
+                    <Run Text="{Binding TtsPluginCount, Mode=OneWay}" />
+                </TextBlock>
+                <TextBlock>
+                    <Run Text="{DynamicResource PluginTypeVocabulary}" />
+                    <Run Text=": " />
+                    <Run Text="{Binding VocabularyPluginCount, Mode=OneWay}" />
+                </TextBlock>
+            </ikw:SimpleStackPanel>
+            <ikw:SimpleStackPanel
+                Orientation="Horizontal"
+                Spacing="12"
+                Visibility="{Binding IsMarketView, Converter={cnvt:BoolToVisibilityConverter}}">
+                <TextBlock>
+                    <Run Text="{DynamicResource PluginTypeAll}" />
+                    <Run Text=": " />
+                    <Run Text="{Binding MarketTotalPluginCount, Mode=OneWay}" />
+                </TextBlock>
+                <TextBlock>
+                    <Run Text="{DynamicResource PluginTypeTranslate}" />
+                    <Run Text=": " />
+                    <Run Text="{Binding MarketTranslatePluginCount, Mode=OneWay}" />
+                </TextBlock>
+                <TextBlock>
+                    <Run Text="{DynamicResource PluginTypeOcr}" />
+                    <Run Text=": " />
+                    <Run Text="{Binding MarketOcrPluginCount, Mode=OneWay}" />
+                </TextBlock>
+                <TextBlock>
+                    <Run Text="{DynamicResource PluginTypeTts}" />
+                    <Run Text=": " />
+                    <Run Text="{Binding MarketTtsPluginCount, Mode=OneWay}" />
+                </TextBlock>
+                <TextBlock>
+                    <Run Text="{DynamicResource PluginTypeVocabulary}" />
+                    <Run Text=": " />
+                    <Run Text="{Binding MarketVocabularyPluginCount, Mode=OneWay}" />
+                </TextBlock>
+            </ikw:SimpleStackPanel>
+        </Grid>
+
+        <Grid
+            Name="PART_DropPanel"
+            Grid.RowSpan="3"
+            Visibility="Collapsed">
+            <Border Background="{DynamicResource {x:Static ui:ThemeKeys.SystemControlBackgroundChromeBlackMediumLowBrushKey}}" CornerRadius="6" />
+            <StackPanel
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Orientation="Horizontal">
+                <ui:FontIcon
+                    FontSize="{DynamicResource STControlFontSize18}"
+                    Foreground="{DynamicResource {x:Static ui:ThemeKeys.TextFillColorInverseBrushKey}}"
+                    Icon="{x:Static ui:FluentSystemIcons.AppsAddIn_20_Regular}" />
+                <TextBlock
+                    Margin="5,0,0,0"
+                    Foreground="{DynamicResource {x:Static ui:ThemeKeys.TextFillColorInverseBrushKey}}"
+                    Text="{DynamicResource DropInstallPlugin}" />
+            </StackPanel>
+            <Rectangle
+                Width="250"
+                MaxHeight="80"
+                RadiusX="10"
+                RadiusY="10"
+                Stroke="{DynamicResource {x:Static ui:ThemeKeys.TextFillColorInverseBrushKey}}"
+                StrokeDashArray="3"
+                StrokeThickness="2" />
+        </Grid>
+    </Grid>
+</ui:Page>

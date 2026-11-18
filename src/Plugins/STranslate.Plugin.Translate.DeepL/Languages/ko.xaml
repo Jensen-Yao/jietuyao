@@ -1,0 +1,21 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+    <sys:String x:Key="STranslate_Plugin_Translate_DeepL_ApiKey">ApiKey</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_DeepL_ApiKey_Placeholder">ApiKey를 입력하세요</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_DeepL_ApiKey_Description">DeepL 키를 입력하세요</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_DeepL_ApiType">API 엔드포인트</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_DeepL_ApiType_Description">DeepL API 기본 URL을 선택하거나 호환되는 사용자 지정 URL을 입력하세요</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_DeepL_CustomApiUrl_Placeholder">API 기본 URL을 입력하세요. 예: https://api-us.deepl.com</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_DeepL_InvalidApiUrl">쿼리 매개 변수나 조각이 없는 올바른 HTTP(S) API 기본 URL을 입력하세요</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_DeepL_Usage">사용 상태</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_DeepL_Query">쿼리</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_DeepL_Query_Success">쿼리 성공</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_DeepL_Query_Fail">쿼리 실패</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_DeepL_Query_Cancel">쿼리 취소</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_DeepL_Query_Error1">사용 상태가 비어 있습니다</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_DeepL_Query_Error2">사용 제한이 비어 있습니다</sys:String>
+
+</ResourceDictionary>

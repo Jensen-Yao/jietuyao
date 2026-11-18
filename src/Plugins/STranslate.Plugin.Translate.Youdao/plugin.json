@@ -1,0 +1,10 @@
+﻿{
+  "PluginID": "6d90a1ae6fce5fe776f57961c5b8eef7",
+  "Name": "Youdao",
+  "Description": "Youdao plugin for stranslate",
+  "Author": "zggsong",
+  "Version": "1.0.1",
+  "Website": "https://github.com/STranslate/STranslate.Plugin.Translate.Youdao",
+  "ExecuteFileName": "STranslate.Plugin.Translate.Youdao.dll",
+  "IconPath": "icon.png"
+}

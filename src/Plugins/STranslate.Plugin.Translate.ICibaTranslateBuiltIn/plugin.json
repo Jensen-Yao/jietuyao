@@ -1,0 +1,10 @@
+{
+  "PluginID": "05e1bf32df8e4d18a9c39bd51d909bef",
+  "Name": "iCIBA Translate (Built-in)",
+  "Description": "Free iCIBA translate plugin for STranslate",
+  "Author": "zggsong",
+  "Version": "1.0.0",
+  "Website": "https://github.com/STranslate/STranslate",
+  "ExecuteFileName": "STranslate.Plugin.Translate.ICibaTranslateBuiltIn.dll",
+  "IconPath": "icon.png"
+}

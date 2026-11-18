@@ -1,0 +1,553 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:cnvt="clr-namespace:STranslate.Converters"
+    xmlns:control="clr-namespace:STranslate.Controls"
+    xmlns:ikw="http://schemas.inkore.net/lib/ui/wpf"
+    xmlns:plugin="clr-namespace:STranslate.Plugin;assembly=STranslate.Plugin"
+    xmlns:s="https://github.com/zggsong/2022/xaml"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+    xmlns:ui="http://schemas.inkore.net/lib/ui/wpf/modern">
+
+    <DataTemplate x:Key="NormalTemplate" DataType="plugin:Service">
+        <Border
+            x:Name="SvcCard"
+            MinWidth="{DynamicResource SettingsCardMinWidth}"
+            MinHeight="60"
+            Margin="0,4"
+            Padding="16,0"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Center"
+            Background="{DynamicResource {x:Static ui:ThemeKeys.SolidBackgroundFillColorQuarternaryBrushKey}}"
+            BorderBrush="{DynamicResource {x:Static ui:ThemeKeys.CardStrokeColorDefaultBrushKey}}"
+            BorderThickness="{DynamicResource SettingsCardBorderThickness}"
+            CornerRadius="{DynamicResource {x:Static ui:ThemeKeys.ControlCornerRadiusKey}}">
+            <Border.Resources>
+                <s:BindingProxy x:Key="PanelProxy" Data="{Binding RelativeSource={RelativeSource AncestorType=control:ServicePanel}}" />
+                <s:BindingProxy x:Key="VmProxy" Data="{Binding RelativeSource={RelativeSource AncestorType=control:ServicePanel}, Path=DataContext}" />
+                <s:BindingProxy x:Key="SvcProxy" Data="{Binding RelativeSource={RelativeSource AncestorType=Border}, Path=DataContext}" />
+                <s:BindingProxy x:Key="NameEditorProxy" Data="{Binding ElementName=NameEditor}" />
+            </Border.Resources>
+            <Border.ContextMenu>
+                <ContextMenu>
+                    <MenuItem
+                        Command="{Binding Source={StaticResource PanelProxy}, Path=Data.ActiveImTranOcrCommand}"
+                        CommandParameter="{Binding Source={StaticResource SvcProxy}, Path=Data}"
+                        Header="{DynamicResource AsImTranOcrSvc}">
+                        <MenuItem.Visibility>
+                            <MultiBinding Converter="{cnvt:ImTranOcrEligibilityConverter}">
+                                <Binding Path="Data.ActiveImTranOcrCommand" Source="{StaticResource PanelProxy}" />
+                                <Binding Path="Data" Source="{StaticResource SvcProxy}" />
+                            </MultiBinding>
+                        </MenuItem.Visibility>
+                        <MenuItem.Icon>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.DrawImage_20_Regular}" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <Separator>
+                        <Separator.Visibility>
+                            <MultiBinding Converter="{cnvt:ImTranOcrEligibilityConverter}">
+                                <Binding Path="Data.ActiveImTranOcrCommand" Source="{StaticResource PanelProxy}" />
+                                <Binding Path="Data" Source="{StaticResource SvcProxy}" />
+                            </MultiBinding>
+                        </Separator.Visibility>
+                    </Separator>
+                    <MenuItem
+                        Command="{Binding Source={StaticResource NameEditorProxy}, Path=Data.BeginEditCommand}"
+                        Header="{DynamicResource Rename}">
+                        <MenuItem.Icon>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Rename_20_Regular}" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem
+                        Command="{Binding Source={StaticResource VmProxy}, Path=Data.DuplicateCommand}"
+                        CommandParameter="{Binding Source={StaticResource SvcProxy}, Path=Data}"
+                        Header="{DynamicResource Duplicate}">
+                        <MenuItem.Icon>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.SaveCopy_24_Regular}" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="{DynamicResource Icon}">
+                        <MenuItem.Icon>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Image_20_Regular}" />
+                        </MenuItem.Icon>
+                        <MenuItem
+                            Command="{Binding Source={StaticResource VmProxy}, Path=Data.ChangeIconCommand}"
+                            CommandParameter="{Binding Source={StaticResource SvcProxy}, Path=Data}"
+                            Header="{DynamicResource ChangeIcon}">
+                            <MenuItem.Icon>
+                                <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Image_20_Regular}" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem
+                            Command="{Binding Source={StaticResource VmProxy}, Path=Data.ResetIconCommand}"
+                            CommandParameter="{Binding Source={StaticResource SvcProxy}, Path=Data}"
+                            Header="{DynamicResource ResetIcon}">
+                            <MenuItem.Icon>
+                                <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.ImageArrowBack_20_Regular}" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                    </MenuItem>
+                    <Separator />
+                    <MenuItem
+                        Command="{Binding Source={StaticResource VmProxy}, Path=Data.DeleteCommand}"
+                        CommandParameter="{Binding Source={StaticResource SvcProxy}, Path=Data}"
+                        Header="{DynamicResource Delete}">
+                        <MenuItem.Icon>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Delete_20_Regular}" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                </ContextMenu>
+            </Border.ContextMenu>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="24" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="40" />
+                </Grid.ColumnDefinitions>
+                <Image Height="{DynamicResource STControlFontSize18}" Source="{Binding IconPath, Converter={cnvt:ImagePathToSourceConverter}}" />
+                <control:EditableTextBlock
+                    x:Name="NameEditor"
+                    Grid.Column="1"
+                    Margin="5,0,0,0"
+                    Text="{Binding DisplayName}"
+                    ToolTipService.ToolTip="{Binding DisplayName}" />
+                <control:Badge
+                    Grid.Column="2"
+                    Margin="3,0"
+                    IsOfficial="{Binding MetaData.IsPrePlugin}" />
+
+                <ui:ToggleSwitch
+                    Grid.Column="3"
+                    IsOn="{Binding IsEnabled}"
+                    OffContent=""
+                    OnContent="" />
+            </Grid>
+        </Border>
+
+        <DataTemplate.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter TargetName="SvcCard" Property="Background" Value="{DynamicResource {x:Static ui:ThemeKeys.SolidBackgroundFillColorTertiaryBrushKey}}" />
+            </Trigger>
+            <DataTrigger Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True">
+                <Setter TargetName="SvcCard" Property="Background" Value="{DynamicResource {x:Static ui:ThemeKeys.SolidBackgroundFillColorSecondaryBrushKey}}" />
+            </DataTrigger>
+            <DataTrigger Value="True">
+                <DataTrigger.Binding>
+                    <MultiBinding Converter="{cnvt:StringEqualMultiConverter}">
+                        <Binding Path="ImTranOcrService.ServiceID" RelativeSource="{RelativeSource AncestorType=control:ServicePanel}" />
+                        <Binding Path="ServiceID" />
+                    </MultiBinding>
+                </DataTrigger.Binding>
+                <DataTrigger.Setters>
+                    <Setter TargetName="SvcCard" Property="BorderBrush" Value="{DynamicResource {x:Static ui:ThemeKeys.SystemFillColorSuccessBrushKey}}" />
+                </DataTrigger.Setters>
+            </DataTrigger>
+        </DataTemplate.Triggers>
+    </DataTemplate>
+
+    <DataTemplate x:Key="DictionaryTemplate" DataType="plugin:Service">
+        <Border
+            x:Name="SvcCard"
+            MinWidth="{DynamicResource SettingsCardMinWidth}"
+            MinHeight="60"
+            Margin="0,4"
+            Padding="16,0"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Center"
+            Background="{DynamicResource {x:Static ui:ThemeKeys.SolidBackgroundFillColorQuarternaryBrushKey}}"
+            BorderBrush="{DynamicResource {x:Static ui:ThemeKeys.CardStrokeColorDefaultBrushKey}}"
+            BorderThickness="{DynamicResource SettingsCardBorderThickness}"
+            CornerRadius="{DynamicResource {x:Static ui:ThemeKeys.ControlCornerRadiusKey}}">
+            <Border.Resources>
+                <s:BindingProxy x:Key="VmProxy" Data="{Binding RelativeSource={RelativeSource AncestorType=control:ServicePanel}, Path=DataContext}" />
+                <s:BindingProxy x:Key="SvcProxy" Data="{Binding RelativeSource={RelativeSource AncestorType=Border}, Path=DataContext}" />
+                <s:BindingProxy x:Key="NameEditorProxy" Data="{Binding ElementName=NameEditor}" />
+            </Border.Resources>
+            <Border.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="{DynamicResource TransExecMode}">
+                        <MenuItem.Icon>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.GlanceHorizontalSparkles_20_Regular}" />
+                        </MenuItem.Icon>
+                        <MenuItem
+                            Header="{DynamicResource TransExecAutomatic}"
+                            IsCheckable="True"
+                            IsChecked="{Binding Source={StaticResource SvcProxy}, Path=Data.Options.ExecMode, Converter={cnvt:ExecutionModeBoolConverter}, ConverterParameter=Automatic}" />
+                        <MenuItem
+                            Header="{DynamicResource TransExecManual}"
+                            IsCheckable="True"
+                            IsChecked="{Binding Source={StaticResource SvcProxy}, Path=Data.Options.ExecMode, Converter={cnvt:ExecutionModeBoolConverter}, ConverterParameter=Manual}" />
+                        <MenuItem
+                            Header="{DynamicResource TransExecPinned}"
+                            IsCheckable="True"
+                            IsChecked="{Binding Source={StaticResource SvcProxy}, Path=Data.Options.ExecMode, Converter={cnvt:ExecutionModeBoolConverter}, ConverterParameter=Pinned}" />
+                    </MenuItem>
+                    <Separator />
+                    <MenuItem
+                        Command="{Binding Source={StaticResource NameEditorProxy}, Path=Data.BeginEditCommand}"
+                        Header="{DynamicResource Rename}">
+                        <MenuItem.Icon>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Rename_20_Regular}" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem
+                        Command="{Binding Source={StaticResource VmProxy}, Path=Data.DuplicateCommand}"
+                        CommandParameter="{Binding Source={StaticResource SvcProxy}, Path=Data}"
+                        Header="{DynamicResource Duplicate}">
+                        <MenuItem.Icon>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.SaveCopy_24_Regular}" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="{DynamicResource Icon}">
+                        <MenuItem.Icon>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Image_20_Regular}" />
+                        </MenuItem.Icon>
+                        <MenuItem
+                            Command="{Binding Source={StaticResource VmProxy}, Path=Data.ChangeIconCommand}"
+                            CommandParameter="{Binding Source={StaticResource SvcProxy}, Path=Data}"
+                            Header="{DynamicResource ChangeIcon}">
+                            <MenuItem.Icon>
+                                <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Image_20_Regular}" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem
+                            Command="{Binding Source={StaticResource VmProxy}, Path=Data.ResetIconCommand}"
+                            CommandParameter="{Binding Source={StaticResource SvcProxy}, Path=Data}"
+                            Header="{DynamicResource ResetIcon}">
+                            <MenuItem.Icon>
+                                <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.ImageArrowBack_20_Regular}" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                    </MenuItem>
+                    <Separator />
+                    <MenuItem
+                        Command="{Binding Source={StaticResource VmProxy}, Path=Data.DeleteCommand}"
+                        CommandParameter="{Binding Source={StaticResource SvcProxy}, Path=Data}"
+                        Header="{DynamicResource Delete}">
+                        <MenuItem.Icon>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Delete_20_Regular}" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                </ContextMenu>
+            </Border.ContextMenu>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="24" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="40" />
+                </Grid.ColumnDefinitions>
+                <Image Height="{DynamicResource STControlFontSize18}" Source="{Binding IconPath, Converter={cnvt:ImagePathToSourceConverter}}" />
+                <control:EditableTextBlock
+                    x:Name="NameEditor"
+                    Grid.Column="1"
+                    Margin="5,0,0,0"
+                    Text="{Binding DisplayName}"
+                    ToolTipService.ToolTip="{Binding DisplayName}" />
+                <control:Badge
+                    Grid.Column="2"
+                    Margin="3,0"
+                    IsOfficial="{Binding MetaData.IsPrePlugin}" />
+
+                <ui:ToggleSwitch
+                    Grid.Column="3"
+                    IsOn="{Binding IsEnabled}"
+                    OffContent=""
+                    OnContent="" />
+            </Grid>
+        </Border>
+
+        <DataTemplate.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter TargetName="SvcCard" Property="Background" Value="{DynamicResource {x:Static ui:ThemeKeys.SolidBackgroundFillColorTertiaryBrushKey}}" />
+            </Trigger>
+            <DataTrigger Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True">
+                <Setter TargetName="SvcCard" Property="Background" Value="{DynamicResource {x:Static ui:ThemeKeys.SolidBackgroundFillColorSecondaryBrushKey}}" />
+            </DataTrigger>
+        </DataTemplate.Triggers>
+    </DataTemplate>
+
+    <DataTemplate x:Key="TranslateTemplate" DataType="plugin:Service">
+        <Border
+            x:Name="SvcCard"
+            MinWidth="{DynamicResource SettingsCardMinWidth}"
+            MinHeight="60"
+            Margin="0,4"
+            Padding="16,0"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Center"
+            Background="{DynamicResource {x:Static ui:ThemeKeys.SolidBackgroundFillColorQuarternaryBrushKey}}"
+            BorderBrush="{DynamicResource {x:Static ui:ThemeKeys.CardStrokeColorDefaultBrushKey}}"
+            BorderThickness="{DynamicResource SettingsCardBorderThickness}"
+            CornerRadius="{DynamicResource {x:Static ui:ThemeKeys.ControlCornerRadiusKey}}">
+            <Border.Resources>
+                <s:BindingProxy x:Key="VmProxy" Data="{Binding RelativeSource={RelativeSource AncestorType=control:ServicePanel}, Path=DataContext}" />
+                <s:BindingProxy x:Key="SvcProxy" Data="{Binding RelativeSource={RelativeSource AncestorType=Border}, Path=DataContext}" />
+                <s:BindingProxy x:Key="NameEditorProxy" Data="{Binding ElementName=NameEditor}" />
+            </Border.Resources>
+            <Border.ContextMenu>
+                <ContextMenu>
+                    <MenuItem
+                        Command="{Binding Source={StaticResource VmProxy}, Path=Data.ActiveImTranCommand}"
+                        CommandParameter="{Binding Source={StaticResource SvcProxy}, Path=Data}"
+                        Header="{DynamicResource AsImTranSvc}">
+                        <MenuItem.Icon>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.DrawImage_20_Regular}" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem
+                        Command="{Binding Source={StaticResource VmProxy}, Path=Data.ActiveReplaceCommand}"
+                        CommandParameter="{Binding Source={StaticResource SvcProxy}, Path=Data}"
+                        Header="{DynamicResource AsReplaceSvc}">
+                        <MenuItem.Icon>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.PenSparkle_20_Regular}" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <Separator />
+                    <MenuItem Header="{DynamicResource TransExecMode}">
+                        <MenuItem.Icon>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.GlanceHorizontalSparkles_20_Regular}" />
+                        </MenuItem.Icon>
+                        <MenuItem
+                            Header="{DynamicResource TransExecAutomatic}"
+                            IsCheckable="True"
+                            IsChecked="{Binding Source={StaticResource SvcProxy}, Path=Data.Options.ExecMode, Converter={cnvt:ExecutionModeBoolConverter}, ConverterParameter=Automatic}" />
+                        <MenuItem
+                            Header="{DynamicResource TransExecManual}"
+                            IsCheckable="True"
+                            IsChecked="{Binding Source={StaticResource SvcProxy}, Path=Data.Options.ExecMode, Converter={cnvt:ExecutionModeBoolConverter}, ConverterParameter=Manual}" />
+                        <MenuItem
+                            Header="{DynamicResource TransExecPinned}"
+                            IsCheckable="True"
+                            IsChecked="{Binding Source={StaticResource SvcProxy}, Path=Data.Options.ExecMode, Converter={cnvt:ExecutionModeBoolConverter}, ConverterParameter=Pinned}" />
+                    </MenuItem>
+                    <MenuItem Header="{DynamicResource AutoBackTranslation}">
+                        <MenuItem.Style>
+                            <Style BasedOn="{StaticResource {x:Type MenuItem}}" TargetType="MenuItem">
+                                <Setter Property="Icon">
+                                    <Setter.Value>
+                                        <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Flash_20_Regular}" />
+                                    </Setter.Value>
+                                </Setter>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Source={StaticResource SvcProxy}, Path=Data.Options.AutoBackTranslation}" Value="True">
+                                        <Setter Property="Icon">
+                                            <Setter.Value>
+                                                <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.FlashAuto_20_Regular}" />
+                                            </Setter.Value>
+                                        </Setter>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </MenuItem.Style>
+                        <MenuItem
+                            Header="{DynamicResource On}"
+                            IsCheckable="True"
+                            IsChecked="{Binding Source={StaticResource SvcProxy}, Path=Data.Options.AutoBackTranslation}" />
+                        <MenuItem
+                            Header="{DynamicResource Off}"
+                            IsCheckable="True"
+                            IsChecked="{Binding Source={StaticResource SvcProxy}, Path=Data.Options.AutoBackTranslation, Converter={cnvt:BoolInverseConverter}}" />
+                    </MenuItem>
+                    <Separator />
+                    <MenuItem
+                        Command="{Binding Source={StaticResource NameEditorProxy}, Path=Data.BeginEditCommand}"
+                        Header="{DynamicResource Rename}">
+                        <MenuItem.Icon>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Rename_20_Regular}" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem
+                        Command="{Binding Source={StaticResource VmProxy}, Path=Data.DuplicateCommand}"
+                        CommandParameter="{Binding Source={StaticResource SvcProxy}, Path=Data}"
+                        Header="{DynamicResource Duplicate}">
+                        <MenuItem.Icon>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.SaveCopy_24_Regular}" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="{DynamicResource Icon}">
+                        <MenuItem.Icon>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Image_20_Regular}" />
+                        </MenuItem.Icon>
+                        <MenuItem
+                            Command="{Binding Source={StaticResource VmProxy}, Path=Data.ChangeIconCommand}"
+                            CommandParameter="{Binding Source={StaticResource SvcProxy}, Path=Data}"
+                            Header="{DynamicResource ChangeIcon}">
+                            <MenuItem.Icon>
+                                <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Image_20_Regular}" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem
+                            Command="{Binding Source={StaticResource VmProxy}, Path=Data.ResetIconCommand}"
+                            CommandParameter="{Binding Source={StaticResource SvcProxy}, Path=Data}"
+                            Header="{DynamicResource ResetIcon}">
+                            <MenuItem.Icon>
+                                <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.ImageArrowBack_20_Regular}" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                    </MenuItem>
+                    <Separator />
+                    <MenuItem
+                        Command="{Binding Source={StaticResource VmProxy}, Path=Data.DeleteCommand}"
+                        CommandParameter="{Binding Source={StaticResource SvcProxy}, Path=Data}"
+                        Header="{DynamicResource Delete}">
+                        <MenuItem.Icon>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Delete_20_Regular}" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                </ContextMenu>
+            </Border.ContextMenu>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="24" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="40" />
+                </Grid.ColumnDefinitions>
+                <Image Height="{DynamicResource STControlFontSize18}" Source="{Binding IconPath, Converter={cnvt:ImagePathToSourceConverter}}" />
+                <control:EditableTextBlock
+                    x:Name="NameEditor"
+                    Grid.Column="1"
+                    Margin="5,0,0,0"
+                    Text="{Binding DisplayName}"
+                    ToolTipService.ToolTip="{Binding DisplayName}" />
+                <control:Badge
+                    Grid.Column="2"
+                    Margin="3,0"
+                    IsOfficial="{Binding MetaData.IsPrePlugin}" />
+
+                <ui:ToggleSwitch
+                    Grid.Column="3"
+                    IsOn="{Binding IsEnabled}"
+                    OffContent=""
+                    OnContent="" />
+            </Grid>
+        </Border>
+
+        <DataTemplate.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter TargetName="SvcCard" Property="Background" Value="{DynamicResource {x:Static ui:ThemeKeys.SolidBackgroundFillColorTertiaryBrushKey}}" />
+            </Trigger>
+            <DataTrigger Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True">
+                <Setter TargetName="SvcCard" Property="Background" Value="{DynamicResource {x:Static ui:ThemeKeys.SolidBackgroundFillColorSecondaryBrushKey}}" />
+            </DataTrigger>
+            <DataTrigger Value="True">
+                <DataTrigger.Binding>
+                    <MultiBinding Converter="{cnvt:StringEqualMultiConverter}">
+                        <Binding Path="ReplaceService.ServiceID" RelativeSource="{RelativeSource AncestorType=control:ServicePanel}" />
+                        <Binding Path="ServiceID" />
+                    </MultiBinding>
+                </DataTrigger.Binding>
+                <DataTrigger.Setters>
+                    <Setter TargetName="SvcCard" Property="BorderBrush" Value="{DynamicResource {x:Static ui:ThemeKeys.SystemFillColorCautionBrushKey}}" />
+                </DataTrigger.Setters>
+            </DataTrigger>
+            <DataTrigger Value="True">
+                <DataTrigger.Binding>
+                    <MultiBinding Converter="{cnvt:StringEqualMultiConverter}">
+                        <Binding Path="ImTranService.ServiceID" RelativeSource="{RelativeSource AncestorType=control:ServicePanel}" />
+                        <Binding Path="ServiceID" />
+                    </MultiBinding>
+                </DataTrigger.Binding>
+                <DataTrigger.Setters>
+                    <Setter TargetName="SvcCard" Property="BorderBrush" Value="{DynamicResource {x:Static ui:ThemeKeys.SystemFillColorSuccessBrushKey}}" />
+                </DataTrigger.Setters>
+            </DataTrigger>
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition>
+                        <Condition.Binding>
+                            <MultiBinding Converter="{cnvt:StringEqualMultiConverter}">
+                                <Binding Path="ReplaceService.ServiceID" RelativeSource="{RelativeSource AncestorType=control:ServicePanel}" />
+                                <Binding Path="ServiceID" />
+                            </MultiBinding>
+                        </Condition.Binding>
+                        <Condition.Value>True</Condition.Value>
+                    </Condition>
+                    <Condition>
+                        <Condition.Binding>
+                            <MultiBinding Converter="{cnvt:StringEqualMultiConverter}">
+                                <Binding Path="ImTranService.ServiceID" RelativeSource="{RelativeSource AncestorType=control:ServicePanel}" />
+                                <Binding Path="ServiceID" />
+                            </MultiBinding>
+                        </Condition.Binding>
+                        <Condition.Value>True</Condition.Value>
+                    </Condition>
+                </MultiDataTrigger.Conditions>
+                <MultiDataTrigger.Setters>
+                    <Setter TargetName="SvcCard" Property="BorderBrush">
+                        <Setter.Value>
+                            <LinearGradientBrush MappingMode="RelativeToBoundingBox" StartPoint="0,0" EndPoint="1,0">
+                                <LinearGradientBrush.RelativeTransform>
+                                    <RotateTransform Angle="20" CenterX="0.5" CenterY="0.5" />
+                                </LinearGradientBrush.RelativeTransform>
+                                <GradientStop Offset="0" Color="{DynamicResource {x:Static ui:ThemeKeys.SystemFillColorSuccessKey}}" />
+                                <GradientStop Offset="0.5" Color="{DynamicResource {x:Static ui:ThemeKeys.SystemFillColorSuccessKey}}" />
+                                <GradientStop Offset="0.5" Color="{DynamicResource {x:Static ui:ThemeKeys.SystemFillColorCautionKey}}" />
+                                <GradientStop Offset="1" Color="{DynamicResource {x:Static ui:ThemeKeys.SystemFillColorCautionKey}}" />
+                            </LinearGradientBrush>
+                        </Setter.Value>
+                    </Setter>
+                    <!--<Setter TargetName="SvcCard" Property="BorderThickness" Value="2" />
+                    <Setter TargetName="SvcCard" Property="Effect">
+                        <Setter.Value>
+                            <DropShadowEffect
+                                BlurRadius="3"
+                                Opacity="0.3"
+                                ShadowDepth="0"
+                                Color="{DynamicResource {x:Static ui:ThemeKeys.SystemFillColorSuccessKey}}" />
+                        </Setter.Value>
+                    </Setter>
+                    <Setter TargetName="SvcCard" Property="TextOptions.TextFormattingMode" Value="Display" />
+                    <Setter TargetName="SvcCard" Property="TextOptions.TextRenderingMode" Value="ClearType" />
+                    <Setter TargetName="SvcCard" Property="RenderOptions.ClearTypeHint" Value="Enabled" />-->
+                </MultiDataTrigger.Setters>
+            </MultiDataTrigger>
+        </DataTemplate.Triggers>
+    </DataTemplate>
+
+    <control:ServicePanelItemSelector
+        x:Key="ServicePanelItemSelector"
+        DictionaryTemplate="{StaticResource DictionaryTemplate}"
+        NormalTemplate="{StaticResource NormalTemplate}"
+        TranslateTemplate="{StaticResource TranslateTemplate}" />
+
+    <Style TargetType="{x:Type control:ServicePanel}">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="{x:Null}" />
+        <Setter Property="BorderThickness" Value="0" />
+
+        <Setter Property="ItemContainerStyle">
+            <Setter.Value>
+                <Style TargetType="ListBoxItem">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="ListBoxItem">
+                                <ContentPresenter />
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </Setter.Value>
+        </Setter>
+
+        <Setter Property="ItemTemplateSelector" Value="{StaticResource ServicePanelItemSelector}" />
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type control:ServicePanel}">
+                    <Border
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}">
+                        <ui:ScrollViewerEx Focusable="False">
+                            <ItemsPresenter Margin="0,0,20,0" />
+                        </ui:ScrollViewerEx>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

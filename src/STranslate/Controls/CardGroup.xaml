@@ -1,0 +1,43 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:control="clr-namespace:STranslate.Controls"
+    xmlns:ui="http://schemas.inkore.net/lib/ui/wpf/modern">
+
+    <Style TargetType="{x:Type control:CardGroup}">
+        <Style.Resources>
+            <Style x:Key="DefaultStyle" TargetType="ui:SettingsCard">
+                <Setter Property="control:CardGroup.Position" Value="Default" />
+                <Setter Property="ui:ControlHelper.CornerRadius" Value="0" />
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="BorderThickness" Value="0,1,0,0" />
+            </Style>
+            <Style x:Key="TopStyle" TargetType="ui:SettingsCard">
+                <Setter Property="control:CardGroup.Position" Value="Top" />
+                <Setter Property="ui:ControlHelper.CornerRadius" Value="0" />
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="BorderThickness" Value="0" />
+            </Style>
+            <control:CardGroupCardStyleSelector
+                x:Key="CardStyleSelector"
+                DefaultStyle="{StaticResource DefaultStyle}"
+                TopStyle="{StaticResource TopStyle}" />
+        </Style.Resources>
+
+        <Setter Property="ItemContainerStyleSelector" Value="{StaticResource CardStyleSelector}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type control:CardGroup}">
+                    <Border
+                        Background="{DynamicResource SettingsCardBackground}"
+                        BorderBrush="{DynamicResource SettingsCardBorderBrush}"
+                        BorderThickness="{DynamicResource SettingsCardBorderThickness}"
+                        CornerRadius="{DynamicResource ControlCornerRadius}">
+                        <ItemsPresenter />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>

@@ -1,0 +1,934 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+    <!--  // Settings //  -->
+    <sys:String x:Key="ResetLocation">Position Reset</sys:String>
+    <sys:String x:Key="Settings">Settings</sys:String>
+    <sys:String x:Key="ImageTranslate">Image Translate</sys:String>
+    <sys:String x:Key="Administrator">Admin</sys:String>
+
+    <!--  // Navigation //  -->
+    <sys:String x:Key="General">General</sys:String>
+    <sys:String x:Key="Services">Services</sys:String>
+    <sys:String x:Key="ServiceQuickSwitcher">Quick Service Switcher</sys:String>
+    <sys:String x:Key="NoConfiguredServices">No services configured</sys:String>
+    <sys:String x:Key="Translate">Translate</sys:String>
+    <sys:String x:Key="Ocr">Ocr</sys:String>
+    <sys:String x:Key="Tts">Tts</sys:String>
+    <sys:String x:Key="Vocabulary">Vocabulary</sys:String>
+    <sys:String x:Key="Standalone">Standalone</sys:String>
+    <sys:String x:Key="History">History</sys:String>
+    <sys:String x:Key="Plugins">Plugins</sys:String>
+    <sys:String x:Key="Hotkeys">Hotkeys</sys:String>
+    <sys:String x:Key="Network">Network</sys:String>
+    <sys:String x:Key="About">About</sys:String>
+
+    <!--  // General Page //  -->
+    <sys:String x:Key="TimeoutPlaceholder">Timeout (seconds)</sys:String>
+    <sys:String x:Key="SearchFunction">Search Function</sys:String>
+    <sys:String x:Key="SearchFunctionToolTip">Ctrl+F to search function</sys:String>
+    <sys:String x:Key="NoResultsFound">No results found</sys:String>
+    <sys:String x:Key="Function">Function</sys:String>
+    <sys:String x:Key="Appearance">Appearance</sys:String>
+    <sys:String x:Key="AutoTranslateEnabled">Enable Auto-Translate</sys:String>
+    <sys:String x:Key="AutoTranslateDisabled">Disable Auto-Translate</sys:String>
+    <sys:String x:Key="General_AutoStartup">Auto Startup</sys:String>
+    <sys:String x:Key="General_AutoStartupDescription">Automatically start the software when the computer starts.</sys:String>
+    <sys:String x:Key="General_StartMode">Start Mode</sys:String>
+    <sys:String x:Key="General_StartModeDescription">"SkipUACAdmin" will create a scheduled task to skip the UAC pop-up.</sys:String>
+    <sys:String x:Key="General_HideOnStartup">Hide Window on System Startup</sys:String>
+    <sys:String x:Key="General_HideOnStartupDescription">The search window is hidden in the tray after STranslate starts.</sys:String>
+    <sys:String x:Key="General_HideWhenDeactivated">Auto Hide Window When Loses Focus</sys:String>
+    <sys:String x:Key="General_AutoHideAtTopEdge">Auto-hide at Top Edge</sys:String>
+    <sys:String x:Key="General_AutoHideAtTopEdgeDescription">Drag the window to the top edge to dock it. Move the pointer away to collapse, and hover over the edge to expand. Docking takes priority over hiding on focus loss.</sys:String>
+    <sys:String x:Key="General_TopEdgeAutoHideDelay">Collapse delay (ms)</sys:String>
+    <sys:String x:Key="General_TopEdgeAutoHideDelayDescription">Wait time before collapsing while the pointer is outside the window. Default: 600 ms.</sys:String>
+    <sys:String x:Key="General_WindowPosition">Main Window Location</sys:String>
+    <sys:String x:Key="General_WindowAlign">Main Window Position on Monitor</sys:String>
+    <sys:String x:Key="General_MainWindowMaxHeightRatio">Main Window Max Height (Screen Ratio)</sys:String>
+    <sys:String x:Key="General_MainWindowMaxHeightRatioDescription">Controls the maximum main window height as a ratio of the current monitor work area (60%-100%).</sys:String>
+    <sys:String x:Key="General_DisableGlobalHotkeys">Disable Global Hotkeys</sys:String>
+    <sys:String x:Key="General_IgnoreHotkeysOnFullscreen">Ignore Hotkeys in Fullscreen Mode</sys:String>
+    <sys:String x:Key="General_IgnoreHotkeysOnFullscreenDescription">Lower priority than "Disable Global Hotkeys", usually used in gaming scenarios.</sys:String>
+    <sys:String x:Key="General_LanguageDetector">Language Detector</sys:String>
+    <sys:String x:Key="General_LocalDetector">Local Detection Chinese-English Character Ratio</sys:String>
+    <sys:String x:Key="General_LocalDetectorDescription">Only applies to "Local Detection" for the proportion of English characters to total characters in Chinese-English text.</sys:String>
+    <sys:String x:Key="General_DefaultSourceLanguage">Default Source Language</sys:String>
+    <sys:String x:Key="General_DefaultSourceLanguageDescription">Use this language when auto detection fails.</sys:String>
+    <sys:String x:Key="General_FirstLanguage">First Language</sys:String>
+    <sys:String x:Key="General_FirstLanguageDescription">When the target language is set to Auto in any translation scenario, and the source language is another language (including the second language), the target language uses the first language.</sys:String>
+    <sys:String x:Key="General_SecondLanguage">Second Language</sys:String>
+    <sys:String x:Key="General_SecondLanguageDescription">When the target language is set to Auto in any translation scenario, and the source language is the first language, the target language uses the second language.</sys:String>
+    <sys:String x:Key="General_HttpTimeout">Timeout</sys:String>
+    <sys:String x:Key="General_HttpTimeoutDescription">Network request timeout in seconds.</sys:String>
+    <sys:String x:Key="General_UseClipboardOutput">Use Clipboard for Text Output</sys:String>
+    <sys:String x:Key="General_UseClipboardOutputDescription">When enabled, text output uses clipboard Ctrl+V; when disabled, simulated keyboard input is used (default).</sys:String>
+    <sys:String x:Key="General_TranslateOnPaste">Translate on Paste</sys:String>
+    <sys:String x:Key="General_TranslateOnPasteDescription">Execute translation immediately when text is pasted into the input box.</sys:String>
+    <sys:String x:Key="General_AutoTranslate">Auto-Translate</sys:String>
+    <sys:String x:Key="General_AutoTranslateDescription">Automatically executes translation after a certain waiting time when inputting content.</sys:String>
+    <sys:String x:Key="General_InstantTranslate">Instant Translate</sys:String>
+    <sys:String x:Key="General_InstantTranslateDescription">Run translation immediately when the following actions occur.</sys:String>
+    <sys:String x:Key="General_AutoTranslateButtonVisible">Show automatic translation button on main interface</sys:String>
+    <sys:String x:Key="General_AutoTranslateOnPromptChanged">Auto-translate on Prompt Switch</sys:String>
+    <sys:String x:Key="General_AutoTranslateOnPromptChangedDescription">Re-run translation immediately after switching prompt for AI translation services.</sys:String>
+    <sys:String x:Key="General_IncrementalClearInput">Clear Input on Incremental Translate</sys:String>
+    <sys:String x:Key="General_IncrementalClearInputDescription">When enabled (default), the input box is cleared when incremental translation is triggered; selections during the session are still appended. When disabled, the previous content is kept and new selections are appended to it.</sys:String>
+    <sys:String x:Key="General_AutoTranslateDelay">Auto-Translate Delay</sys:String>
+    <sys:String x:Key="General_AutoTranslateDelayDescription">Waiting time after inputting content, unit: milliseconds.</sys:String>
+    <sys:String x:Key="General_LineBreakHandleType">Line Break Handling</sys:String>
+    <sys:String x:Key="General_LineBreakHandleTypeDescription" xml:space="preserve">Includes line break handling for word selection, screenshot translation, clipboard, and silent OCR scenarios.&#10;"Remove extra line breaks" is mainly for PDF text extraction, removing redundant line breaks and sentence breaks, but it may affect non-PDF extraction.</sys:String>
+    <sys:String x:Key="General_TextSeparatorHandleType">Text Separator Handling</sys:String>
+    <sys:String x:Key="General_TextSeparatorHandleTypeDescription">Converts underscores or hyphens inside English/numeric identifiers to spaces. Disabled by default.</sys:String>
+    <sys:String x:Key="General_TextSeparatorHandleScopes">Separator Handling Scope</sys:String>
+    <sys:String x:Key="General_TextSeparatorHandleScopesDescription">Choose which text capture entry points apply separator handling. No selection keeps original text.</sys:String>
+    <sys:String x:Key="General_SelectedTextFetchTimeout">Text Capture Timeout</sys:String>
+    <sys:String x:Key="General_SelectedTextFetchTimeoutDescription">Timeout for polling new clipboard text after simulated copy, in milliseconds. Returns as soon as text is updated; increase this for PDF apps that update slowly.</sys:String>
+    <sys:String x:Key="General_SelectedTextFetchTimeoutPlaceholder">500</sys:String>
+    <sys:String x:Key="General_AudioPlaybackWarmup">Audio Playback Warm-up (ms)</sys:String>
+    <sys:String x:Key="General_AudioPlaybackWarmupDescription">Play silence before audio to help with missing beginnings caused by output-device startup. 0 disables warm-up; try 500–2000 ms if needed. Adds a delay to each playback.</sys:String>
+    <sys:String x:Key="General_CrosswordFetchFailedFallbackTarget">Word Selection Failure Fallback</sys:String>
+    <sys:String x:Key="General_CrosswordFetchFailedFallbackTargetDescription">Choose whether to open input translation, show the main window, or only send a tray notification when selected text capture fails.</sys:String>
+    <sys:String x:Key="General_ImageQuality">Image Quality</sys:String>
+    <sys:String x:Key="General_ImageQualityDescription">Adjust the quality when processing images. Online OCR services may limit image size.</sys:String>
+    <sys:String x:Key="General_DoubleClickTrayFunction">Double-Click Tray Function</sys:String>
+    <sys:String x:Key="General_DoubleClickTrayFunctionDescription">When a double-click action is enabled, a single click waits for the double-click interval before showing or hiding the main window. A double click only runs the selected action.</sys:String>
+    <sys:String x:Key="General_Language">Language</sys:String>
+    <sys:String x:Key="General_ScreenshotTranslate">Screenshot Translation</sys:String>
+    <sys:String x:Key="General_ImageTranslate">Image Translation</sys:String>
+    <sys:String x:Key="General_ShowScreenshotTranslate">Show Screenshot Translation</sys:String>
+    <sys:String x:Key="General_ShowScreenshotTranslateDescription">Show "Screenshot Translation" button on the main interface. Take a screenshot, recognize text, fill it into the input box, then perform translation</sys:String>
+    <sys:String x:Key="General_ShowImageTranslate">Show Image Translation</sys:String>
+    <sys:String x:Key="General_ShowImageTranslateDescription">Show "Image Translation" button on the main interface. Take a screenshot and translate directly on the image</sys:String>
+    <sys:String x:Key="General_ShowScreenshotAuxiliaryLines">Screenshot Auxiliary Lines</sys:String>
+    <sys:String x:Key="General_ShowScreenshotAuxiliaryLinesDescription">Whether to show auxiliary lines during screenshot to help select area more accurately.</sys:String>
+    <sys:String x:Key="General_HideNotifyIcon">Hide NotifyIcon</sys:String>
+    <sys:String x:Key="General_ShowScreenshotItemInNotifyIconMenu">Show Screenshot Translation in Tray Menu</sys:String>
+    <sys:String x:Key="General_ShowImageTranslateItemInNotifyIconMenu">Show Image Translation in Tray Menu</sys:String>
+    <sys:String x:Key="General_ShowOcrItemInNotifyIconMenu">Show Text Recognition in Tray Menu</sys:String>
+    <sys:String x:Key="General_ShowQrCodeItemInNotifyIconMenu">Show QR Code in Tray Menu</sys:String>
+    <sys:String x:Key="General_ColorTheme">Color Theme</sys:String>
+    <sys:String x:Key="General_ColorThemeDescription">Choose the color theme to display.</sys:String>
+    <sys:String x:Key="General_ColorThemeButtonVisible">Show Color Theme button on main interface</sys:String>
+    <sys:String x:Key="General_HideInputBox">Hide Input Box</sys:String>
+    <sys:String x:Key="General_HideInputBoxDescription">Whether to hide the input box.</sys:String>
+    <sys:String x:Key="General_HideInputBoxButtonVisible">Show Hide Input Box button on main interface</sys:String>
+    <sys:String x:Key="General_HideLanguageControl">Hide Language Selection Control</sys:String>
+    <sys:String x:Key="General_HideLanguageControlDescription">Whether to hide the language selection control when hiding the input box.</sys:String>
+    <sys:String x:Key="General_ShowMouseSelectionTranslation">Show Mouse Selection Translation</sys:String>
+    <sys:String x:Key="General_ShowMouseSelectionTranslationDescription">Show the mouse selection translation toggle in the main window.</sys:String>
+    <sys:String x:Key="General_EnableMouseSelectionTranslation">Mouse Selection Translation</sys:String>
+    <sys:String x:Key="General_EnableMouseSelectionTranslationDescription">Copy and translate text immediately after selecting it by dragging or double-clicking.</sys:String>
+    <sys:String x:Key="General_EnableMouseSelectionIcon">Floating Icon After Mouse Selection</sys:String>
+    <sys:String x:Key="General_EnableMouseSelectionIconDescription">Show a floating icon after selecting text by dragging or double-clicking, and translate when it is clicked. Direct translation takes priority when both features are enabled.</sys:String>
+    <sys:String x:Key="MouseSelectionIconTranslate">Translate</sys:String>
+    <sys:String x:Key="MouseSelectionTranslationRequiresTopmost">The window must remain topmost while mouse selection translation is enabled.</sys:String>
+    <sys:String x:Key="General_ShowHistoryNavigation">Show History Navigation</sys:String>
+    <sys:String x:Key="General_ShowHistoryNavigationDescription">Whether to display forward/backward history translation navigation icons on the main interface.</sys:String>
+    <sys:String x:Key="General_ShowOcrButton">Show OCR Button</sys:String>
+    <sys:String x:Key="General_ShowOcrButtonDescription">Display the OCR button in the title bar of the main interface.</sys:String>
+    <sys:String x:Key="General_ShowClipboardMonitor">Show Clipboard Monitor Button</sys:String>
+    <sys:String x:Key="General_ShowClipboardMonitorDescription">Display the clipboard monitor toggle button in the title bar of the main interface.</sys:String>
+    <sys:String x:Key="General_MainHeaderConfig">Main Header Button Layout</sys:String>
+    <sys:String x:Key="General_MainHeaderConfigDescription">The top row is Preview and the bottom row is the Action Pool. Drag an item from the pool to Preview to show it, drag it back to hide it, and drag within Preview to reorder.</sys:String>
+    <sys:String x:Key="General_MainHeaderPreview">Preview (Main Header)</sys:String>
+    <sys:String x:Key="General_MainHeaderPool">Action Pool (Hidden)</sys:String>
+    <sys:String x:Key="General_MainHeaderShowAll">Show All</sys:String>
+    <sys:String x:Key="General_MainHeaderHideAll">Hide All</sys:String>
+    <sys:String x:Key="General_ShowCloseButton">Show Close Button</sys:String>
+    <sys:String x:Key="General_ShowCloseButtonDescription">Display the close button to the right of the settings button in the main header. It behaves the same as the Esc key.</sys:String>
+    <sys:String x:Key="General_FontSize">Font Size</sys:String>
+    <sys:String x:Key="General_FontSizeDescription">Adjust font size for all elements except the right-click context menu</sys:String>
+    <sys:String x:Key="General_OutputShowingControl">Output Display Control</sys:String>
+    <sys:String x:Key="General_ShowPascalCase">Show PascalCase copy button</sys:String>
+    <sys:String x:Key="General_ShowCamelCase">Show camelCase copy button</sys:String>
+    <sys:String x:Key="General_ShowSnakeCase">Show snake_case copy button</sys:String>
+    <sys:String x:Key="General_ShowInsert">Show insert text button</sys:String>
+    <sys:String x:Key="General_ShowBackTranslation">Show back translation button</sys:String>
+    <sys:String x:Key="General_ShowPrompt">Show Prompt</sys:String>
+    <sys:String x:Key="General_ShowPromptDescription">Whether to display the prompt switch button for AI translation services on the main interface</sys:String>
+    <sys:String x:Key="General_FontFamily">FontFamily</sys:String>
+    <sys:String x:Key="General_HistoryCount">History Count</sys:String>
+    <sys:String x:Key="General_CopyAfterTranslation">Copy After Translation</sys:String>
+    <sys:String x:Key="General_CopyAfterTranslationDescription">Only applies to services with "Automatic"</sys:String>
+    <sys:String x:Key="General_CopyAfterTranslationNotAutomatic">Copy after translation for non-"Automatic" services</sys:String>
+    <sys:String x:Key="General_CopyAfterOcr">Copy after OCR</sys:String>
+    <sys:String x:Key="General_CopyAfterOcrDescription">For all text recognition scenarios, automatically copy the recognition result after OCR.</sys:String>
+    <sys:String x:Key="General_FocusInputAfterScreenshotTranslate">Activate input after screenshot translation</sys:String>
+    <sys:String x:Key="General_FocusInputAfterScreenshotTranslateDescription">On: show the main window and focus the input box after screenshot translation. Off: if the main window is topmost, update results without stealing focus; non-topmost windows still reopen.</sys:String>
+    <sys:String x:Key="General_PluginMarketCdnSource">Plugin Market CDN Source</sys:String>
+    <sys:String x:Key="General_PluginMarketCdnSourceDescription">Select CDN acceleration service for plugin market data (GitHub direct has no cache delay)</sys:String>
+    <sys:String x:Key="General_CustomCdnUrl">Custom CDN URL</sys:String>
+    <sys:String x:Key="General_CustomCdnUrlDescription">Enter custom CDN URL template, use {author}, {repo}, {branch}, {path} as placeholders</sys:String>
+
+    <!--  // PluginMarketCdnSourceType //  -->
+    <sys:String x:Key="PluginMarketCdnSourceTypeJsDelivr">jsDelivr CDN (Recommended)</sys:String>
+    <sys:String x:Key="PluginMarketCdnSourceTypeGitHubRaw">GitHub Direct</sys:String>
+    <sys:String x:Key="PluginMarketCdnSourceTypeCustom">Custom</sys:String>
+
+    <!--  // PluginDownloadProxyType //  -->
+    <sys:String x:Key="PluginDownloadProxyTypeGitHub">GitHub Direct</sys:String>
+    <sys:String x:Key="PluginDownloadProxyTypeGhProxyMirror">mirror.ghproxy.com</sys:String>
+    <sys:String x:Key="PluginDownloadProxyTypeGhProxyNet">ghproxy.net</sys:String>
+    <sys:String x:Key="PluginDownloadProxyTypeCustom">Custom</sys:String>
+
+    <!--  // Hotkey Page //  -->
+    <sys:String x:Key="GlobalHotkeys">Global Hotkeys</sys:String>
+    <sys:String x:Key="SoftwareHotkeys">Software Hotkeys</sys:String>
+    <sys:String x:Key="Hotkey_OpenSTranslate">Open STranslate</sys:String>
+    <sys:String x:Key="Hotkey_OpenSTranslateDescription">Shortcut key to show/hide STranslate main interface.</sys:String>
+    <sys:String x:Key="Hotkey_InputTranslate">Input Translate</sys:String>
+    <sys:String x:Key="Hotkey_InputTranslateDescription">Shortcut key to open STranslate and clear content for input translation.</sys:String>
+    <sys:String x:Key="Hotkey_CrosswordTranslate">Crossword Translate</sys:String>
+    <sys:String x:Key="Hotkey_CrosswordTranslateDescription">Shortcut key to trigger translation of mouse-selected text.</sys:String>
+    <sys:String x:Key="Hotkey_CrosswordTranslateIsUseCtrlSameC">Use Ctrl+C+C for text selection translation?</sys:String>
+    <sys:String x:Key="Hotkey_CrosswordTranslateTraditional">Traditional Hotkey</sys:String>
+    <sys:String x:Key="Hotkey_CrosswordTranslateByCtrlSameCDescription">Quickly press Ctrl+C+C after selecting text with the mouse for text translation.</sys:String>
+    <sys:String x:Key="CrosswordTranslateFetchFailed">Failed to capture selected text, switched to input translation.</sys:String>
+    <sys:String x:Key="CrosswordTranslateFetchFailedShowWindow">Failed to capture selected text, switched to main window display.</sys:String>
+    <sys:String x:Key="CrosswordTranslateFetchFailedNotifyOnly">Could not capture the selected text. Please select text and try again.</sys:String>
+    <sys:String x:Key="Hotkey_MouseSelectionTranslation">Mouse Selection Translation</sys:String>
+    <sys:String x:Key="Hotkey_MouseSelectionTranslationDescription">Enable or disable immediate mouse selection translation.</sys:String>
+    <sys:String x:Key="Hotkey_ReplaceTranslate">Replace Translation</sys:String>
+    <sys:String x:Key="Hotkey_ReplaceTranslateDescription">Shortcut key to translate the selected text and replace the original text.</sys:String>
+    <sys:String x:Key="Hotkey_ScreenshotTranslate">Screenshot Translation</sys:String>
+    <sys:String x:Key="Hotkey_ScreenshotTranslateDescription">Hotkey for capturing a selected screen area, recognizing the text, and translating it.</sys:String>
+    <sys:String x:Key="Hotkey_ImageTranslate">Image Translation</sys:String>
+    <sys:String x:Key="Hotkey_ImageTranslateDescription">Hotkey for taking a screenshot, selecting an area, recognizing text, and translating directly on the image.</sys:String>
+    <sys:String x:Key="Hotkey_SilentOcr">Silent OCR</sys:String>
+    <sys:String x:Key="Hotkey_SilentOcrDescription">Hotkey for capturing a selected screen area, recognizing the text, and set it to the clipboard.</sys:String>
+    <sys:String x:Key="Hotkey_SilentTts">Silent TTS</sys:String>
+    <sys:String x:Key="Hotkey_SilentTtsDescription">The shortcut key for speech synthesis of selected Chinese text with the mouse.</sys:String>
+    <sys:String x:Key="Hotkey_Ocr">OCR</sys:String>
+    <sys:String x:Key="Hotkey_OcrDescription">Hotkey for opening the OCR window to recognize text.</sys:String>
+    <sys:String x:Key="Hotkey_ClipboardMonitor">Clipboard Monitor Translate</sys:String>
+    <sys:String x:Key="Hotkey_ClipboardMonitorDescription">Toggle clipboard monitoring. When enabled, clipboard changes will trigger automatic translation.</sys:String>
+    <sys:String x:Key="ClipboardMonitorStarted">Clipboard monitoring started</sys:String>
+    <sys:String x:Key="ClipboardMonitorStopped">Clipboard monitoring stopped</sys:String>
+    <sys:String x:Key="ClipboardMonitorButtonTooltip">Clipboard Monitor Translate</sys:String>
+    <sys:String x:Key="Hotkey_CancelOrHide">Cancel | Hide Interface</sys:String>
+    <sys:String x:Key="Hotkey_CancelOrHideDescription">Cancel pending requests | Hide interface. Applies to all windows.</sys:String>
+    <sys:String x:Key="Hotkey_MainWindow">Main Window Hotkey</sys:String>
+    <sys:String x:Key="Hotkey_Exit">Exit application</sys:String>
+    <sys:String x:Key="Hotkey_ToggleTopmost">Toggle Topmost</sys:String>
+    <sys:String x:Key="Hotkey_ToggleColorTheme">Toggle Color Theme</sys:String>
+    <sys:String x:Key="Hotkey_ToggleColorThemeDescription">Cycle through color themes (System/Light/Dark).</sys:String>
+    <sys:String x:Key="Hotkey_ShowHideInputBox">Show/Hide Input Box</sys:String>
+    <sys:String x:Key="Hotkey_OpenSettings">Open Settings</sys:String>
+    <sys:String x:Key="Hotkey_OpenSettingsDescription">Open settings window when main window is open.</sys:String>
+    <sys:String x:Key="Hotkey_OpenHistory">Open History</sys:String>
+    <sys:String x:Key="Hotkey_SaveToVocabulary">Save To Vocabulary</sys:String>
+    <sys:String x:Key="Hotkey_HistoryNavigePrevious">Navigate to previous history</sys:String>
+    <sys:String x:Key="Hotkey_HistoryNavigeNext">Navigate to next history</sys:String>
+    <sys:String x:Key="Hotkey_AutoTranslate">Auto-Translate</sys:String>
+    <sys:String x:Key="Hotkey_OcrImTransWindow">OCR | Image Translation Window Hotkey</sys:String>
+    <sys:String x:Key="Hotkey_ReExecuteOcr">Re-execute Text Recognition | Image Translation</sys:String>
+    <sys:String x:Key="Hotkey_SwitchImage">Switch Rendering/Annotation Image</sys:String>
+    <sys:String x:Key="Hotkey_SwitchImageDescription">Also supports switching between the original and translated image in pinned windows.</sys:String>
+    <sys:String x:Key="Hotkey_PinImageTranslate">Pin image translation (Compact)</sys:String>
+    <sys:String x:Key="Hotkey_QrCode">Recognize QR Code</sys:String>
+    <sys:String x:Key="Hotkey_QrCodeDescription">This hotkey is only supported in OCR window</sys:String>
+    <sys:String x:Key="Hotkey_IncrementalTranslate">Incremental Translation</sys:String>
+    <sys:String x:Key="Hotkey_IncrementalTranslateDescription" xml:space="preserve">Hold down the hotkey and select text to continuously append content. Release the mouse to translate immediately.&#10;Only supports single keys, excludes Win/Alt/Ctrl/Shift</sys:String>
+    <!--  // Translation Page //  -->
+    <sys:String x:Key="ReplaceService">Replace Trans</sys:String>
+    <sys:String x:Key="General_TextPreprocessing">Translation replacements</sys:String>
+    <sys:String x:Key="General_TextPreprocessingDescription">Replace text before main-window translation, dictionary lookups, replace translation, and image translation.</sys:String>
+    <sys:String x:Key="General_TextPreprocessingScope">Applies to automatic/manual translation and dictionary lookups in the main window (including text captured by screenshots, text selection and clipboard monitoring), and replace translation. Image translation processes each text block separately. Only outgoing text is replaced; the original input is kept. OCR recognition, back translation, text-to-speech, vocabulary saving, and viewing history do not run these rules. History shows the request snapshot saved at the time.</sys:String>
+    <sys:String x:Key="General_TextPreprocessingManage">Manage rules</sys:String>
+    <sys:String x:Key="General_TextPreprocessingEnable">Enable translation replacements</sys:String>
+    <sys:String x:Key="General_TextPreprocessingMode">Mode</sys:String>
+    <sys:String x:Key="General_TextPreprocessingPlainText">Plain text</sys:String>
+    <sys:String x:Key="General_TextPreprocessingRegex">Regex</sys:String>
+    <sys:String x:Key="General_TextPreprocessingFind">Find</sys:String>
+    <sys:String x:Key="General_TextPreprocessingHelp">Rules run from top to bottom. An empty replacement deletes matches. Plain text is literal; regex supports $1, ${name}, and inline options such as (?m) and (?s).</sys:String>
+    <sys:String x:Key="Translate_TextPreprocessingReplacement">Replacement text</sys:String>
+    <sys:String x:Key="Translate_TextPreprocessingMoveUp">Move rule up</sys:String>
+    <sys:String x:Key="Translate_TextPreprocessingMoveDown">Move rule down</sys:String>
+    <sys:String x:Key="Translate_TextPreprocessingIgnoreCase">Ignore case</sys:String>
+    <sys:String x:Key="TranslatePreprocessingFailed">Translation pre-processing rule failed: {0}</sys:String>
+    <sys:String x:Key="TranslatePreprocessingEmpty">Translation pre-processing produced no translatable text.</sys:String>
+    <sys:String x:Key="TranslatePreprocessingInvalidConfiguration">The replacement configuration is invalid. Correct it in Settings before translating.</sys:String>
+    <sys:String x:Key="TranslatePreprocessingTimeout">Replacement rule timed out: {0}</sys:String>
+    <sys:String x:Key="TranslatePreprocessingOutputLimit">Replacement output exceeded the length limit: {0}</sys:String>
+    <sys:String x:Key="TranslatePreprocessingBlocksFailed">{0} image blocks could not be processed. Their original content was kept.</sys:String>
+    <sys:String x:Key="Translate_TextPreprocessingNewRule">Rule {0}</sys:String>
+    <sys:String x:Key="Translate_TextPreprocessingErrorPosition">Position {0}.</sys:String>
+    <sys:String x:Key="ImTranService">Image Trans</sys:String>
+    <sys:String x:Key="NoServiceEnabled">No Service Enabled</sys:String>
+    <sys:String x:Key="SpecialServiceInfo">Drag services from the left here, or right-click to select and enable.</sys:String>
+    <sys:String x:Key="AsReplaceSvc">Replace Translation</sys:String>
+    <sys:String x:Key="AsImTranSvc">Image Translation</sys:String>
+    <sys:String x:Key="ImTranOcrService">Image OCR</sys:String>
+    <sys:String x:Key="AsImTranOcrSvc">Image OCR</sys:String>
+    <sys:String x:Key="TransExecMode">Translation Mode</sys:String>
+    <sys:String x:Key="TransExecAutomatic">Auto Execute</sys:String>
+    <sys:String x:Key="TransExecManual">Manual Execute</sys:String>
+    <sys:String x:Key="TransExecPinned">Pin to Language Area for Manual Execute</sys:String>
+
+    <!--  // Plugin Page //  -->
+    <sys:String x:Key="Market">Market</sys:String>
+    <sys:String x:Key="AddPlugin">Install</sys:String>
+    <sys:String x:Key="PluginName">Name</sys:String>
+    <sys:String x:Key="PluginAuthor">Author</sys:String>
+    <sys:String x:Key="PluginType">Type</sys:String>
+    <sys:String x:Key="PluginVersion">Version</sys:String>
+    <sys:String x:Key="SearchPlugin">Search Plugin</sys:String>
+    <sys:String x:Key="SearchPluginToolTip">Ctrl+F to search plugins</sys:String>
+    <sys:String x:Key="DropInstallPlugin">Release to install plugin</sys:String>
+
+    <!--  // Plugin Market //  -->
+    <sys:String x:Key="PluginMarketRefresh">Refresh</sys:String>
+    <sys:String x:Key="PluginMarketDownload">Download</sys:String>
+    <sys:String x:Key="PluginMarketUpgrade">Upgrade</sys:String>
+    <sys:String x:Key="PluginMarketInstalled">Installed</sys:String>
+    <sys:String x:Key="PluginMarketDownloading">Downloading</sys:String>
+    <sys:String x:Key="Back">Back</sys:String>
+    <sys:String x:Key="PluginMarketLoading">Loading...</sys:String>
+    <sys:String x:Key="PluginMarketLoadError">Failed to load</sys:String>
+    <sys:String x:Key="PluginMarketNoPlugins">No plugins available</sys:String>
+    <sys:String x:Key="PluginMarketCurrentVersion">Current Version</sys:String>
+    <sys:String x:Key="PluginMarketLatestVersion">Latest Version</sys:String>
+    <sys:String x:Key="PluginDownloadCancelled">Download cancelled</sys:String>
+    <sys:String x:Key="PluginActionDownload">Download Plugin</sys:String>
+    <sys:String x:Key="PluginActionUpgrade">Upgrade Plugin</sys:String>
+    <sys:String x:Key="PluginActionInstalled">Installed</sys:String>
+    <sys:String x:Key="PluginActionPendingRestart">Pending Restart</sys:String>
+    <sys:String x:Key="PluginActionWebsite">Project Website</sys:String>
+
+    <!--  // Network Page //  -->
+    <sys:String x:Key="Network_EnableExternalCall">Enable external call</sys:String>
+    <sys:String x:Key="Network_EnableExternalCallDescription">Enable or disable external call</sys:String>
+    <sys:String x:Key="Network_ExternalCallPort">External Call Port</sys:String>
+    <sys:String x:Key="Network_ExternalCallPortDescription">External call port, address is localhost</sys:String>
+    <sys:String x:Key="Network_ExternalCallPortPlaceholder">e.g., 50020</sys:String>
+    <sys:String x:Key="Network_ExternalCallPortError">External call error message</sys:String>
+    <sys:String x:Key="Network_EnableProxy">Enable Proxy</sys:String>
+    <sys:String x:Key="Network_EnableProxyDescription">Enable or disable proxy functionality</sys:String>
+    <sys:String x:Key="Network_ProxyType">Proxy Type</sys:String>
+    <sys:String x:Key="Network_ProxyTypeDescription">Select the type of proxy server</sys:String>
+    <sys:String x:Key="Network_ProxyAddress">Proxy Address</sys:String>
+    <sys:String x:Key="Network_ProxyAddressPlaceholder">e.g., 127.0.0.1</sys:String>
+    <sys:String x:Key="Network_ProxyPort">Proxy Port</sys:String>
+    <sys:String x:Key="Network_ProxyPortPlaceholder">e.g., 8080</sys:String>
+    <sys:String x:Key="Network_ProxyUsername">Username (Optional)</sys:String>
+    <sys:String x:Key="Network_ProxyUsernameDescription">Enter the username if the proxy server requires authentication</sys:String>
+    <sys:String x:Key="Network_ProxyUsernamePlaceholder">Proxy Username</sys:String>
+    <sys:String x:Key="Network_ProxyPassword">Password (Optional)</sys:String>
+    <sys:String x:Key="Network_ProxyPasswordDescription">Enter the password if the proxy server requires authentication</sys:String>
+    <sys:String x:Key="Network_ProxyPasswordPlaceholder">Proxy Password</sys:String>
+    <sys:String x:Key="Network_AdvancedSettingsDescription">Configure advanced proxy options</sys:String>
+    <sys:String x:Key="Network_AdvancedSettings">Advanced Settings</sys:String>
+    <sys:String x:Key="Network_AdvancedSettingsText">Advanced Configuration</sys:String>
+    <sys:String x:Key="Network_BypassLocalDescription">Do not use proxy for local addresses</sys:String>
+    <sys:String x:Key="Network_BypassLocal">Bypass Proxy for Local Addresses</sys:String>
+    <sys:String x:Key="Network_BypassLocalOffContent">Use Proxy</sys:String>
+    <sys:String x:Key="Network_BypassLocalOnContent">Do Not Use Proxy</sys:String>
+    <sys:String x:Key="Network_BypassListDescription">List of addresses to bypass proxy, separated by semicolons</sys:String>
+    <sys:String x:Key="Network_BypassList">Bypass List</sys:String>
+    <sys:String x:Key="Network_BypassListPlaceholder">e.g., localhost;127.*;10.*;192.168.*</sys:String>
+    <sys:String x:Key="Network_TestConnectionDescription">Test if the current proxy settings work correctly</sys:String>
+    <sys:String x:Key="Network_TestConnection">Test Proxy Connection</sys:String>
+    <sys:String x:Key="Network_TestConnectionButton">Test Connection</sys:String>
+    <sys:String x:Key="Network_TestResult">Test Result</sys:String>
+    <sys:String x:Key="Network_HttpTimeoutDescription">Set HTTP request timeout (seconds)</sys:String>
+    <sys:String x:Key="Network_HttpTimeout">HTTP Timeout</sys:String>
+    <sys:String x:Key="Network_HttpTimeoutPlaceholder">30</sys:String>
+    <sys:String x:Key="Network_ResetSettingsDescription">Reset proxy settings to default values</sys:String>
+    <sys:String x:Key="Network_ResetSettings">Actions</sys:String>
+    <sys:String x:Key="Network_ResetSettingsButton">Reset Settings</sys:String>
+    <sys:String x:Key="Network_HelpDescription">View detailed instructions for proxy settings</sys:String>
+    <sys:String x:Key="Network_Help">Help</sys:String>
+    <sys:String x:Key="Network_HelpText">Help Information</sys:String>
+    <sys:String x:Key="Network_HelpProxyType">Proxy Type Explanation</sys:String>
+    <sys:String x:Key="Network_HelpProxyTypeContent" xml:space="preserve">• System Proxy: Use system-configured proxy settings&#10;• HTTP Proxy: Standard HTTP proxy server&#10;• Socks5 Proxy: Supports TCP and UDP&#10;• No Proxy: Completely disable proxy functionality</sys:String>
+    <sys:String x:Key="Network_HelpBypassList">Bypass List Format</sys:String>
+    <sys:String x:Key="Network_HelpBypassListContent" xml:space="preserve">Use semicolons (;) to separate multiple addresses, supports wildcards (*):&#10;localhost;127.*;10.*;192.168.*;*.example.com</sys:String>
+    <sys:String x:Key="Network_HelpEffectiveness">Effectiveness</sys:String>
+    <sys:String x:Key="Network_HelpEffectivenessContent" xml:space="preserve">Changes to proxy settings take effect after 2 minutes&#10;Apply immediately need restart</sys:String>
+    <sys:String x:Key="ProxyTesting">Testing connection...</sys:String>
+    <sys:String x:Key="ProxyTestSuccess">Connection successful! Current IP info: {0}</sys:String>
+    <sys:String x:Key="ProxyTestFailed">Connection failed, please check the proxy settings</sys:String>
+    <sys:String x:Key="ProxyTestError">Test failed: {0}</sys:String>
+    <sys:String x:Key="ExternalCallStartFailed">Failed to start the service, please reconfigure the port: {0}</sys:String>
+
+    <!--  Standalone Page  -->
+    <sys:String x:Key="Standalone_OcrShowAnnotationHeader">Show Annotation</sys:String>
+    <sys:String x:Key="Standalone_OcrShowAnnotationDescription">Toggle between the original image and the text detection overlay.</sys:String>
+    <sys:String x:Key="Standalone_OcrShowTextControlHeader">Show Text Panel</sys:String>
+    <sys:String x:Key="Standalone_OcrShowTextControlDescription">Show or hide the text panel on the right side.</sys:String>
+    <sys:String x:Key="Standalone_OcrLanguageHeader">OCR Window Recognition Language</sys:String>
+    <sys:String x:Key="Standalone_OcrLanguageDescription">OCR recognition language used by the standalone OCR window.</sys:String>
+    <sys:String x:Key="Standalone_ImTranShowAnnotatedHeader">Show Annotation</sys:String>
+    <sys:String x:Key="Standalone_ImTranShowAnnotatedDescription">Toggle between the translation result and the text detection overlay.</sys:String>
+    <sys:String x:Key="Standalone_ImTranShowTextControlHeader">Show Text Panel</sys:String>
+    <sys:String x:Key="Standalone_ImTranShowTextControlDescription">Show or hide the text panel on the right side.</sys:String>
+    <sys:String x:Key="Standalone_ImTranWindowModeHeader">Image Translation Window Mode</sys:String>
+    <sys:String x:Key="Standalone_ImTranWindowModeDescription">Choose whether image translation results open in the standalone window or compact floating window.</sys:String>
+    <sys:String x:Key="Standalone_ImTranOcrLanguageHeader">Image Translation OCR Language</sys:String>
+    <sys:String x:Key="Standalone_ImTranOcrLanguageDescription">Recognition language used during image translation OCR.</sys:String>
+    <sys:String x:Key="Standalone_ImTranCompactOcrLanguageHeader">Show Recognition Language in Compact Window</sys:String>
+    <sys:String x:Key="Standalone_ImTranCompactOcrLanguageDescription">Show the OCR recognition language selector in the compact image translation toolbar.</sys:String>
+    <sys:String x:Key="Standalone_LayoutAnalysisHeader">Text Segmentation Settings</sys:String>
+    <sys:String x:Key="Standalone_LayoutAnalysisDescription">Configure how recognized text blocks are segmented and merged.</sys:String>
+    <sys:String x:Key="Standalone_ImTranLanguageDetector">Image Translate Language Detector</sys:String>
+    <sys:String x:Key="Standalone_ImTranLocalDetector">Local Detection Chinese-English Character Ratio</sys:String>
+    <sys:String x:Key="Standalone_ImTranLocalDetectorDescription">Only applies to image translate "Local Detection" for the proportion of English characters to total characters in Chinese-English text.</sys:String>
+    <sys:String x:Key="Standalone_ImTranDefaultSourceLanguage">Default Source Language</sys:String>
+    <sys:String x:Key="Standalone_ImTranDefaultSourceLanguageDescription">Use this language when image translate auto detection fails.</sys:String>
+    <sys:String x:Key="Standalone_ImTranFirstLanguage">First Language</sys:String>
+    <sys:String x:Key="Standalone_ImTranFirstLanguageDescription">When image translate target language is set to Auto and the source language is another language (including the second language), the target language uses the first language.</sys:String>
+    <sys:String x:Key="Standalone_ImTranSecondLanguage">Second Language</sys:String>
+    <sys:String x:Key="Standalone_ImTranSecondLanguageDescription">When image translate target language is set to Auto and the source language is the first language, the target language uses the second language.</sys:String>
+
+    <!--  History Page  -->
+    <sys:String x:Key="Total">Total</sys:String>
+    <sys:String x:Key="Item">item</sys:String>
+    <sys:String x:Key="HistorySearch">Input/Ctrl+F to search histories</sys:String>
+    <sys:String x:Key="ExportHistory">Export History</sys:String>
+    <sys:String x:Key="BatchDeleteHistory">Batch Delete History</sys:String>
+    <sys:String x:Key="BatchDeleteHistoryConfirm">Are you sure you want to delete the selected {0} history records?</sys:String>
+    <sys:String x:Key="BatchDeleteHistoryResult">Batch delete finished: {0} succeeded, {1} failed</sys:String>
+    <sys:String x:Key="DeleteAllHistoryConfirm">Are you sure you want to delete all {0} history records?</sys:String>
+    <sys:String x:Key="AllHistoryActions">All actions</sys:String>
+    <sys:String x:Key="DeleteAllHistory">Delete All</sys:String>
+    <sys:String x:Key="ExportAllHistory">Export All</sys:String>
+    <sys:String x:Key="HistorySelectAllOrClear">Select All / Clear</sys:String>
+    <sys:String x:Key="NoHistorySelected">No history selected</sys:String>
+    <sys:String x:Key="ExportSuccess">Export succeeded</sys:String>
+    <sys:String x:Key="ExportFailed">Export failed</sys:String>
+
+    <!--  // About Page //  -->
+    <sys:String x:Key="UserDataLocation">User Data Location</sys:String>
+    <sys:String x:Key="UserDataLocationDescription">User settings and installed plugins are saved in the user data folder. This location may vary depending on whether it is in portable mode.</sys:String>
+    <sys:String x:Key="OpenDirectory">Open Directory</sys:String>
+    <sys:String x:Key="PortableModeDescription">Switch where STranslate stores user data between the app folder and the roaming profile. Changing this will migrate data and restart the app.</sys:String>
+    <sys:String x:Key="PortableModeStatePortable">Portable Mode</sys:String>
+    <sys:String x:Key="PortableModeStateRoaming">Roaming Mode</sys:String>
+    <sys:String x:Key="EnablePortableMode">Enable Portable Mode</sys:String>
+    <sys:String x:Key="DisablePortableMode">Disable Portable Mode</sys:String>
+    <sys:String x:Key="ConfirmRestartAndEnablePortableMode">Confirm restart and enable portable mode?</sys:String>
+    <sys:String x:Key="ConfirmRestartAndDisablePortableMode">Confirm restart and disable portable mode?</sys:String>
+    <sys:String x:Key="PortableModeDisableRoamingConflict">Roaming data directory already exists. Please handle it manually and try again.</sys:String>
+    <sys:String x:Key="PortableModeEnableSuccess">Portable mode enabled successfully</sys:String>
+    <sys:String x:Key="PortableModeDisableSuccess">Portable mode disabled. Roaming mode restored.</sys:String>
+    <sys:String x:Key="PortableModeEnableFailed">Failed to enable portable mode</sys:String>
+    <sys:String x:Key="PortableModeDisableFailed">Failed to disable portable mode</sys:String>
+    <sys:String x:Key="PortableModeHostStartFailed">Failed to start portable mode operation: {0}</sys:String>
+    <sys:String x:Key="ClearCache">Clear Cache</sys:String>
+    <sys:String x:Key="ClearLogs">Clear Logs</sys:String>
+    <sys:String x:Key="SettingsDirectory">Settings Directory</sys:String>
+    <sys:String x:Key="LogsDirectory">Logs Directory</sys:String>
+    <sys:String x:Key="CacheDirectory">Cache Directory</sys:String>
+    <sys:String x:Key="ConfirmDelete">Confirm Delete?</sys:String>
+    <sys:String x:Key="ConfirmDeleteService">Are you sure you want to delete service '{0}'?</sys:String>
+    <sys:String x:Key="Close">Close</sys:String>
+    <sys:String x:Key="LogLevel">Log Level</sys:String>
+    <sys:String x:Key="ConfirmRestartAndBackup" xml:space="preserve">Confirm restart and back up the configuration?&#10;Compression may take longer when many plugins are installed. Do not start the application manually during compression. After restarting automatically, the application will continue uploading; keep it running until you receive the backup result notification.</sys:String>
+    <sys:String x:Key="ConfirmRestartAndRestore">Confirm restart and restore configuration?</sys:String>
+    <sys:String x:Key="SelectBackupFile">Select Backup File</sys:String>
+    <sys:String x:Key="SelectRestoreFile">Select Restore File</sys:String>
+    <sys:String x:Key="BackupConfigSuccess">Configuration backup successful [{0}]</sys:String>
+    <sys:String x:Key="RestoreConfigSuccess">Configuration restore successful [{0}]</sys:String>
+    <sys:String x:Key="CheckConfigOrLog">Please check configuration or view logs</sys:String>
+    <sys:String x:Key="BackupSuccess">Backup successful [{0}]</sys:String>
+    <sys:String x:Key="BackupFailed">Backup failed, please check logs</sys:String>
+    <sys:String x:Key="BackupUploading">Uploading backup content. Please wait.</sys:String>
+    <sys:String x:Key="DownloadSuccess">Download successful</sys:String>
+    <sys:String x:Key="DownloadFailed">Download failed: {0} {1}</sys:String>
+    <sys:String x:Key="DownloadException">Download exception: {0}</sys:String>
+    <sys:String x:Key="DeleteFailed">Delete failed: {0} {1}</sys:String>
+    <sys:String x:Key="RenameFailed">Rename failed: {0} {1}</sys:String>
+    <sys:String x:Key="RenameException">Rename exception: {0}</sys:String>
+    <sys:String x:Key="BackupMethod">Backup Method</sys:String>
+    <sys:String x:Key="BackupMethodDescription">Supports local and WebDav backup/restore. The software will automatically restart during the process</sys:String>
+    <sys:String x:Key="WebDavAddress">WebDav Address</sys:String>
+    <sys:String x:Key="WebDavUsername">WebDav Username</sys:String>
+    <sys:String x:Key="WebDavPassword">WebDav Password</sys:String>
+    <sys:String x:Key="WebDavBackupNotice">WebDAV Backup Information</sys:String>
+    <sys:String x:Key="WebDavBackupNoticeDescription" xml:space="preserve">A WebDAV backup has two stages: compression and upload. Do not start the application manually during compression. After restarting automatically, the application will continue uploading; the process is complete when you receive the backup result notification.&#10;Compression may take longer when many plugins are installed.&#10;If the connection to your WebDAV service is unstable, increase the timeout under Settings → Network → HTTP Timeout.</sys:String>
+    <sys:String x:Key="Backup">Backup</sys:String>
+    <sys:String x:Key="CreateBackup">Create Backup</sys:String>
+    <sys:String x:Key="Restore">Restore</sys:String>
+    <sys:String x:Key="RestoreBackup">Restore Backup</sys:String>
+    <sys:String x:Key="Version">Version</sys:String>
+    <sys:String x:Key="CheckUpdate">Check Update</sys:String>
+    <sys:String x:Key="General_AutoCheckUpdate">Auto Check Update</sys:String>
+    <sys:String x:Key="General_AutoCheckUpdateDescription">Periodically checks for new versions. If found, a tray notification will be shown.</sys:String>
+    <sys:String x:Key="NoCheckUpdataInDev">Update checking is disabled in development mode</sys:String>
+    <sys:String x:Key="Donate">Donate</sys:String>
+    <sys:String x:Key="OfficialWebsite">Official website</sys:String>
+    <sys:String x:Key="Website">Website</sys:String>
+    <sys:String x:Key="Group">Group</sys:String>
+    <sys:String x:Key="Thanks">Thanks</sys:String>
+
+    <!--  // Common //  -->
+    <sys:String x:Key="Add">Add</sys:String>
+    <sys:String x:Key="Clear">Clear</sys:String>
+    <sys:String x:Key="Delete">Delete</sys:String>
+    <sys:String x:Key="Rename">Rename</sys:String>
+    <sys:String x:Key="Overwrite">Overwrite</sys:String>
+    <sys:String x:Key="Save">Save</sys:String>
+    <sys:String x:Key="Confirm">Confirm</sys:String>
+    <sys:String x:Key="Prompt">Prompt</sys:String>
+    <sys:String x:Key="Cancel">Cancel</sys:String>
+    <sys:String x:Key="Copy">Copy</sys:String>
+    <sys:String x:Key="Show">Show</sys:String>
+    <sys:String x:Key="Hide">Hide</sys:String>
+    <sys:String x:Key="Enable">Enable</sys:String>
+    <sys:String x:Key="Disable">Disable</sys:String>
+    <sys:String x:Key="Open">Open</sys:String>
+    <sys:String x:Key="Exit">Exit</sys:String>
+    <sys:String x:Key="Reset">Reset</sys:String>
+    <sys:String x:Key="Retry">Retry</sys:String>
+    <sys:String x:Key="Icon">Icon</sys:String>
+    <sys:String x:Key="Duplicate">Duplicate</sys:String>
+    <sys:String x:Key="ChangeIcon">Change Icon</sys:String>
+    <sys:String x:Key="ResetIcon">Reset Icon</sys:String>
+    <sys:String x:Key="Official">Official</sys:String>
+    <sys:String x:Key="IdentifiedLanguageLabel">Identified</sys:String>
+    <sys:String x:Key="On">On</sys:String>
+    <sys:String x:Key="Off">Off</sys:String>
+    <sys:String x:Key="QrCode">QrCode</sys:String>
+    <sys:String x:Key="Wizard">Wizard</sys:String>
+
+    <sys:String x:Key="Previous">Previous</sys:String>
+    <sys:String x:Key="Next">Next</sys:String>
+
+    <sys:String x:Key="Document">Document</sys:String>
+
+    <!--  // Welcome Setup //  -->
+    <sys:String x:Key="WelcomeSetup_Title">Welcome to STranslate</sys:String>
+    <sys:String x:Key="WelcomeSetup_Subtitle">Quickly configure common services and key hotkeys. You can reopen the wizard later from the About page.</sys:String>
+    <sys:String x:Key="WelcomeSetup_WelcomeDescription">Set the language, common services, and key hotkeys before you start. You can skip this for now.</sys:String>
+    <sys:String x:Key="WelcomeSetup_LanguageDescription">Choose the interface language. Changes use the existing language setting immediately.</sys:String>
+    <sys:String x:Key="WelcomeSetup_Services">Services</sys:String>
+    <sys:String x:Key="WelcomeSetup_TranslateServices">Translation Service</sys:String>
+    <sys:String x:Key="WelcomeSetup_OcrServices">OCR Service</sys:String>
+    <sys:String x:Key="WelcomeSetup_SpecialServices">Dedicated Services</sys:String>
+    <sys:String x:Key="WelcomeSetup_Hotkeys">Hotkeys</sys:String>
+    <sys:String x:Key="WelcomeSetup_SelectService">Select Service</sys:String>
+    <sys:String x:Key="WelcomeSetup_SelectServiceDescription">Add a service first, then choose the service instance to configure or enable.</sys:String>
+    <sys:String x:Key="WelcomeSetup_ImageTranslateServiceDescription">Text translation service used by the image translation window.</sys:String>
+    <sys:String x:Key="WelcomeSetup_ReplaceServiceDescription">Text translation service used by replace translation.</sys:String>
+    <sys:String x:Key="WelcomeSetup_ImageTranslateOcrServiceDescription">OCR service used by image translation. Clear it to follow the currently enabled OCR service.</sys:String>
+    <sys:String x:Key="WelcomeSetup_Skip">Skip</sys:String>
+    <sys:String x:Key="WelcomeSetup_Finish">Finish</sys:String>
+
+    <!--  // Input Control //  -->
+    <sys:String x:Key="RemoveLineBreak">Remove Line Break</sys:String>
+    <sys:String x:Key="RemoveSpace">Remove Space</sys:String>
+    <sys:String x:Key="IdentifiedCache">Cache</sys:String>
+    <sys:String x:Key="IdentifiedUnknown">Unknown</sys:String>
+    <sys:String x:Key="IdentifiedCacheTooltip">Recognition result from history cache</sys:String>
+    <sys:String x:Key="CopyServiceNotFound">Service {0} not found</sys:String>
+    <sys:String x:Key="CopiedToClipboard">Copied '{0}' result</sys:String>
+    <sys:String x:Key="SaveToVocabulary">Save to Vocabulary</sys:String>
+
+    <!--  // Language Part //  -->
+    <sys:String x:Key="SwapLanguage">Swap Source-Target Language</sys:String>
+    <sys:String x:Key="WaitingForPreviousExecution">Currently executing, please wait</sys:String>
+    <sys:String x:Key="InputContentIsEmpty">Please enter content before executing</sys:String>
+
+    <!--  // Output Control //  -->
+    <sys:String x:Key="CopyAsPascalCase">Copy as PascalCase</sys:String>
+    <sys:String x:Key="CopyAsCamelCase">Copy as camelCase</sys:String>
+    <sys:String x:Key="CopyAsSnakeCase">Copy as snake_case</sys:String>
+    <sys:String x:Key="InsertText">Insert Text (hold Shift for lowercase)</sys:String>
+    <sys:String x:Key="BackTranslation">Back Translation</sys:String>
+    <sys:String x:Key="CloseTransBack">Close back translation result</sys:String>
+    <sys:String x:Key="SaveToVocabularyWithNote">Save to Vocabulary with Note</sys:String>
+
+    <sys:String x:Key="ExecuteTranslation">Execute Translation</sys:String>
+    <sys:String x:Key="AutoBackTranslation">Auto Trans Back</sys:String>
+    <sys:String x:Key="ConfigureService">Configure Service</sys:String>
+    <sys:String x:Key="CloseService">Close Service</sys:String>
+    <sys:String x:Key="Paraphrase">Definition</sys:String>
+    <sys:String x:Key="Expand">Expand</sys:String>
+
+    <sys:String x:Key="TranslateCancel">Translate canceled</sys:String>
+    <sys:String x:Key="TranslateFail">Translate failed</sys:String>
+
+    <!--  // Prompt //  -->
+    <sys:String x:Key="NewPrompt">New Prompt</sys:String>
+    <sys:String x:Key="NewPromptSuffix">_New</sys:String>
+    <sys:String x:Key="EditPrompt">Edit Prompt</sys:String>
+    <sys:String x:Key="PromptList">Prompt List</sys:String>
+    <sys:String x:Key="PromptDetails">Prompt Details</sys:String>
+    <sys:String x:Key="PromptItemManagement">Prompt Item Management:</sys:String>
+    <sys:String x:Key="AddPromptItem">Add Item</sys:String>
+    <sys:String x:Key="RemovePromptItem">Remove Item</sys:String>
+    <sys:String x:Key="Role">Role:</sys:String>
+    <sys:String x:Key="CustomPromptInstructionTitle">💡 Custom Prompt Instructions</sys:String>
+    <sys:String x:Key="CustomPromptInstructionDesc1">Customize LLM behavior with custom prompts.</sys:String>
+    <sys:String x:Key="CustomPromptInstructionDesc2">Variable substitution:</sys:String>
+    <sys:String x:Key="CustomPromptInstructionDesc3">→ source language</sys:String>
+    <sys:String x:Key="CustomPromptInstructionDesc4">(OCR unavailable),</sys:String>
+    <sys:String x:Key="CustomPromptInstructionDesc5">→ target language,</sys:String>
+    <sys:String x:Key="CustomPromptInstructionDesc6">→ text to be translated</sys:String>
+
+    <!--  // Hotkeys //  -->
+    <sys:String x:Key="None">None</sys:String>
+    <sys:String x:Key="HotkeyFunctionPrompt">Press the key you want to use for this function.</sys:String>
+    <sys:String x:Key="HotkeySingleKeyMode">Single Key Mode</sys:String>
+    <sys:String x:Key="RegisterHotkeyFailed">Failed to register hotkey "{0}". Please try again or check the log for details.</sys:String>
+    <sys:String x:Key="UnregisterHotkeyFailed">Failed to unregister hotkey "{0}". Please try again or check the log for details.</sys:String>
+    <sys:String x:Key="BindHotkey">Bind Hotkey</sys:String>
+    <sys:String x:Key="HotkeyUnavailable">Current hotkey is unavailable.</sys:String>
+    <sys:String x:Key="HotkeyOverwriteFailed">Failed to unbind hotkey during overwrite, restored.</sys:String>
+    <sys:String x:Key="HotkeyUnavailableUneditable">This hotkey is reserved for "{0}" and can't be used. Please choose another hotkey.</sys:String>
+    <sys:String x:Key="HotkeyUnavailableEditable">This hotkey is already in use by "{0}". If you press "Overwrite", it will be removed from "{0}".</sys:String>
+    <sys:String x:Key="HotkeyReservedClipboardCopy">Ctrl+C is reserved for system copy and selected-text capture, so it can't be bound as a global hotkey. Please choose another hotkey.</sys:String>
+    <!--  // Enum //  -->
+    <sys:String x:Key="StartModeNormal">Normal</sys:String>
+    <sys:String x:Key="StartModeAdmin">Admin</sys:String>
+    <sys:String x:Key="StartModeSkipUACAdmin">SkipUACAdmin</sys:String>
+
+    <sys:String x:Key="ColorSchemeDefault">System</sys:String>
+    <sys:String x:Key="ColorSchemeLight">Light</sys:String>
+    <sys:String x:Key="ColorSchemeDark">Dark</sys:String>
+
+    <sys:String x:Key="LangEnumAuto">Auto</sys:String>
+    <sys:String x:Key="LangEnumChineseSimplified">Chinese (Simplified)</sys:String>
+    <sys:String x:Key="LangEnumChineseTraditional">Chinese (Traditional)</sys:String>
+    <sys:String x:Key="LangEnumCantonese">Cantonese</sys:String>
+    <sys:String x:Key="LangEnumEnglish">English</sys:String>
+    <sys:String x:Key="LangEnumJapanese">Japanese</sys:String>
+    <sys:String x:Key="LangEnumKorean">Korean</sys:String>
+    <sys:String x:Key="LangEnumFrench">French</sys:String>
+    <sys:String x:Key="LangEnumSpanish">Spanish</sys:String>
+    <sys:String x:Key="LangEnumRussian">Russian</sys:String>
+    <sys:String x:Key="LangEnumGerman">German</sys:String>
+    <sys:String x:Key="LangEnumItalian">Italian</sys:String>
+    <sys:String x:Key="LangEnumTurkish">Turkish</sys:String>
+    <sys:String x:Key="LangEnumPortuguesePortugal">Portuguese (Portugal)</sys:String>
+    <sys:String x:Key="LangEnumPortugueseBrazil">Portuguese (Brazil)</sys:String>
+    <sys:String x:Key="LangEnumVietnamese">Vietnamese</sys:String>
+    <sys:String x:Key="LangEnumIndonesian">Indonesian</sys:String>
+    <sys:String x:Key="LangEnumThai">Thai</sys:String>
+    <sys:String x:Key="LangEnumMalay">Malay</sys:String>
+    <sys:String x:Key="LangEnumArabic">Arabic</sys:String>
+    <sys:String x:Key="LangEnumHindi">Hindi</sys:String>
+    <sys:String x:Key="LangEnumMongolianCyrillic">Mongolian (Cyrillic)</sys:String>
+    <sys:String x:Key="LangEnumMongolianTraditional">Mongolian (Traditional)</sys:String>
+    <sys:String x:Key="LangEnumKhmer">Khmer</sys:String>
+    <sys:String x:Key="LangEnumNorwegianBokmal">Norwegian Bokmål</sys:String>
+    <sys:String x:Key="LangEnumNorwegianNynorsk">Norwegian Nynorsk</sys:String>
+    <sys:String x:Key="LangEnumPersian">Persian</sys:String>
+    <sys:String x:Key="LangEnumSwedish">Swedish</sys:String>
+    <sys:String x:Key="LangEnumPolish">Polish</sys:String>
+    <sys:String x:Key="LangEnumDutch">Dutch</sys:String>
+    <sys:String x:Key="LangEnumUkrainian">Ukrainian</sys:String>
+    <sys:String x:Key="LangEnumUzbek">Uzbek</sys:String>
+    <sys:String x:Key="LangEnumUyghur">Uyghur</sys:String>
+
+    <sys:String x:Key="LanguageDetectorTypeLocal">Local Detection</sys:String>
+    <sys:String x:Key="LanguageDetectorTypeBaidu">Baidu Detection</sys:String>
+    <sys:String x:Key="LanguageDetectorTypeTencent">Tencent Detection</sys:String>
+    <sys:String x:Key="LanguageDetectorTypeNiutrans">Niutrans Detection</sys:String>
+    <sys:String x:Key="LanguageDetectorTypeBing">Bing Detection</sys:String>
+    <sys:String x:Key="LanguageDetectorTypeYandex">Yandex Detection</sys:String>
+    <sys:String x:Key="LanguageDetectorTypeGoogle">Google Detection</sys:String>
+    <sys:String x:Key="LanguageDetectorTypeMicrosoft">Microsoft Detection</sys:String>
+
+    <sys:String x:Key="LineBreakHandleTypeNone">Do not process line breaks</sys:String>
+    <sys:String x:Key="LineBreakHandleTypeRemoveExtraLineBreak">Remove extra line breaks</sys:String>
+    <sys:String x:Key="LineBreakHandleTypeRemoveAllLineBreak">Remove all line breaks</sys:String>
+    <sys:String x:Key="LineBreakHandleTypeRemoveAllLineBreakWithoutSpace">Remove all line breaks (without space filling)</sys:String>
+    <sys:String x:Key="TextSeparatorHandleTypeNone">Do not process separators</sys:String>
+    <sys:String x:Key="TextSeparatorHandleTypeUnderscore">Process underscores</sys:String>
+    <sys:String x:Key="TextSeparatorHandleTypeHyphen">Process hyphens</sys:String>
+    <sys:String x:Key="TextSeparatorHandleTypeUnderscoreAndHyphen">Process underscores and hyphens</sys:String>
+    <sys:String x:Key="TextSeparatorHandleScopeNone">Disabled</sys:String>
+    <sys:String x:Key="TextSeparatorHandleScopeMouseSelection">Mouse selection</sys:String>
+    <sys:String x:Key="TextSeparatorHandleScopeCrossword">Word selection translation / Ctrl+C+C</sys:String>
+    <sys:String x:Key="TextSeparatorHandleScopeIncremental">Incremental translation</sys:String>
+    <sys:String x:Key="TextSeparatorHandleScopeClipboardMonitor">Clipboard monitor</sys:String>
+    <sys:String x:Key="TextSeparatorHandleScopeScreenshotTranslate">Screenshot translation</sys:String>
+    <sys:String x:Key="TextSeparatorHandleScopeSilentOcr">Silent OCR</sys:String>
+    <sys:String x:Key="CrosswordFetchFailedFallbackTargetInputTranslate">Input Translate</sys:String>
+    <sys:String x:Key="CrosswordFetchFailedFallbackTargetShowWindow">Show Main Window</sys:String>
+    <sys:String x:Key="CrosswordFetchFailedFallbackTargetNotifyOnly">Notify Only</sys:String>
+
+    <sys:String x:Key="PluginTypeAll">All Plugins</sys:String>
+    <sys:String x:Key="PluginTypeTranslate">Translate</sys:String>
+    <sys:String x:Key="PluginTypeOcr">Ocr</sys:String>
+    <sys:String x:Key="PluginTypeTts">Tts</sys:String>
+    <sys:String x:Key="PluginTypeVocabulary">Vocabulary</sys:String>
+
+    <sys:String x:Key="PluginMarketSettings">Advanced Settings</sys:String>
+    <sys:String x:Key="PluginMarketSettingsChanged">CDN source settings changed. Refresh plugin list now?</sys:String>
+    <sys:String x:Key="PluginDownloadProxy">Download Proxy</sys:String>
+    <sys:String x:Key="PluginDownloadProxyDescription">Used to accelerate GitHub Releases downloads</sys:String>
+    <sys:String x:Key="PluginDownloadProxyUrl">Custom Proxy URL</sys:String>
+    <sys:String x:Key="PluginDownloadProxyUrlDescription">Enter custom proxy address</sys:String>
+    <sys:String x:Key="PluginDownloadProxyUrlExample">Example: https://mirror.ghproxy.com/</sys:String>
+
+    <sys:String x:Key="ProxyTypeSystem">System</sys:String>
+    <sys:String x:Key="ProxyTypeHttp">HTTP</sys:String>
+    <sys:String x:Key="ProxyTypeSocks5">Socks5</sys:String>
+    <sys:String x:Key="ProxyTypeNone">None</sys:String>
+
+    <sys:String x:Key="LayoutAnalysisModeAuto">Auto</sys:String>
+    <sys:String x:Key="LayoutAnalysisModeProvider">Provider Segmentation</sys:String>
+    <sys:String x:Key="LayoutAnalysisModeSmart">Smart Segmentation</sys:String>
+    <sys:String x:Key="LayoutAnalysisModeNoMerge">No merge</sys:String>
+    <sys:String x:Key="ImageTranslateWindowModeStandalone">Standalone window</sys:String>
+    <sys:String x:Key="ImageTranslateWindowModeCompact">Compact window</sys:String>
+
+    <sys:String x:Key="WindowScreenTypeRememberLastLaunchLocation">RememberLastLaunchLocation</sys:String>
+    <sys:String x:Key="WindowScreenTypeCursor">Cursor</sys:String>
+    <sys:String x:Key="WindowScreenTypeFollowMouse">Follow mouse</sys:String>
+    <sys:String x:Key="WindowScreenTypeFocus">Focus</sys:String>
+    <sys:String x:Key="WindowScreenTypePrimary">Primary</sys:String>
+    <sys:String x:Key="WindowScreenTypeCustom">Custom</sys:String>
+
+    <sys:String x:Key="WindowAlignTypeCenter">Center</sys:String>
+    <sys:String x:Key="WindowAlignTypeCenterTop">CenterTop</sys:String>
+    <sys:String x:Key="WindowAlignTypeLeftTop">LeftTop</sys:String>
+    <sys:String x:Key="WindowAlignTypeRightTop">RightTop</sys:String>
+    <sys:String x:Key="WindowAlignTypeCustom">Custom</sys:String>
+
+    <sys:String x:Key="LogEventLevelVerbose">Verbose</sys:String>
+    <sys:String x:Key="LogEventLevelDebug">Debug</sys:String>
+    <sys:String x:Key="LogEventLevelInformation">Information</sys:String>
+    <sys:String x:Key="LogEventLevelWarning">Warning</sys:String>
+    <sys:String x:Key="LogEventLevelError">Error</sys:String>
+    <sys:String x:Key="LogEventLevelFatal">Fatal</sys:String>
+
+    <sys:String x:Key="OcrResultShowingTypeOriginal">Original</sys:String>
+    <sys:String x:Key="OcrResultShowingTypeMarkdown">Markdown</sys:String>
+    <sys:String x:Key="OcrResultShowingTypeLatex">Latex</sys:String>
+
+    <sys:String x:Key="HistoryLimitNotSave">Don't Save</sys:String>
+    <sys:String x:Key="HistoryLimitLimit100">100</sys:String>
+    <sys:String x:Key="HistoryLimitLimit500">500</sys:String>
+    <sys:String x:Key="HistoryLimitLimit1000">1000</sys:String>
+    <sys:String x:Key="HistoryLimitLimit2000">2000</sys:String>
+    <sys:String x:Key="HistoryLimitLimit5000">5000</sys:String>
+    <sys:String x:Key="HistoryLimitUnlimited">Unlimited</sys:String>
+
+    <sys:String x:Key="CopyAfterTranslationNoAction">NoAction</sys:String>
+    <sys:String x:Key="CopyAfterTranslationFirst">First</sys:String>
+    <sys:String x:Key="CopyAfterTranslationSecond">Second</sys:String>
+    <sys:String x:Key="CopyAfterTranslationThird">Third</sys:String>
+    <sys:String x:Key="CopyAfterTranslationFourth">Fourth</sys:String>
+    <sys:String x:Key="CopyAfterTranslationFifth">Fifth</sys:String>
+    <sys:String x:Key="CopyAfterTranslationSixth">Sixth</sys:String>
+    <sys:String x:Key="CopyAfterTranslationSeventh">Seventh</sys:String>
+    <sys:String x:Key="CopyAfterTranslationEighth">Eighth</sys:String>
+    <sys:String x:Key="CopyAfterTranslationLast">Last</sys:String>
+
+    <sys:String x:Key="BackupTypeLocal">Local</sys:String>
+    <sys:String x:Key="BackupTypeWebDav">WebDav</sys:String>
+
+    <sys:String x:Key="ImageQualityLow">Low</sys:String>
+    <sys:String x:Key="ImageQualityMedium">Medium</sys:String>
+    <sys:String x:Key="ImageQualityHigh">High</sys:String>
+
+    <sys:String x:Key="DoubleClickTrayFunctionNone">None</sys:String>
+    <sys:String x:Key="DoubleClickTrayFunctionInputTranslate">InputTranslate</sys:String>
+    <sys:String x:Key="DoubleClickTrayFunctionScreenshotTranslate">ScreenshotTranslate</sys:String>
+    <sys:String x:Key="DoubleClickTrayFunctionOCR">OCR</sys:String>
+    <sys:String x:Key="DoubleClickTrayFunctionOpenSettingsWindow">OpenSettingsWindow</sys:String>
+    <sys:String x:Key="DoubleClickTrayFunctionToggleMouseSelectionTranslation">Toggle Mouse Selection Translation</sys:String>
+    <sys:String x:Key="DoubleClickTrayFunctionToggleGlobalHotkeys">ToggleGlobalHotkeys</sys:String>
+    <sys:String x:Key="DoubleClickTrayFunctionExit">Exit</sys:String>
+
+    <!--  // Plugins //  -->
+    <sys:String x:Key="UnsupportedSourceLang">Unsupported source language</sys:String>
+    <sys:String x:Key="UnsupportedTargetLang">Unsupported target language</sys:String>
+    <sys:String x:Key="ValidationSuccess">Validation Success</sys:String>
+    <sys:String x:Key="ValidationFailure">Validation Failure</sys:String>
+    <sys:String x:Key="SelectPluginFile">Select Plugin File</sys:String>
+    <sys:String x:Key="PluginInstallFailed">Plugin installation failed</sys:String>
+    <sys:String x:Key="PluginInstallSuccess">Plugin installation success</sys:String>
+    <sys:String x:Key="PluginVersionParseFailed">Unable to parse plugin version: {0}</sys:String>
+    <sys:String x:Key="PluginVersionTooOld">Plugin version is too old: {0} v{1}, the installed version is v{2}.</sys:String>
+    <sys:String x:Key="PluginUpgradeAvailable">You can upgrade to the new version (v{0}).</sys:String>
+    <sys:String x:Key="PluginDeleteConfirm" xml:space="preserve">Developer: {0}&#10;Version: {1}&#10;Are you sure you want to delete the plugin "{2}"?</sys:String>
+    <sys:String x:Key="PluginDeleteFailed">Failed to delete the plugin</sys:String>
+    <sys:String x:Key="PluginDeleteForRestart">The plugin has been marked for deletion. Restart to take effect.</sys:String>
+    <sys:String x:Key="Ok">Ok</sys:String>
+    <sys:String x:Key="PluginUpgrade">Plugin Upgrade</sys:String>
+    <sys:String x:Key="PluginUpgradeConfirm">Plugin {0} is already installed with version {1}. Upgrade?</sys:String>
+    <sys:String x:Key="PluginUpgradeSuccess">Plugin upgrade is ready, will take effect after restart</sys:String>
+    <sys:String x:Key="PluginUpgradeFailed">Plugin upgrade failed</sys:String>
+    <sys:String x:Key="RestartNow">Restart Now</sys:String>
+    <sys:String x:Key="RestartLater">Restart Later</sys:String>
+    <sys:String x:Key="PendingRestart">Pending Restart</sys:String>
+    <sys:String x:Key="BatchOperation">Batch Operation</sys:String>
+    <sys:String x:Key="DeleteSelected">Delete Selected</sys:String>
+    <sys:String x:Key="NoPluginSelected">No plugin selected</sys:String>
+    <sys:String x:Key="BatchDeletePluginConfirm">Selected {0} plugin(s), confirm deletion?</sys:String>
+
+    <!--  // Detect //  -->
+    <sys:String x:Key="BaiduDetectError">Baidu detect error</sys:String>
+    <sys:String x:Key="TencentDetectError">Tencent detect error</sys:String>
+    <sys:String x:Key="NiutransDetectError">Niutrans detect error</sys:String>
+    <sys:String x:Key="BingDetectError">Bing detect error</sys:String>
+    <sys:String x:Key="YandexDetectError">Yandex detect error</sys:String>
+    <sys:String x:Key="GoogleDetectError">Google detect error</sys:String>
+    <sys:String x:Key="MicrosoftDetectError">Microsoft detect error</sys:String>
+
+    <!--  // Services //  -->
+    <sys:String x:Key="FilterService">Filter Service</sys:String>
+    <sys:String x:Key="SearchService">Search Service</sys:String>
+    <sys:String x:Key="SearchServiceTooltip">Ctrl+F to search services</sys:String>
+    <sys:String x:Key="BuiltIn">Built-in</sys:String>
+    <sys:String x:Key="PreInstall">Pre-installed</sys:String>
+    <sys:String x:Key="Extend">Extension</sys:String>
+    <sys:String x:Key="AddTranslationService">Add Translation Service</sys:String>
+    <sys:String x:Key="AddOcrService">Add OCR Service</sys:String>
+    <sys:String x:Key="AddTtsService">Add TTS Service</sys:String>
+    <sys:String x:Key="AddVocabularyService">Add Vocabulary Service</sys:String>
+    <sys:String x:Key="AddService">Add Service</sys:String>
+    <sys:String x:Key="DictionaryServiceNotSupportReplace">Dictionary services do not support the replace feature.</sys:String>
+
+    <!--  // Dictionary //  -->
+    <sys:String x:Key="PlayPronunciation">Play Pronunciation</sys:String>
+    <sys:String x:Key="Plural">Plural</sys:String>
+    <sys:String x:Key="PastTense">Past Tense</sys:String>
+    <sys:String x:Key="PastParticiple">Past Participle</sys:String>
+    <sys:String x:Key="PresentParticiple">Present Participle</sys:String>
+    <sys:String x:Key="ThirdPersonSingular">Third Person Singular</sys:String>
+    <sys:String x:Key="Comparative">Comparative</sys:String>
+    <sys:String x:Key="Superlative">Superlative</sys:String>
+    <sys:String x:Key="Tag">Tag</sys:String>
+
+    <!--  // OCR Window //  -->
+    <sys:String x:Key="SelectAll">Select All</sys:String>
+    <sys:String x:Key="ImportFromClipboard">Import from Clipboard</sys:String>
+    <sys:String x:Key="ImportFromFile">Import from File</sys:String>
+    <sys:String x:Key="SaveAs">Save As</sys:String>
+    <sys:String x:Key="ShowHideAnnotation">Show/Hide Annotation</sys:String>
+    <sys:String x:Key="FitToWindow">Fit to Window</sys:String>
+    <sys:String x:Key="ActualSize">Actual Size</sys:String>
+    <sys:String x:Key="ShowText">Show Text</sys:String>
+    <sys:String x:Key="HideText">Hide Text</sys:String>
+    <sys:String x:Key="Recognize">Recognize</sys:String>
+    <sys:String x:Key="ReOcr">Take Screenshot Again for OCR</sys:String>
+    <sys:String x:Key="ReImTransOcr">Take Screenshot Again for Image Translation</sys:String>
+    <sys:String x:Key="ReOcrKeepWindow">Keep Window Screenshot</sys:String>
+    <sys:String x:Key="RecognizeQrCode">Recognize QrCode</sys:String>
+    <sys:String x:Key="NoQrCodeFound">No QrCode found</sys:String>
+    <sys:String x:Key="NoLocationInfoTitle">No Location Info</sys:String>
+    <sys:String x:Key="NoLocationInfoMessage">Unable to annotate or select text on the image.</sys:String>
+    <sys:String x:Key="NoLocationInfoMessageForImTrans">Unable to annotate and display translation results on the graph.</sys:String>
+    <sys:String x:Key="OcrSettingsToolTip" xml:space="preserve">Left Click -> Standalone Window Settings&#10;Ctrl+Left Click -> Text Recognition Settings</sys:String>
+
+    <sys:String x:Key="RecognizeLanguage">Recognize Language</sys:String>
+    <sys:String x:Key="General_ScreenshotOcrLanguageHeader">Screenshot/Silent OCR Language</sys:String>
+    <sys:String x:Key="General_ScreenshotOcrLanguageDescription">OCR recognition language used by screenshot translation and silent OCR.</sys:String>
+    <sys:String x:Key="TranslateLanguage">Translate Language</sys:String>
+    <sys:String x:Key="ImageTranslateLanguageIndependentToolTip">The translation language in the image translation window is independent from the main window. Changes here will not affect the main window.</sys:String>
+    <sys:String x:Key="ImageTranslateLayoutAnalysisToolTip">Choose how image translation groups and merges OCR text. Rerun image translation to apply it.</sys:String>
+    <sys:String x:Key="ImTranSettingsToolTip" xml:space="preserve">Left Click -> Standalone Window Settings&#10;Ctrl+Left Click -> Text Recognition Settings&#10;Alt+Left Click -> Text Translation Settings</sys:String>
+
+    <!--  // Snackbar Messages //  -->
+    <sys:String x:Key="CopySuccess">Copied successfully</sys:String>
+    <sys:String x:Key="CopyFailed">Copied failed</sys:String>
+    <sys:String x:Key="NoCopyContent">No content to copy</sys:String>
+    <sys:String x:Key="SaveSuccess">Saved successfully</sys:String>
+    <sys:String x:Key="SaveFailed">Save failed</sys:String>
+    <sys:String x:Key="NoImageToSave">No image to save</sys:String>
+    <sys:String x:Key="NoImageInClipboard">No image in clipboard</sys:String>
+    <sys:String x:Key="OperationSuccess">Operation successful</sys:String>
+    <sys:String x:Key="OperationFailed">Operation failed</sys:String>
+    <sys:String x:Key="OcrFailed">OCR Failed</sys:String>
+    <sys:String x:Key="TtsFailed">TTS Failed</sys:String>
+    <sys:String x:Key="TtsCancelled">Reading cancelled</sys:String>
+    <sys:String x:Key="TtsServiceNotFound">No TTS service configured, please go to "Settings-Services-TTS" to configure</sys:String>
+    <sys:String x:Key="VocabularyServiceNotFound">No vocabulary service configured, please go to "Settings-Services-Vocabulary" to configure</sys:String>
+    <sys:String x:Key="ImtransFailed">Image translation failed</sys:String>
+    <sys:String x:Key="NoTranslateService">No available translation service found</sys:String>
+    <sys:String x:Key="GoToSettings">Go to settings</sys:String>
+    <sys:String x:Key="ImageTranslateServiceNotFoundTitle">Unable to get image translation service</sys:String>
+    <sys:String x:Key="ImageTranslateServiceNotFoundMessage">Image translation service is not configured or enabled. Go to "Settings-Services-Text Translation" to configure it before using this feature.</sys:String>
+    <sys:String x:Key="OcrServiceNotFoundTitle">Unable to get OCR service</sys:String>
+    <sys:String x:Key="OcrServiceNotFoundMessage">OCR service is not configured or enabled. Go to "Settings-Services-Text Recognition" to configure it before using this feature.</sys:String>
+    <sys:String x:Key="ImageTranslateOcrServiceNotFoundTitle">Unable to get image translation OCR service</sys:String>
+    <sys:String x:Key="ImageTranslateOcrServiceNotFoundMessage">Image translation OCR service is not configured and no OCR service is available. Go to "Settings-Services-Text Recognition" to configure one.</sys:String>
+    <sys:String x:Key="ReplaceTranslateServiceNotFoundTitle">Unable to get replace translation service</sys:String>
+    <sys:String x:Key="ReplaceTranslateServiceNotFoundMessage">Replace translation service is not configured or enabled. Go to "Settings-Services-Text Translation" to configure it before using this feature.</sys:String>
+    <sys:String x:Key="LanguageDetectionFailed">Language detection failed</sys:String>
+    <sys:String x:Key="NoTextRecognized">No text recognized</sys:String>
+    <sys:String x:Key="NoTextRecognizedMessage" xml:space="preserve">Please make sure to select the text to translate.&#10;If the problem persists, try restarting the software as administrator.</sys:String>
+    <sys:String x:Key="NavigateFailed">Already at the end</sys:String>
+    <sys:String x:Key="NoValidPluginFile">No SPKG File</sys:String>
+
+    <!--  // Processing Messages //  -->
+    <sys:String x:Key="RecognizingImageText">Recognizing text in the image...</sys:String>
+    <sys:String x:Key="TranslatingText">Translating text...</sys:String>
+
+    <!--  // For Plugins //  -->
+    <sys:String x:Key="PluginTranslateAutoBackTranslation">Back Translation</sys:String>
+    <sys:String x:Key="PluginTranslateAutoBackTranslationDescription">Automatically perform back translation after translation</sys:String>
+    <sys:String x:Key="PluginTranslateValidate">Validate</sys:String>
+    <sys:String x:Key="PluginTranslateValidateDescription">Test whether the API connection and configuration are correct</sys:String>
+
+    <!--  // Updater Service //  -->
+    <sys:String x:Key="UpdateCheck">Update Check</sys:String>
+    <sys:String x:Key="CheckingForUpdates">Checking for updates...</sys:String>
+    <sys:String x:Key="NoUpdateInfoFound">No update info found.</sys:String>
+    <sys:String x:Key="AlreadyLatestVersion">You are already on the latest version.</sys:String>
+    <sys:String x:Key="UpdateAvailable">Update Available</sys:String>
+    <sys:String x:Key="UpdateOpenAboutButton">Go to Update</sys:String>
+    <sys:String x:Key="UpdateAvailableTrayMessage">New version {0} found. Click the button to open Settings-About and update.</sys:String>
+    <sys:String x:Key="NewVersionFound">New version {0} found. Download?</sys:String>
+    <sys:String x:Key="PortableDataMoveError">STranslate was not able to move your user profile data to the new update version.&#10;Please manually move your profile data folder from {0} to {1}</sys:String>
+    <sys:String x:Key="UpdateReady">Update Ready</sys:String>
+    <sys:String x:Key="UpdateFailed">Update Failed</sys:String>
+    <sys:String x:Key="UpdateFailedMessage">Failed to update the application. Please check your connection.</sys:String>
+    <sys:String x:Key="UpdateChangelogLoading">Loading release notes...</sys:String>
+    <sys:String x:Key="UpdateChangelogLoadFailedMarkdown">Failed to load release notes. You can [open the full changelog here]({0}).</sys:String>
+    <sys:String x:Key="NewVersionTips">New version {0} is available, would you like to restart STranslate to use the update?</sys:String>
+
+    <!--  // LLM Service Configurations for plugins //  -->
+    <sys:String x:Key="Url">API Endpoint</sys:String>
+    <sys:String x:Key="Url_Description">Using '#' at the end forces the use of the entered address.</sys:String>
+    <sys:String x:Key="Url_ToolTip">Complete URL for final request</sys:String>
+    <sys:String x:Key="ApiKey">API Key</sys:String>
+    <sys:String x:Key="ApiKey_Suggestion">Please enter API Key</sys:String>
+    <sys:String x:Key="Model">Select Model</sys:String>
+    <sys:String x:Key="Prompt_Header">Prompt Configuration</sys:String>
+    <sys:String x:Key="Prompt_Description">Select or edit the prompt template used for translation</sys:String>
+    <sys:String x:Key="Prompt_Placeholder">Select prompt template</sys:String>
+    <sys:String x:Key="EditPrompt_ToolTip">Edit Prompt</sys:String>
+    <sys:String x:Key="EditPrompt_Content">Edit</sys:String>
+    <sys:String x:Key="Temperature">Temperature Control</sys:String>
+    <sys:String x:Key="Temperature_Description">Controls the randomness of the model's output</sys:String>
+    <sys:String x:Key="ImageTranslatePin">Pin</sys:String>
+    <sys:String x:Key="ImageTranslatePinFailed">Could not pin the result</sys:String>
+    <sys:String x:Key="ImageTranslatePinnedCopyAll">Copy all text</sys:String>
+    <sys:String x:Key="ImageTranslatePinnedShowOriginal">Show original image</sys:String>
+    <sys:String x:Key="ImageTranslatePinnedShowTranslation">Show translation</sys:String>
+    <sys:String x:Key="General_ImageTranslateOnOcrServiceChanged">Image translation: translate on OCR service change</sys:String>
+    <sys:String x:Key="General_ImageTranslateOnTranslateServiceChanged">Image translation: translate on translation service change</sys:String>
+    <sys:String x:Key="General_ImageTranslateOnLanguageChanged">Image translation: translate on language change</sys:String>
+    <sys:String x:Key="General_ImageTranslateOnLayoutChanged">Image translation: translate on segmentation change</sys:String>
+    <sys:String x:Key="General_OcrOnServiceChanged">OCR window: recognize on service change</sys:String>
+    <sys:String x:Key="General_OcrOnLanguageChanged">OCR window: recognize on language change</sys:String>
+    <sys:String x:Key="General_TextPreprocessingRuleName">Rule name</sys:String>
+    <sys:String x:Key="General_TextPreprocessingEditMultiline">Edit selected rule (multiline)</sys:String>
+    <sys:String x:Key="General_TextPreprocessingTest">Test rules</sys:String>
+    <sys:String x:Key="General_TextPreprocessingTestInput">Enter sample text; hover over highlights to inspect replacements</sys:String>
+    <sys:String x:Key="General_TextPreprocessingRunTest">Run test</sys:String>
+    <sys:String x:Key="General_TextPreprocessingTestSummary">{0} rules changed the text.</sys:String>
+    <sys:String x:Key="General_TextPreprocessingDeleted">This content was deleted</sys:String>
+    <sys:String x:Key="General_TextPreprocessingReplacementResult">Text sent to the service</sys:String>
+    <sys:String x:Key="General_TextPreprocessingCopyRequest">Copy sent text</sys:String>
+    <sys:String x:Key="General_TextPreprocessingStatusEnabled">Enabled · {0} rules</sys:String>
+    <sys:String x:Key="General_TextPreprocessingStatusDisabled">Disabled</sys:String>
+    <sys:String x:Key="General_TextPreprocessingExportDetails">Export sent text and languages</sys:String>
+    <sys:String x:Key="General_TextPreprocessingRegexHint">Check parentheses, escapes, and capture groups.</sys:String>
+    <sys:String x:Key="General_TextPreprocessingRegexParenthesis">A closing parenthesis is missing.</sys:String>
+    <sys:String x:Key="General_TextPreprocessingRegexBracket">A character class is missing its closing bracket.</sys:String>
+    <sys:String x:Key="General_TextPreprocessingRegexEscape">An escape sequence is invalid.</sys:String>
+    <sys:String x:Key="General_TextPreprocessingUnchanged">Unchanged</sys:String>
+    <sys:String x:Key="General_TextPreprocessingRequestUnavailable">Request text was not recorded</sys:String>
+    <sys:String x:Key="General_TextPreprocessingSummary">Replace outgoing text while keeping the original.</sys:String>
+    <sys:String x:Key="General_TextPreprocessingScopeTitle">Scope</sys:String>
+</ResourceDictionary>

@@ -1,0 +1,63 @@
+<Solution>
+  <!-- 解决方案项 -->
+  <Folder Name="/Items/">
+    <File Path=".editorconfig" />
+    <File Path=".gitignore" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+    <File Path="nuget.config" />
+    <File Path="SolutionAssemblyInfo.cs" />
+    <File Path="../build.ps1" />
+    <File Path="../CHANGELOG.md" />
+    <File Path="../post_build.ps1" />
+    <File Path="../README.md" />
+    <File Path="../README_ZH.md" />
+    <File Path="../Sponsor.md" />
+    <File Path="../.github/workflows/dotnet.yml" />
+  </Folder>
+
+  <!-- 插件文件夹 -->
+  <Folder Name="/Plugins/">
+    <!-- 内置翻译插件 -->
+    <Project Path="Plugins/STranslate.Plugin.Translate.GoogleBuiltIn/STranslate.Plugin.Translate.GoogleBuiltIn.csproj" />
+    <Project Path="Plugins/STranslate.Plugin.Translate.ICibaBuiltIn/STranslate.Plugin.Translate.ICibaBuiltIn.csproj" />
+    <Project Path="Plugins/STranslate.Plugin.Translate.ICibaTranslateBuiltIn/STranslate.Plugin.Translate.ICibaTranslateBuiltIn.csproj" />
+    <Project Path="Plugins/STranslate.Plugin.Translate.MicrosoftBuiltIn/STranslate.Plugin.Translate.MicrosoftBuiltIn.csproj" />
+    <Project Path="Plugins/STranslate.Plugin.Translate.TransmartBuiltIn/STranslate.Plugin.Translate.TransmartBuiltIn.csproj" />
+    <Project Path="Plugins/STranslate.Plugin.Translate.YandexBuiltIn/STranslate.Plugin.Translate.YandexBuiltIn.csproj" />
+
+    <!-- API 翻译插件 -->
+    <Project Path="Plugins/STranslate.Plugin.Translate.Baidu/STranslate.Plugin.Translate.Baidu.csproj" />
+    <Project Path="Plugins/STranslate.Plugin.Translate.BigModel/STranslate.Plugin.Translate.BigModel.csproj" />
+    <Project Path="Plugins/STranslate.Plugin.Translate.DeepL/STranslate.Plugin.Translate.DeepL.csproj" />
+    <Project Path="Plugins/STranslate.Plugin.Translate.MTranServer/STranslate.Plugin.Translate.MTranServer.csproj" />
+    <Project Path="Plugins/STranslate.Plugin.Translate.OpenAI/STranslate.Plugin.Translate.OpenAI.csproj" />
+    <Project Path="Plugins/STranslate.Plugin.Translate.Youdao/STranslate.Plugin.Translate.Youdao.csproj" />
+
+    <!-- OCR 插件 -->
+    <Project Path="Plugins/STranslate.Plugin.Ocr.Baidu/STranslate.Plugin.Ocr.Baidu.csproj" />
+    <Project Path="Plugins/STranslate.Plugin.Ocr.OpenAI/STranslate.Plugin.Ocr.OpenAI.csproj" />
+    <Project Path="Plugins/STranslate.Plugin.Ocr.WeChatBuiltIn/STranslate.Plugin.Ocr.WeChatBuiltIn.csproj" />
+    <Project Path="Plugins/STranslate.Plugin.Ocr.Google/STranslate.Plugin.Ocr.Google.csproj" />
+    <Project Path="Plugins/STranslate.Plugin.Ocr.Tencent/STranslate.Plugin.Ocr.Tencent.csproj" />
+    <Project Path="Plugins/STranslate.Plugin.Ocr.Youdao/STranslate.Plugin.Ocr.Youdao.csproj" />
+    <Project Path="Plugins/STranslate.Plugin.Ocr.OcrSpace/STranslate.Plugin.Ocr.OcrSpace.csproj" />
+
+    <!-- 其他插件 -->
+    <Project Path="Plugins/STranslate.Plugin.Tts.MicrosoftEdge/STranslate.Plugin.Tts.MicrosoftEdge.csproj" />
+    <Project Path="Plugins/STranslate.Plugin.Vocabulary.Eudict/STranslate.Plugin.Vocabulary.Eudict.csproj" />
+  </Folder>
+  
+
+  <!-- 第三方插件子文件夹 -->
+  <Folder Name="/Plugins/ThirdPlugins/" />
+
+  <!-- 测试项目 -->
+  <Folder Name="/Tests/">
+    <Project Path="Tests/STranslate.Tests/STranslate.Tests.csproj" />
+  </Folder>
+
+  <!-- 主项目 -->
+  <Project Path="STranslate/STranslate.csproj" />
+  <Project Path="STranslate.Plugin/STranslate.Plugin.csproj" />
+</Solution>

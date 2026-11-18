@@ -1,0 +1,12 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+    <sys:String x:Key="STranslate_Plugin_Translate_GoogleBuiltIn_RequestMode">请求模式</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_GoogleBuiltIn_RequestMode_Description">自定义 API 适合使用自行部署的中转服务；直连 Google 需要当前电脑能够访问 Google 网络。</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_GoogleBuiltIn_RequestMode_CustomApi">自定义 API</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_GoogleBuiltIn_RequestMode_Direct">直连 Google</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_GoogleBuiltIn_ApiUrl">API 地址</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_GoogleBuiltIn_ApiUrl_Description">填写兼容中转协议的完整翻译接口地址，例如 https://example.deno.dev/translate。</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_GoogleBuiltIn_ApiUrl_Invalid">请填写有效的 HTTP 或 HTTPS API 地址。</sys:String>
+</ResourceDictionary>
