@@ -67,7 +67,7 @@ if (Test-Path $src) {
 
 # 构建解决方案
 Log "正在重新生成解决方案..."
-dotnet build .\src\STranslate.slnx `
+dotnet build .\src\jietuyao.slnx `
   --configuration Release `
   --no-incremental `
   /p:Version=$CleanVersion `

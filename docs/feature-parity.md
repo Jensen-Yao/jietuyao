@@ -52,7 +52,7 @@
 | **Amazon** | ✅ 本次新增插件（SigV4 完整移植） |
 | 本地 PP-OCR | ✅ M6：**PP-OCR (Local) 插件**（OnnxRuntime det+rec、CTC 贪心解码、字典读自模型 metadata、阅读序行排序、BoxPoints 坐标输出、模型放 exe\models 开箱即用、线程数可调） |
 | LLM 翻译 | ➕ OpenAI 兼容插件（GLM/DeepSeek/Ollama） |
-| 划词/输入/替换/静默 | ➕ STranslate 全套 |
+| 划词/输入/替换/静默 | ➕ 底座项目 全套 |
 | TTS/生词本 | ➕ Edge TTS / 欧路 |
 
 ## 七、系统集成 — ✅ 完成

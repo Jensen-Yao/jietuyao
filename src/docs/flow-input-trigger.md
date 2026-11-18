@@ -7,29 +7,29 @@
 - 统一 UIA 优先取词、模拟复制回退、取词超时、取词失败回退与取词文本分隔符处理。
 
 ## 关键入口
-- `STranslate/Core/HotkeySettings.cs`
+- `jietuyao-v2 内部项目/Core/HotkeySettings.cs`
   - `LazyInitialize()`：启动时应用 Ctrl+CC、增量翻译键、全局热键注册。
   - `HandleGlobalLogic()`：热键到命令的映射中心。
-- `STranslate/Helpers/HotkeyMapper.cs`
+- `jietuyao-v2 内部项目/Helpers/HotkeyMapper.cs`
   - `SetHotkey()`：NHotkey/ChefKeys 注册。
   - `StartGlobalKeyboardMonitoring()`：低级键盘钩子（WH_KEYBOARD_LL）。
   - `RegisterHoldKey()`：按住键增量翻译。
   - `IsReservedGlobalHotkey()`：阻止把系统复制热键注册为全局热键。
-- `STranslate/Helpers/CtrlSameCHelper.cs`
+- `jietuyao-v2 内部项目/Helpers/CtrlSameCHelper.cs`
   - 监听 Ctrl+C 双击（500ms 窗口）。
-- `STranslate/Services/MouseHookService.cs`
+- `jietuyao-v2 内部项目/Services/MouseHookService.cs`
   - 在专用消息线程通过 `WH_MOUSE_LL` 监听鼠标拖选与双击选词，Hook 回调只投递事件，不执行剪贴板或 UI 操作。
-- `STranslate/Services/MouseSelectionService.cs`
+- `jietuyao-v2 内部项目/Services/MouseSelectionService.cs`
   - 协调直接翻译、悬浮图标与增量翻译共享 Hook，并按优先级分发划词结果。
-- `STranslate/Helpers/ClipboardMonitor.cs`
+- `jietuyao-v2 内部项目/Helpers/ClipboardMonitor.cs`
   - `AddClipboardFormatListener` 监听剪贴板变更。
-- `STranslate/Helpers/UiaTextReader.cs`
+- `jietuyao-v2 内部项目/Helpers/UiaTextReader.cs`
   - 在后台读取焦点元素的 UIA `TextPattern` 选区；空结果、异常或超时返回 null，由 `ClipboardHelper` 回退到模拟复制。
-- `STranslate/ViewModels/MainWindowViewModel.cs`
+- `jietuyao-v2 内部项目/ViewModels/MainWindowViewModel.cs`
   - `ExecuteTranslate()` / `InputClear()` / `Show()`：完成文本入口收敛、窗口显示与统一置前。
-- `STranslate/Core/Settings.cs`
+- `jietuyao-v2 内部项目/Core/Settings.cs`
   - `SelectedTextFetchTimeoutMs`、`TextSeparatorHandleType`、`TextSeparatorHandleScopes`、`CrosswordFetchFailedFallbackTarget`。
-- `STranslate/Views/MainWindow.xaml`
+- `jietuyao-v2 内部项目/Views/MainWindow.xaml`
   - `Window.InputBindings`：软件内热键（设置、历史、置顶、自动翻译等）。
   - 输入区显隐绑定：使用 `IsInputActuallyHidden` / `IsInputBoxVisible` / `IsLanguageSelectControlVisible`，避免输入翻译入口被持久隐藏设置阻断。
 
@@ -63,7 +63,7 @@
 - 剪贴板监听：`ClipboardMonitor` 收到 `WM_CLIPBOARDUPDATE` 后读取文本，触发 `OnClipboardTextChanged -> ExecuteTranslate()`。
 
 ### 触发后的窗口置前
-- 全局热键由 STranslate 接收并不代表 STranslate 已是前台应用；触发时浏览器、编辑器或 Explorer 通常仍持有前台窗口。
+- 全局热键由 jietuyao-v2 内部项目 接收并不代表 jietuyao-v2 内部项目 已是前台应用；触发时浏览器、编辑器或 Explorer 通常仍持有前台窗口。
 - `ExecuteTranslate()`、`InputClear()` 及其他显示入口最终统一调用 `Win32Helper.ActivateForegroundWindow()`，再执行 WPF `Activate()` / `Focus()`。
 - 热键、托盘、鼠标划词、剪贴板监听和第二实例唤醒均处于默认 `Normal` 上下文，只调用 Win32 `SetForegroundWindow`；普通调用失败时不会升级为 `AttachThreadInput`，避免打断 Explorer 文件重命名等文本编辑操作。
 - `Ctrl+C+C` 在 UI 调度回调内压入 `ForceForeground` 上下文；翻译成功和取词失败回退产生的主窗口显示都会在需要时通过 `AttachThreadInput` 强制置前，确保复制动作完成后结果窗口可见。
@@ -132,15 +132,15 @@
   - `IsLanguageSelectControlVisible`：语言选择控件实际可见状态。
 
 ## 关键文件
-- `STranslate/Core/HotkeySettings.cs`
-- `STranslate/Helpers/HotkeyMapper.cs`
-- `STranslate/Helpers/ForegroundFullscreenMonitor.cs`
-- `STranslate/Helpers/CtrlSameCHelper.cs`
-- `STranslate/Services/MouseHookService.cs`
-- `STranslate/Services/MouseSelectionService.cs`
-- `STranslate/Helpers/ClipboardMonitor.cs`
-- `STranslate/ViewModels/MainWindowViewModel.cs`
-- `STranslate/Views/MainWindow.xaml`
+- `jietuyao-v2 内部项目/Core/HotkeySettings.cs`
+- `jietuyao-v2 内部项目/Helpers/HotkeyMapper.cs`
+- `jietuyao-v2 内部项目/Helpers/ForegroundFullscreenMonitor.cs`
+- `jietuyao-v2 内部项目/Helpers/CtrlSameCHelper.cs`
+- `jietuyao-v2 内部项目/Services/MouseHookService.cs`
+- `jietuyao-v2 内部项目/Services/MouseSelectionService.cs`
+- `jietuyao-v2 内部项目/Helpers/ClipboardMonitor.cs`
+- `jietuyao-v2 内部项目/ViewModels/MainWindowViewModel.cs`
+- `jietuyao-v2 内部项目/Views/MainWindow.xaml`
 
 ## 常见改动任务
 - 新增全局热键：在 `HotkeySettings` 增加字段、`RegisteredHotkeys` 声明、`HandleGlobalLogic` 映射。

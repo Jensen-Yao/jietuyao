@@ -7,21 +7,21 @@
 - 管理配置备份恢复（本地 zip 与 WebDav）。
 
 ## 关键入口
-- `STranslate/Core/HttpService.cs`
+- `jietuyao-v2 内部项目/Core/HttpService.cs`
   - 通用 HTTP 封装、超时/请求头/查询参数处理、下载进度。
   - `StreamPostAsync()` / `StreamPostAsyncEnumerable()`：流式 POST 响应消费。
   - `TestProxyAsync()` / `GetCurrentIpAsync()` 代理连通性验证。
-- `STranslate/ViewModels/Pages/NetworkViewModel.cs`
+- `jietuyao-v2 内部项目/ViewModels/Pages/NetworkViewModel.cs`
   - 网络设置页测试入口与外部调用服务状态展示。
-- `STranslate/Core/ExternalCallService.cs`
+- `jietuyao-v2 内部项目/Core/ExternalCallService.cs`
   - `HttpListener` 本地服务，路由外部请求到主窗口命令。
-- `STranslate/Core/UpdaterService.cs`
+- `jietuyao-v2 内部项目/Core/UpdaterService.cs`
   - 手动检查更新、后台轮询检查与升级应用流程。
-- `STranslate/Controls/UpdateChangelogDialog.xaml(.cs)`
+- `jietuyao-v2 内部项目/Controls/UpdateChangelogDialog.xaml(.cs)`
   - 手动更新确认弹窗：加载并渲染远程 `CHANGELOG.md`，失败时回退外链。
-- `STranslate/Core/AutoUpdateCheckerService.cs`
+- `jietuyao-v2 内部项目/Core/AutoUpdateCheckerService.cs`
   - 自动检查更新调度（首次延迟 + 固定轮询间隔 + 开关判定）。
-- `STranslate/Services/BackupService.cs`
+- `jietuyao-v2 内部项目/Services/BackupService.cs`
   - 本地备份恢复与 WebDav 备份恢复。
 
 ## 核心流程
@@ -53,7 +53,7 @@
 2. 通过 Velopack `GithubSource` 检查新版本。
 3. 非静默检查时弹出 `UpdateChangelogDialog`：
    - 默认先显示加载动画（`ProgressRing`）。
-   - 通过 `IHttpService` 拉取 `https://raw.githubusercontent.com/STranslate/STranslate/refs/heads/main/CHANGELOG.md` 并用 `MarkdownViewer` 渲染完整更新内容。
+   - 通过 `IHttpService` 拉取 `https://raw.githubusercontent.com/jietuyao-v2 内部项目/jietuyao-v2 内部项目/refs/heads/main/CHANGELOG.md` 并用 `MarkdownViewer` 渲染完整更新内容。
    - 加载失败时显示可点击外链回退文案，用户可在浏览器查看完整更新日志。
 4. 用户点击“下载”后继续下载更新；取消则终止本次更新流程。
 5. 便携模式下先把便携目录复制到临时目录，避免覆盖丢失配置。
@@ -69,7 +69,7 @@
 ### 从入口到结果：本地与 WebDav 备份恢复
 - 本地备份/恢复：
   1. 选择 zip 文件。
-  2. 调用 `STranslate.Host`（`backup` 模式）对 `Plugins` 与 `Settings` 打包或还原。
+  2. 调用 `jietuyao-v2 内部项目.Host`（`backup` 模式）对 `Plugins` 与 `Settings` 打包或还原。
   3. 程序重启并通过 `InfoFilePath` 向主程序传递提示信息。
 - WebDav 备份：
   1. 预检查 WebDav 可达。
@@ -96,15 +96,15 @@
   - `Settings.Backup`（地址、账号、密码、备份类型）。
 
 ## 关键文件
-- `STranslate/Core/HttpService.cs`
-- `STranslate/ViewModels/Pages/NetworkViewModel.cs`
-- `STranslate/Core/ExternalCallService.cs`
-- `STranslate/Core/UpdaterService.cs`
-- `STranslate/Controls/UpdateChangelogDialog.xaml`
-- `STranslate/Controls/UpdateChangelogDialog.xaml.cs`
-- `STranslate/Core/AutoUpdateCheckerService.cs`
-- `STranslate/Services/BackupService.cs`
-- `STranslate/App.xaml.cs`
+- `jietuyao-v2 内部项目/Core/HttpService.cs`
+- `jietuyao-v2 内部项目/ViewModels/Pages/NetworkViewModel.cs`
+- `jietuyao-v2 内部项目/Core/ExternalCallService.cs`
+- `jietuyao-v2 内部项目/Core/UpdaterService.cs`
+- `jietuyao-v2 内部项目/Controls/UpdateChangelogDialog.xaml`
+- `jietuyao-v2 内部项目/Controls/UpdateChangelogDialog.xaml.cs`
+- `jietuyao-v2 内部项目/Core/AutoUpdateCheckerService.cs`
+- `jietuyao-v2 内部项目/Services/BackupService.cs`
+- `jietuyao-v2 内部项目/App.xaml.cs`
 
 ## 常见改动任务
 - 新增外部调用路径：在 `ExternalCallAction` 增加枚举，并在 `ExecuteExternalCall()` 添加分支。

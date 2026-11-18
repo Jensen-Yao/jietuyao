@@ -163,7 +163,7 @@
                 </ui:SettingsCard>
 
                 <ui:SettingsExpander
-                    Description="基于 STranslate (zggsong, MIT) 增强的 jietuyao"
+                    Description="jietuyao 截图耀 — 截图 · 贴图 · GIF · 长截图 · 剪贴板 · 翻译一体化"
                     Header="{x:Static core:Constant.AppName}"
                     IsExpanded="True">
                     <ui:SettingsExpander.HeaderIcon>

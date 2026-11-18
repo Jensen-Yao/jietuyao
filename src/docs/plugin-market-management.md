@@ -6,15 +6,15 @@
 - 处理 CDN 源与下载代理策略，并落地升级后重启机制。
 
 ## 关键入口
-- `STranslate/ViewModels/Pages/PluginViewModel.cs`
+- `jietuyao-v2 内部项目/ViewModels/Pages/PluginViewModel.cs`
   - `ToggleMarketViewAsync()`：已安装/市场视图切换。
   - `LoadPluginsAsync()`：市场插件加载。
   - `DownloadPluginAsync()` / `CancelDownload()`：下载、取消、安装、升级。
   - `AddPluginAsync()` / `InstallPluginsAsync()` / `DeletePluginAsync()`：本地安装与卸载。
-- `STranslate/Views/Pages/PluginPage.xaml`
+- `jietuyao-v2 内部项目/Views/Pages/PluginPage.xaml`
   - 统一页面内包含已安装视图与市场视图模板。
   - 拖拽安装、状态图标、下载进度条绑定。
-- `STranslate/Services/PluginInstance.cs`
+- `jietuyao-v2 内部项目/Services/PluginInstance.cs`
   - `PluginService`：对 `PluginManager` 安装/升级/卸载能力的 ViewModel 侧封装。
 
 ## 核心流程
@@ -55,11 +55,11 @@
   - `CustomDownloadProxyUrl`
 
 ## 关键文件
-- `STranslate/ViewModels/Pages/PluginViewModel.cs`
-- `STranslate/Views/Pages/PluginPage.xaml`
-- `STranslate/Services/PluginInstance.cs`
-- `STranslate/Core/PluginManager.cs`
-- `STranslate/Core/HttpService.cs`
+- `jietuyao-v2 内部项目/ViewModels/Pages/PluginViewModel.cs`
+- `jietuyao-v2 内部项目/Views/Pages/PluginPage.xaml`
+- `jietuyao-v2 内部项目/Services/PluginInstance.cs`
+- `jietuyao-v2 内部项目/Core/PluginManager.cs`
+- `jietuyao-v2 内部项目/Core/HttpService.cs`
 
 ## 常见改动任务
 - 扩展市场元数据字段：先改 `PluginMarketInfo`，再改加载解析与 XAML 绑定模板。

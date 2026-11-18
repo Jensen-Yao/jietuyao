@@ -38,6 +38,6 @@
 
 如果您对本隐私策略有任何疑问或建议，请通过以下方式联系开发者：
 
-* GitHub Issues: https://github.com/ZGGSONG/STranslate
+* GitHub Issues: https://github.com/ZGGSONG/jietuyao-v2 内部项目
 * 电子邮件: zggsong@foxmail.com
 

@@ -6,19 +6,19 @@
 - 提供官方插件实现的共性范式，指导新插件快速落地。
 
 ## 关键入口
-- `STranslate.Plugin/IPlugin.cs`
+- `jietuyao-v2 内部项目.Plugin/IPlugin.cs`
   - 所有插件共同入口：`Init(IPluginContext)`、`GetSettingUI()`、`Dispose()`。
-- `STranslate.Plugin/IPluginContext.cs`
+- `jietuyao-v2 内部项目.Plugin/IPluginContext.cs`
   - 插件可用能力：`HttpService`、`Logger`、`AudioPlayer`、`Snackbar`、`Notification`、配置存储、主题应用。
-- `STranslate.Plugin/IHttpService.cs`
+- `jietuyao-v2 内部项目.Plugin/IHttpService.cs`
   - 插件侧 HTTP 能力：普通 GET/POST、表单、下载、流式 POST、代理测试。
-- `STranslate.Plugin/IAudioPlayer.cs`、`AudioData.cs`
+- `jietuyao-v2 内部项目.Plugin/IAudioPlayer.cs`、`AudioData.cs`
   - 插件侧音频播放能力：兼容旧 `byte[]` / URL 调用，并支持显式描述 MP3、WAV 和裸 PCM。
-- `STranslate.Plugin/ITranslatePlugin.cs`
+- `jietuyao-v2 内部项目.Plugin/ITranslatePlugin.cs`
   - 翻译/词典接口与基类：`TranslatePluginBase`、`LlmTranslatePluginBase`、`DictionaryPluginBase`。
-- `STranslate.Plugin/IOcrPlugin.cs`、`ITtsPlugin.cs`、`IVocabularyPlugin.cs`
+- `jietuyao-v2 内部项目.Plugin/IOcrPlugin.cs`、`ITtsPlugin.cs`、`IVocabularyPlugin.cs`
   - OCR/TTS/生词本插件接口。
-- `STranslate.Plugin/PluginMetaData.cs`、`Service.cs`
+- `jietuyao-v2 内部项目.Plugin/PluginMetaData.cs`、`Service.cs`
   - 元数据模型与运行时服务模型。
 - 官方插件样例
   - `Plugins/*/Main.cs`
@@ -102,7 +102,7 @@
 - OCR 插件如果希望参与图片翻译，override `SupportBoxPoints()` 返回 `true` 并为 OCR 内容返回图片像素坐标 `BoxPoints`。
 
 ### 官方内置插件维护要点
-- 通用登记要求：新增官方内置或预装插件时，必须将其 `plugin.json` 中的 `PluginID` 添加到 `STranslate/Core/Constant.cs` 的 `PrePluginIDs`；该列表用于判断插件是否安装到预装目录，普通社区插件无需登记。
+- 通用登记要求：新增官方内置或预装插件时，必须将其 `plugin.json` 中的 `PluginID` 添加到 `jietuyao-v2 内部项目/Core/Constant.cs` 的 `PrePluginIDs`；该列表用于判断插件是否安装到预装目录，普通社区插件无需登记。
 - Microsoft 内置翻译：
   - `Settings.RequestMode` 支持 `Default` 与 `EdgeToken` 两种请求方案。
   - `EdgeToken` 模式会缓存授权 Token，并在过期前刷新。
@@ -117,22 +117,22 @@
   - 无结果或跳转默认页时应返回 `DictionaryResultType.NoResult`，避免错误词条污染历史。
 
 ## 关键文件
-- `STranslate.Plugin/IPlugin.cs`
-- `STranslate.Plugin/IPluginContext.cs`
-- `STranslate.Plugin/IHttpService.cs`
-- `STranslate.Plugin/IAudioPlayer.cs`
-- `STranslate.Plugin/AudioData.cs`
-- `STranslate.Plugin/ITranslatePlugin.cs`
-- `STranslate.Plugin/IOcrPlugin.cs`
-- `STranslate.Plugin/ITtsPlugin.cs`
-- `STranslate.Plugin/IVocabularyPlugin.cs`
-- `STranslate.Plugin/PluginMetaData.cs`
-- `STranslate.Plugin/Service.cs`
-- `Plugins/STranslate.Plugin.Translate.OpenAI/Main.cs`
-- `Plugins/STranslate.Plugin.Ocr.OpenAI/Main.cs`
-- `Plugins/STranslate.Plugin.Ocr.OcrSpace/Main.cs`
-- `Plugins/STranslate.Plugin.Tts.MicrosoftEdge/Main.cs`
-- `Plugins/STranslate.Plugin.Vocabulary.Eudict/Main.cs`
+- `jietuyao-v2 内部项目.Plugin/IPlugin.cs`
+- `jietuyao-v2 内部项目.Plugin/IPluginContext.cs`
+- `jietuyao-v2 内部项目.Plugin/IHttpService.cs`
+- `jietuyao-v2 内部项目.Plugin/IAudioPlayer.cs`
+- `jietuyao-v2 内部项目.Plugin/AudioData.cs`
+- `jietuyao-v2 内部项目.Plugin/ITranslatePlugin.cs`
+- `jietuyao-v2 内部项目.Plugin/IOcrPlugin.cs`
+- `jietuyao-v2 内部项目.Plugin/ITtsPlugin.cs`
+- `jietuyao-v2 内部项目.Plugin/IVocabularyPlugin.cs`
+- `jietuyao-v2 内部项目.Plugin/PluginMetaData.cs`
+- `jietuyao-v2 内部项目.Plugin/Service.cs`
+- `Plugins/jietuyao-v2 内部项目.Plugin.Translate.OpenAI/Main.cs`
+- `Plugins/jietuyao-v2 内部项目.Plugin.Ocr.OpenAI/Main.cs`
+- `Plugins/jietuyao-v2 内部项目.Plugin.Ocr.OcrSpace/Main.cs`
+- `Plugins/jietuyao-v2 内部项目.Plugin.Tts.MicrosoftEdge/Main.cs`
+- `Plugins/jietuyao-v2 内部项目.Plugin.Vocabulary.Eudict/Main.cs`
 
 ## 常见改动任务
 - 新建插件：
@@ -140,9 +140,9 @@
   2. 实现目标接口或基类。
   3. 提供 `plugin.json` 与图标。
   4. 在 `Init` 中加载配置并在设置 UI 中可编辑。
-  5. 如果属于官方内置或预装插件，将 `plugin.json` 中的 `PluginID` 添加到 `STranslate/Core/Constant.cs` 的 `PrePluginIDs`。
+  5. 如果属于官方内置或预装插件，将 `plugin.json` 中的 `PluginID` 添加到 `jietuyao-v2 内部项目/Core/Constant.cs` 的 `PrePluginIDs`。
 - 增加插件能力参数：先扩展插件 `Settings` 模型，再在 `GetSettingUI()` 对应 VM 中读写并调用 `SaveSettingStorage`。
 - 处理长任务取消：所有 `TranslateAsync` / `RecognizeAsync` / `SaveAsync` 应尊重 `CancellationToken`。
 - 兼容升级：保持 `PluginID` 稳定，升级仅提升 `Version`，避免被识别为新插件。
 - 接入大模型或 SSE 服务：优先使用 `StreamPostAsyncEnumerable()`，按行解析服务返回，避免在插件里重复实现 `HttpClient` 流读取。
-- 新增 SDK 语言枚举：同时更新 `LangEnum`、主程序本地化、语言检测映射、官方插件语言映射与 `STranslate.Plugin/README.md` 版本说明。
+- 新增 SDK 语言枚举：同时更新 `LangEnum`、主程序本地化、语言检测映射、官方插件语言映射与 `jietuyao-v2 内部项目.Plugin/README.md` 版本说明。

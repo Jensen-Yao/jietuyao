@@ -28,16 +28,14 @@ public class Constant
     public const string BackupFileName = ".BACKUP";
 
     public const string Github = "https://github.com/Jensen-Yao/jietuyao";
-    public const string UpstreamGithub = "https://github.com/ZGGSONG/STranslate";
     public const string Sponsor = "https://github.com/Jensen-Yao/jietuyao";
     public const string Dev = "Dev";
     public static readonly string Version = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location.NonNull()).ProductVersion.NonNull();
 
     public static readonly Uri GithubUri = new(Github);
-    public static readonly Uri UpstreamGithubUri = new(UpstreamGithub);
     public static readonly Uri ReportUri = new("https://github.com/Jensen-Yao/jietuyao/issues/new/choose");
     public static readonly Uri WebsiteUri = new("https://github.com/Jensen-Yao/jietuyao");
-    public static readonly Uri GroupUri = new(UpstreamGithub);
+    public static readonly Uri GroupUri = new("https://github.com/Jensen-Yao/jietuyao/discussions");
     public static readonly Uri FlowLauncherUri = new("https://github.com/Flow-Launcher/Flow.Launcher");
     public static readonly Uri UiWpfMordenUri = new("https://github.com/iNKORE-NET/UI.WPF.Modern");
     public static readonly Uri BobUri = new("https://bobtranslate.com/");

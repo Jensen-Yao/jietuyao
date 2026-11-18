@@ -8,23 +8,23 @@
 - 负责历史记录 CSV 导出、批量/全量删除与历史展示快照字段兼容。
 
 ## 关键入口
-- `STranslate/Core/Settings.cs`
+- `jietuyao-v2 内部项目/Core/Settings.cs`
   - 主配置模型，属性变更自动保存并触发行为应用。
-- `STranslate/Core/ServiceSettings.cs`
+- `jietuyao-v2 内部项目/Core/ServiceSettings.cs`
   - 服务实例列表与特殊服务 ID（替换翻译、图片翻译）。
-- `STranslate/Core/StorageBase.cs`
+- `jietuyao-v2 内部项目/Core/StorageBase.cs`
   - 通用存储抽象：加载、保存、备份恢复、原子写入。
-- `STranslate/Core/AppStorage.cs`
+- `jietuyao-v2 内部项目/Core/AppStorage.cs`
   - 应用级配置存储：`SettingsDirectory/{TypeName}.json`。
-- `STranslate/Core/PluginStorage.cs`
+- `jietuyao-v2 内部项目/Core/PluginStorage.cs`
   - 插件级配置存储：`PluginSettingsDirectory/{serviceId}.json`。
-- `STranslate/Core/DataLocation.cs`
+- `jietuyao-v2 内部项目/Core/DataLocation.cs`
   - 便携/漫游目录与缓存/日志/数据库路径决策。
-- `STranslate/Core/SqlService.cs`
+- `jietuyao-v2 内部项目/Core/SqlService.cs`
   - 历史表初始化、读写、分页、游标与相邻记录查询。
-- `STranslate/Helpers/HistoryCsvHelper.cs`
+- `jietuyao-v2 内部项目/Helpers/HistoryCsvHelper.cs`
   - 历史记录 CSV 宽表导出。
-- `STranslate/ViewModels/Pages/HistoryViewModel.cs`
+- `jietuyao-v2 内部项目/ViewModels/Pages/HistoryViewModel.cs`
   - 历史页搜索、加载更多、导出、批量删除与全量删除。
 
 ## 核心流程
@@ -47,7 +47,7 @@
 ### 从入口到结果：便携/漫游路径策略
 1. `DataLocation.PortableDataLocationInUse()` 判断程序目录下是否存在便携目录。
 2. 若存在：配置、缓存、日志、插件目录全部落在 `PortableDataPath`。
-3. 若不存在：落在 `RoamingDataPath`（`%AppData%/STranslate`）。
+3. 若不存在：落在 `RoamingDataPath`（`%AppData%/jietuyao-v2 内部项目`）。
 4. 数据库连接串固定指向 `CacheDirectory/history.db`。
 
 ### 从入口到结果：历史数据写入与缓存命中
@@ -97,19 +97,19 @@
   - `ServiceDisplayName`：服务显示名快照，导出和历史页展示优先使用。
 
 ## 关键文件
-- `STranslate/Core/Settings.cs`
-- `STranslate/Core/ServiceSettings.cs`
-- `STranslate/Core/StorageBase.cs`
-- `STranslate/Core/AppStorage.cs`
-- `STranslate/Core/PluginStorage.cs`
-- `STranslate/Core/DataLocation.cs`
-- `STranslate/Core/SqlService.cs`
-- `STranslate/Helpers/HistoryCsvHelper.cs`
-- `STranslate/ViewModels/Pages/HistoryViewModel.cs`
-- `STranslate/Converters/HistoryLanguageDisplayConverter.cs`
-- `STranslate/Converters/HistoryServiceDisplayNameConverter.cs`
-- `STranslate/Core/ProxySettings.cs`
-- `STranslate/Core/BackupSettings.cs`
+- `jietuyao-v2 内部项目/Core/Settings.cs`
+- `jietuyao-v2 内部项目/Core/ServiceSettings.cs`
+- `jietuyao-v2 内部项目/Core/StorageBase.cs`
+- `jietuyao-v2 内部项目/Core/AppStorage.cs`
+- `jietuyao-v2 内部项目/Core/PluginStorage.cs`
+- `jietuyao-v2 内部项目/Core/DataLocation.cs`
+- `jietuyao-v2 内部项目/Core/SqlService.cs`
+- `jietuyao-v2 内部项目/Helpers/HistoryCsvHelper.cs`
+- `jietuyao-v2 内部项目/ViewModels/Pages/HistoryViewModel.cs`
+- `jietuyao-v2 内部项目/Converters/HistoryLanguageDisplayConverter.cs`
+- `jietuyao-v2 内部项目/Converters/HistoryServiceDisplayNameConverter.cs`
+- `jietuyao-v2 内部项目/Core/ProxySettings.cs`
+- `jietuyao-v2 内部项目/Core/BackupSettings.cs`
 
 ## 常见改动任务
 - 新增设置项：

@@ -7,32 +7,32 @@
 - 约束 OCR 插件坐标框支持声明、结构化分段返回方式和本地 `Smart` 分段回退策略。
 
 ## 关键入口
-- `STranslate/ViewModels/ImageTranslateWindowViewModel.cs`
+- `jietuyao-v2 内部项目/ViewModels/ImageTranslateWindowViewModel.cs`
   - `ExecuteAsync(Bitmap)`：图片翻译窗口主执行命令。
   - `ApplyLayoutAnalysis(OcrResult)`：按分段模式生成 `OcrLayoutBlock`。
   - `ImageTranslateRenderer.CreateTranslatedOverlay(...)`：生成译文矢量绘制文档和原图坐标系中的选择框。
   - `RefreshSelectableOcrWords()`：在原文标注图和矢量译文视图之间切换图片文本选中数据源。
-- `STranslate/Views/ImageTranslateWindow.xaml` / `ImageTranslateCompactWindow.xaml`
+- `jietuyao-v2 内部项目/Views/ImageTranslateWindow.xaml` / `ImageTranslateCompactWindow.xaml`
   - `Standalone`：原独立窗口，保留服务、语言、文本框和完整工具栏。
   - `Compact`：无标题精简窗口，图片区贴回截图选区，底部预留悬浮核心按钮区。
-- `STranslate/Core/PinnedWindowController.cs` / `STranslate/Views/PinnedImageTranslateWindow.xaml`
+- `jietuyao-v2 内部项目/Core/PinnedWindowController.cs` / `jietuyao-v2 内部项目/Views/PinnedImageTranslateWindow.xaml`
   - 把已完成的 Compact 结果保存为静态快照；贴图窗口不再持有 ViewModel，也不重新执行 OCR 或翻译。
   - 截图开始前临时 cloak 全部贴图，截图结束后恢复，避免旧贴图进入新截图。
-- `STranslate/Core/Screenshot.cs`
+- `jietuyao-v2 内部项目/Core/Screenshot.cs`
   - `GetScreenshotCaptureAsync()`：调用 `ScreenGrabber.CaptureWithRegionAsync`，截图时直接回传选区物理坐标，无需事后反推。
   - 精简窗口模式下传 `padImage: false`，关闭 ScreenGrab 对 <64px 小截图的背景画布 padding 扩展，保证 `bitmap.Size == 选区物理尺寸`，避免贴回时 Viewbox 把 padding 图缩放导致原始内容缩小；其他窗口模式保留默认 padding 行为。
-- `STranslate/Core/OcrLayoutAnalyzer.cs`
+- `jietuyao-v2 内部项目/Core/OcrLayoutAnalyzer.cs`
   - `AnalyzeBlocks(OcrResult, LayoutAnalysisMode)`：分段逻辑入口。
   - `Auto` / `Provider` / `Smart` / `NoMerge`：图片翻译分段策略。
-- `STranslate/Core/OcrLayoutBlock.cs`
+- `jietuyao-v2 内部项目/Core/OcrLayoutBlock.cs`
   - 图片翻译内部分段块，记录段落框、行框、分段来源和置信度。
-- `STranslate/Core/ImageTranslateTextOverlayLayout.cs`
+- `jietuyao-v2 内部项目/Core/ImageTranslateTextOverlayLayout.cs`
   - 计算覆盖层矩形、擦除矩形、字体大小、多行回退、裁剪策略和主题色。
-- `STranslate/Services/OcrService.cs`
+- `jietuyao-v2 内部项目/Services/OcrService.cs`
   - `GetImageTranslateOcrServices()` / `GetImageTranslateOcrServiceOrDefault()`：图片翻译 OCR 服务筛选和兜底。
-- `STranslate/Services/TranslateService.cs`
+- `jietuyao-v2 内部项目/Services/TranslateService.cs`
   - `ImageTranslateService`：图片翻译专用翻译服务。
-- `STranslate.Plugin/IOcrPlugin.cs`
+- `jietuyao-v2 内部项目.Plugin/IOcrPlugin.cs`
   - `IOcrPlugin.SupportBoxPoints()`、`OcrRequest`、`OcrResult`、`BoxPoint`。
 
 ## 从入口到结果
@@ -180,32 +180,32 @@
 - **诊断方法**：复现泄漏后用 `dotnet-gcdump report` 看是否有 `ImageTranslateCompactWindow`/`ImageTranslateWindowViewModel` 实例数随操作次数线性增长；用 `dotnet-dump analyze` 的 `gcroot <地址>` 追踪引用链，确认是 `PropertyDescriptor._propertyMap` 静态链还是 `ServiceProviderEngineScope._disposables` 钉住。
 
 ## 关键文件
-- `STranslate/ViewModels/ImageTranslateWindowViewModel.cs`
-- `STranslate/Views/ImageTranslateWindow.xaml.cs`
-- `STranslate/Views/ImageTranslateCompactWindow.xaml`
-- `STranslate/Controls/NoticeBar.xaml`
-- `STranslate/Controls/SnackbarContainer.xaml`
-- `STranslate/Controls/ImageTranslateOverlay.cs`
-- `STranslate/Core/Snackbar.cs`
-- `STranslate/Core/ImageTranslateOverlayDocument.cs`
-- `STranslate/Helpers/ImageTranslateRenderer.cs`
-- `STranslate/Helpers/ModernWindowLifecycle.cs`
-- `STranslate/Core/Screenshot.cs`
-- `STranslate/Core/PinnedWindowController.cs`
-- `STranslate/Views/PinnedImageTranslateWindow.xaml`
-- `STranslate/Core/OcrLayoutAnalyzer.cs`
-- `STranslate/Core/OcrLayoutBlock.cs`
-- `STranslate/Core/ImageTranslateTextOverlayLayout.cs`
-- `STranslate/Core/LayoutAnalysisModeJsonConverter.cs`
-- `STranslate/Services/OcrService.cs`
-- `STranslate/Services/TranslateService.cs`
-- `STranslate.Plugin/IOcrPlugin.cs`
-- `Tests/STranslate.Tests/OcrLayoutAnalyzerTests.cs`
-- `Tests/STranslate.Tests/ImageTranslateTextOverlayLayoutTests.cs`
-- `Tests/STranslate.Tests/ImageTranslateOverlayTests.cs`
-- `Tests/STranslate.Tests/PinnedImageTranslateTests.cs`
-- `Tests/STranslate.Tests/ModernWindowLifecycleTests.cs`
-- `Tests/STranslate.Tests/SnackbarLifecycleTests.cs`
+- `jietuyao-v2 内部项目/ViewModels/ImageTranslateWindowViewModel.cs`
+- `jietuyao-v2 内部项目/Views/ImageTranslateWindow.xaml.cs`
+- `jietuyao-v2 内部项目/Views/ImageTranslateCompactWindow.xaml`
+- `jietuyao-v2 内部项目/Controls/NoticeBar.xaml`
+- `jietuyao-v2 内部项目/Controls/SnackbarContainer.xaml`
+- `jietuyao-v2 内部项目/Controls/ImageTranslateOverlay.cs`
+- `jietuyao-v2 内部项目/Core/Snackbar.cs`
+- `jietuyao-v2 内部项目/Core/ImageTranslateOverlayDocument.cs`
+- `jietuyao-v2 内部项目/Helpers/ImageTranslateRenderer.cs`
+- `jietuyao-v2 内部项目/Helpers/ModernWindowLifecycle.cs`
+- `jietuyao-v2 内部项目/Core/Screenshot.cs`
+- `jietuyao-v2 内部项目/Core/PinnedWindowController.cs`
+- `jietuyao-v2 内部项目/Views/PinnedImageTranslateWindow.xaml`
+- `jietuyao-v2 内部项目/Core/OcrLayoutAnalyzer.cs`
+- `jietuyao-v2 内部项目/Core/OcrLayoutBlock.cs`
+- `jietuyao-v2 内部项目/Core/ImageTranslateTextOverlayLayout.cs`
+- `jietuyao-v2 内部项目/Core/LayoutAnalysisModeJsonConverter.cs`
+- `jietuyao-v2 内部项目/Services/OcrService.cs`
+- `jietuyao-v2 内部项目/Services/TranslateService.cs`
+- `jietuyao-v2 内部项目.Plugin/IOcrPlugin.cs`
+- `Tests/jietuyao-v2 内部项目.Tests/OcrLayoutAnalyzerTests.cs`
+- `Tests/jietuyao-v2 内部项目.Tests/ImageTranslateTextOverlayLayoutTests.cs`
+- `Tests/jietuyao-v2 内部项目.Tests/ImageTranslateOverlayTests.cs`
+- `Tests/jietuyao-v2 内部项目.Tests/PinnedImageTranslateTests.cs`
+- `Tests/jietuyao-v2 内部项目.Tests/ModernWindowLifecycleTests.cs`
+- `Tests/jietuyao-v2 内部项目.Tests/SnackbarLifecycleTests.cs`
 
 ## 常见改动任务
 - 调整图片翻译分段逻辑或表格/网格误合并：优先改 `OcrLayoutAnalyzer`，并补 `OcrLayoutAnalyzerTests`。

@@ -1,7 +1,6 @@
 # jietuyao v2 — 里程碑 M1：截图编辑器 + 贴图
 
-> 基于 STranslate 2.0（MIT，致敬 @ZGGSONG）作为底座的 jietuyao 产品升级。
-> 本里程碑将原 Python 版截图耀的核心看家功能移植为 C# WPF 原生实现。
+> jietuyao v2 的首个里程碑：将原 Python 版截图耀的核心看家功能移植为 C# WPF 原生实现。
 
 ## 新增能力
 
@@ -35,18 +34,18 @@
 | `Esc` | 退出 |
 | `Ctrl+点击` | 复制放大镜下颜色 |
 
-### 与 STranslate 的融合
+### 与 底座项目 的融合
 
 - **`IScreenshot` 接缝替换**：截图翻译(Alt+S)、OCR(Alt+Shift+S)、图片翻译(Alt+Shift+X)、二维码、静默 OCR 全部自动升级为 jietuyao 编辑器体验，原有流程零改动。
 - **主窗口头部新增“截图”按钮**（相机图标），支持设置中显隐与拖拽排序。
-- **贴图右键可直接路由到 STranslate 的 OCR 窗口 / 截图翻译流程**。
+- **贴图右键可直接路由到 底座项目 的 OCR 窗口 / 截图翻译流程**。
 - **工具样式持久化**：每个工具的颜色/线宽/字号/填充存入 Settings.json。
 - 9 种界面语言同步新增“截图”词条。
 
 ## 代码结构
 
 ```
-src/STranslate/
+src/底座项目/
   Core/Screenshot/            ← 编辑器引擎（无 UI 依赖，可单测）
     ScreenshotTypes.cs        类型/选项/结果
     ScreenshotCapturer.cs     多屏冻结捕获 + 位图互转
@@ -66,8 +65,8 @@ src/STranslate/
 ## 构建
 
 ```powershell
-dotnet build src/STranslate.slnx -c Debug   # 需 .NET 10 SDK
-dotnet test src/Tests/STranslate.Tests      # 554 项基线测试保持通过
+dotnet build src/底座项目.slnx -c Debug   # 需 .NET 10 SDK
+dotnet test src/Tests/底座项目.Tests      # 554 项基线测试保持通过
 ```
 
 ## 后续里程碑（Backlog）

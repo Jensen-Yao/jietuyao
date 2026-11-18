@@ -6,32 +6,32 @@
 - 管理主窗口与设置窗口的基础生命周期行为（显示、隐藏、导航、释放）。
 
 ## 关键入口
-- `STranslate/App.xaml.cs`
+- `jietuyao-v2 内部项目/App.xaml.cs`
   - `Main()`：单实例判定、Velopack 回调、管理员模式启动判定。
   - `App()` 构造函数：读取三类设置并注册 DI。
   - `OnStartup()`：插件/服务/数据库初始化，必要时先显示首次向导，再创建主窗口并执行启动后延迟初始化。
   - `Register*Exception()`、`RegisterExitEvents()`、`Dispose()`：异常与退出收敛。
-- `STranslate/Core/ISingleInstanceApp.cs`
+- `jietuyao-v2 内部项目/Core/ISingleInstanceApp.cs`
   - `SingleInstance<TApplication>.InitializeAsFirstInstance()`：Mutex + NamedPipe 单实例通知。
-- `STranslate/Views/MainWindow.xaml.cs`
+- `jietuyao-v2 内部项目/Views/MainWindow.xaml.cs`
   - `OnLoaded()`、`OnContentRendered()`、`OnDeactivated()`、`Dispose()`。
-- `STranslate/Views/SettingsWindow.xaml.cs`
+- `jietuyao-v2 内部项目/Views/SettingsWindow.xaml.cs`
   - `Navigate()`：设置页导航入口与导航状态同步。
-- `STranslate/Helpers/Win32Helper.cs`
+- `jietuyao-v2 内部项目/Helpers/Win32Helper.cs`
   - `ActivateForegroundWindow()`：统一的窗口置前入口，根据 `WindowActivationContext` 选择普通或强制激活。
   - `SetForegroundWindow()`：只调用 Win32 `SetForegroundWindow`，遵循系统前台权限规则，不自动升级为线程挂接。
   - `ForceSetForegroundWindow()`：临时通过 `AttachThreadInput` 挂接前台线程后强制置前，仅供强制激活上下文使用。
-- `STranslate/Helpers/WindowActivationContext.cs`
+- `jietuyao-v2 内部项目/Helpers/WindowActivationContext.cs`
   - 使用 `AsyncLocal` 保存当前激活模式；默认普通，HTTP 外部调用和 `Ctrl+C+C` UI 回调期间切换为强制模式。
-- `STranslate/Helpers/SingletonWindowOpener.cs`
+- `jietuyao-v2 内部项目/Helpers/SingletonWindowOpener.cs`
   - `Open()` / `OpenAsync()` / `OpenPreparedAsync()`：新建或复用单实例窗口，并统一恢复、显示、置前和聚焦。
-- `STranslate/Views/WelcomeSetupWindow.xaml.cs`
+- `jietuyao-v2 内部项目/Views/WelcomeSetupWindow.xaml.cs`
   - 首次欢迎/快速配置向导：仅当启动前 `Settings.json`、`HotkeySettings.json`、`ServiceSettings.json` 三个配置文件都不存在时自动打开；也可从关于页手动打开。窗口使用小尺寸纵向分页，第 1 页提供紧凑欢迎说明和语言选择。
-- `STranslate/Core/AppMessageBox.cs`
+- `jietuyao-v2 内部项目/Core/AppMessageBox.cs`
   - 应用级 MessageBox 入口：优先使用当前活动窗口作为 owner，缺省时用主屏中心的临时透明 owner 承载 iNKORE 弹窗。
-- `STranslate/Helpers/UACHelper.cs`
+- `jietuyao-v2 内部项目/Helpers/UACHelper.cs`
   - `Run()`：通过 Host 进程按普通/提权/计划任务模式拉起应用。
-- `STranslate.Host/src/commands/start.rs`
+- `jietuyao-v2 内部项目.Host/src/commands/start.rs`
   - `start` 命令：延迟启动、等待旧进程退出、必要时清理旧进程。
 
 ## 核心流程
@@ -130,20 +130,20 @@
 - `DataLocation`：便携/漫游目录选择、日志/缓存/配置路径、`InfoFilePath` 与 `BackupFilePath`。
 
 ## 关键文件
-- `STranslate/App.xaml`
-- `STranslate/App.xaml.cs`
-- `STranslate/Core/AppShutdownReason.cs`
-- `STranslate/Core/ISingleInstanceApp.cs`
-- `STranslate/Views/MainWindow.xaml.cs`
-- `STranslate/Views/SettingsWindow.xaml.cs`
-- `STranslate/Helpers/Win32Helper.cs`
-- `STranslate/Helpers/WindowActivationContext.cs`
-- `STranslate/Helpers/SingletonWindowOpener.cs`
-- `STranslate/Helpers/ModernWindowLifecycle.cs`
-- `STranslate/Core/AppMessageBox.cs`
-- `STranslate/Core/DataLocation.cs`
-- `STranslate/Helpers/UACHelper.cs`
-- `STranslate.Host/src/commands/start.rs`
+- `jietuyao-v2 内部项目/App.xaml`
+- `jietuyao-v2 内部项目/App.xaml.cs`
+- `jietuyao-v2 内部项目/Core/AppShutdownReason.cs`
+- `jietuyao-v2 内部项目/Core/ISingleInstanceApp.cs`
+- `jietuyao-v2 内部项目/Views/MainWindow.xaml.cs`
+- `jietuyao-v2 内部项目/Views/SettingsWindow.xaml.cs`
+- `jietuyao-v2 内部项目/Helpers/Win32Helper.cs`
+- `jietuyao-v2 内部项目/Helpers/WindowActivationContext.cs`
+- `jietuyao-v2 内部项目/Helpers/SingletonWindowOpener.cs`
+- `jietuyao-v2 内部项目/Helpers/ModernWindowLifecycle.cs`
+- `jietuyao-v2 内部项目/Core/AppMessageBox.cs`
+- `jietuyao-v2 内部项目/Core/DataLocation.cs`
+- `jietuyao-v2 内部项目/Helpers/UACHelper.cs`
+- `jietuyao-v2 内部项目.Host/src/commands/start.rs`
 
 ## 常见改动任务
 - 新增启动期服务：在 `App()` 的 `ConfigureServices` 注册，并在 `OnStartup()` 明确初始化顺序。

@@ -1,6 +1,6 @@
 # 国际化 (i18n) 与语言贡献指南
 
-本文档说明 STranslate 的多语言实现机制，并给出新增一种界面语言的完整步骤。如果你希望为项目贡献一种新语言，按文末 [贡献新语言 Checklist](#贡献新语言-checklist) 逐项操作即可。
+本文档说明 jietuyao-v2 内部项目 的多语言实现机制，并给出新增一种界面语言的完整步骤。如果你希望为项目贡献一种新语言，按文末 [贡献新语言 Checklist](#贡献新语言-checklist) 逐项操作即可。
 
 ## 支持的语言
 
@@ -19,31 +19,31 @@
 
 ## 模块职责
 
-- 主程序界面字符串：`STranslate/Languages/*.xaml`
-- 国际化核心服务：`STranslate/Core/Internationalization.cs`
+- 主程序界面字符串：`jietuyao-v2 内部项目/Languages/*.xaml`
+- 国际化核心服务：`jietuyao-v2 内部项目/Core/Internationalization.cs`
 - 支持语言列表（唯一真相来源）：`Internationalization.cs` 末尾的 `AvailableLanguages` 静态类
-- 语言对模型：`STranslate.Plugin/I18nPair.cs`
+- 语言对模型：`jietuyao-v2 内部项目.Plugin/I18nPair.cs`
 - 插件界面字符串 + 元数据翻译：各插件 `Languages/*.xaml` 与 `*.json`
 
 ## 关键入口
 
 ### 资源字典加载
-- `STranslate/App.xaml:20`
+- `jietuyao-v2 内部项目/App.xaml:20`
   - `en.xaml` 通过 pack URI 内嵌进主程序二进制，作为默认/回退语言，**不**从文件系统重复加载。
-- `STranslate/STranslate.csproj`
+- `jietuyao-v2 内部项目/jietuyao-v2 内部项目.csproj`
   - 用 `Languages\*.xaml` 通配符将其他语言文件以 `Content` + `PreserveNewest` 方式复制到输出目录。**新增语言文件无需改 csproj。**
 
 ### 国际化服务
-- `STranslate/Core/Internationalization.cs`
+- `jietuyao-v2 内部项目/Core/Internationalization.cs`
   - `InitializeLanguage(string)`：启动时初始化语言。
   - `ChangeLanguage(string)`：运行时切换语言（热切换，无需重启）。
   - `OnLanguageChanged` 事件：切换完成后通知所有订阅者刷新 UI。
   - `GetTranslation(string key)`：代码内按 key 取翻译字符串。
 
 ### 语言切换 UI 入口
-- `STranslate/Views/Pages/GeneralPage.xaml` 设置页「语言」下拉
+- `jietuyao-v2 内部项目/Views/Pages/GeneralPage.xaml` 设置页「语言」下拉
   - `ItemsSource` 绑定 `GeneralViewModel.Languages`，`SelectedValue` 双向绑定 `Settings.Language`。
-- `STranslate/Views/WelcomeSetupWindow.xaml` 首次启动向导语言选择
+- `jietuyao-v2 内部项目/Views/WelcomeSetupWindow.xaml` 首次启动向导语言选择
 
 ## 核心流程
 
@@ -78,7 +78,7 @@
 
 ## 关键数据结构
 
-### `I18nPair`（`STranslate.Plugin/I18nPair.cs`）
+### `I18nPair`（`jietuyao-v2 内部项目.Plugin/I18nPair.cs`）
 ```csharp
 public class I18nPair(string code, string display)
 {
@@ -90,10 +90,10 @@ public class I18nPair(string code, string display)
 ### `AvailableLanguages`（`Internationalization.cs:390-423`）
 **支持语言的唯一集中定义处**，无枚举。新增语言必须在此修改三处。
 
-### `Constant.SystemLanguageCode`（`STranslate/Core/Constant.cs:18`）
+### `Constant.SystemLanguageCode`（`jietuyao-v2 内部项目/Core/Constant.cs:18`）
 值为 `"system"`，表示跟随系统语言。设置页下拉第一项即此值。
 
-### 主程序语言文件格式（`STranslate/Languages/zh-cn.xaml`）
+### 主程序语言文件格式（`jietuyao-v2 内部项目/Languages/zh-cn.xaml`）
 ```xml
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -109,17 +109,17 @@ public class I18nPair(string code, string display)
 ### 插件语言文件格式
 每个插件目录下 `Languages/` 同时包含两类文件，**语言代码必须与主程序一致**：
 
-**`<code>.xaml`** — 插件配置面板 UI 字符串，key 约定为 `STranslate_Plugin_<类型>_<名称>_<字段>`：
+**`<code>.xaml`** — 插件配置面板 UI 字符串，key 约定为 `jietuyao-v2 内部项目_Plugin_<类型>_<名称>_<字段>`：
 ```xml
-<sys:String x:Key="STranslate_Plugin_Translate_Baidu_AppID">APP ID</sys:String>
-<sys:String x:Key="STranslate_Plugin_Translate_Baidu_AppKey">App Key</sys:String>
+<sys:String x:Key="jietuyao-v2 内部项目_Plugin_Translate_Baidu_AppID">APP ID</sys:String>
+<sys:String x:Key="jietuyao-v2 内部项目_Plugin_Translate_Baidu_AppKey">App Key</sys:String>
 ```
 
 **`<code>.json`** — 插件元数据（Name / Description）翻译：
 ```json
 {
   "Name": "百度翻译",
-  "Description": "用于 STranslate 的百度翻译插件"
+  "Description": "用于 jietuyao-v2 内部项目 的百度翻译插件"
 }
 ```
 
@@ -128,12 +128,12 @@ public class I18nPair(string code, string display)
 以新增法语（`fr`）为例。
 
 ### 第 1 步：主程序语言文件
-1. 复制 `STranslate/Languages/en.xaml` 为 `STranslate/Languages/fr.xaml`。
+1. 复制 `jietuyao-v2 内部项目/Languages/en.xaml` 为 `jietuyao-v2 内部项目/Languages/fr.xaml`。
 2. 翻译所有 `<sys:String>` 的值，**保留所有 `x:Key` 不变**。
 3. 确保 key 数量与 `en.xaml` 完全一致（可用 diff 工具核对）。
 
 ### 第 2 步：注册到 `AvailableLanguages`
-编辑 `STranslate/Core/Internationalization.cs:390-423`，**三处都要改**：
+编辑 `jietuyao-v2 内部项目/Core/Internationalization.cs:390-423`，**三处都要改**：
 
 ```csharp
 internal static class AvailableLanguages
@@ -194,7 +194,7 @@ internal static class AvailableLanguages
 ### 命名约定
 - **语言代码**：小写，连字符分隔，如 `zh-cn`、`pt-br`、`fr`。沿用 [VS Code locale](https://code.visualstudio.com/docs/getstarted/locales) 习惯。
 - **主程序 key**：`<模块>_<字段>`，如 `General_Language`。
-- **插件 key**：`STranslate_Plugin_<类型>_<名称>_<字段>`，如 `STranslate_Plugin_Translate_Baidu_AppID`。
+- **插件 key**：`jietuyao-v2 内部项目_Plugin_<类型>_<名称>_<字段>`，如 `jietuyao-v2 内部项目_Plugin_Translate_Baidu_AppID`。
 - **资源 key 一旦发布就不要改名**，否则会破坏既有 `Settings` 等绑定与外部插件兼容性。
 
 ### 绑定方式
@@ -202,7 +202,7 @@ internal static class AvailableLanguages
 - 代码内取翻译用 `Ioc.Default.GetRequiredService<Internationalization>().GetTranslation("key")`。
 
 ### 不需要改的地方
-- ❌ `STranslate.csproj`：`Languages\*.xaml` 通配符自动包含新文件。
+- ❌ `jietuyao-v2 内部项目.csproj`：`Languages\*.xaml` 通配符自动包含新文件。
 - ❌ `App.xaml`：`en.xaml` 内嵌逻辑不变。
 - ❌ 设置页 / 欢迎向导 ComboBox：绑定到 `Languages` 列表，自动跟上。
 - ❌ `Settings.Language` 属性：保存 / 触发逻辑是通用的。

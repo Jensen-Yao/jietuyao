@@ -1,31 +1,31 @@
 # ScreenGrab 选区物理坐标回传开发计划
 
-> 本计划在 **ScreenGrab 仓库**（`D:\Others\gitR\ScreenGrab`）下执行。目的是从架构上消除 STranslate 图片翻译精简窗口的"概率性贴图偏移"。
+> 本计划在 **ScreenGrab 仓库**（`D:\Others\gitR\ScreenGrab`）下执行。目的是从架构上消除 jietuyao-v2 内部项目 图片翻译精简窗口的"概率性贴图偏移"。
 
 ## 背景与根因
 
 ### 现象
-STranslate 图片翻译精简窗口截图后贴回屏幕时，**有概率**与原始截图选区位置偏移（非 100% 缩放下更明显，但 100% 下也会偶发）。
+jietuyao-v2 内部项目 图片翻译精简窗口截图后贴回屏幕时，**有概率**与原始截图选区位置偏移（非 100% 缩放下更明显，但 100% 下也会偶发）。
 
 ### 根因：坐标来源架构缺陷
-对比 ScreenGrab 与 STranslate 当前实现，两者获取"截图选区物理坐标"的方式根本不同：
+对比 ScreenGrab 与 jietuyao-v2 内部项目 当前实现，两者获取"截图选区物理坐标"的方式根本不同：
 
-| | ScreenGrab（正确） | STranslate（当前，有缺陷） |
+| | ScreenGrab（正确） | jietuyao-v2 内部项目（当前，有缺陷） |
 | --- | --- | --- |
 | 截图时是否知道选区物理坐标 | **是**。`ScreenGrabView.RegionClickCanvas_MouseUp` 中用 `_selectBorder`（WPF 逻辑坐标）× DPI + `_captureTarget.PhysicalBounds.TopLeft`，当场算出选区绝对物理屏幕坐标 `correctedRegion` | **否**。`ScreenGrabber.CaptureAsync` 回调签名是 `Action<Bitmap>`，**只回传 bitmap，丢弃选区物理坐标** |
 | 贴图坐标来源 | 截图瞬间记录的精确物理坐标 | 事后用 `ScreenshotSelectionResolver.Resolve` 反推：`GetCursorPos` + 4 个固定方位候选矩形像素匹配 |
 
-### 为什么反推会"概率性偏移"（STranslate 侧 `ScreenshotSelectionResolver`）
+### 为什么反推会"概率性偏移"（jietuyao-v2 内部项目 侧 `ScreenshotSelectionResolver`）
 1. **方位假设错误**：反推假设选区相对鼠标在 4 个固定方位（`cursor-bitmapSize` / `cursor` / `cursor.x-w,cursor.y` / `cursor.x,cursor.y-h`）。但截图是任意拖拽框选，鼠标在选区内任意位置，候选矩形基本都不在真实选区位置 → 像素匹配失败 → 返回 null。
 2. **时间差竞态（概率性主因）**：`GetCursorPos` 在截图**完成后**才调用，用户截图后鼠标可能已移动 → 即使匹配上坐标也偏。这就是"有时偏有时不偏"的根源。
 3. **回退必然偏移**：反推失败时回退到 `PlaceNearCursorScreen`，用 `cursor - bitmapSize` 贴窗，与真实选区无关。
 4. **小截图 padding**：`GetRegionOfScreenAsBitmap` 对 <64px 截图做 `PadImage` 扩展，导致 `bitmap.Size` ≠ 真实选区尺寸，候选矩形尺寸错误。
 
 ### 结论
-前两次 commit（`75b3a083`、`8546f528`）试图修补 STranslate 侧定位都未根治。按系统化调试原则，这是**架构性缺陷**：事后反推坐标不可能可靠。正确做法是让 ScreenGrab 在截图时就回传选区物理坐标，STranslate 删除整个反推逻辑。
+前两次 commit（`75b3a083`、`8546f528`）试图修补 jietuyao-v2 内部项目 侧定位都未根治。按系统化调试原则，这是**架构性缺陷**：事后反推坐标不可能可靠。正确做法是让 ScreenGrab 在截图时就回传选区物理坐标，jietuyao-v2 内部项目 删除整个反推逻辑。
 
 ## 目标
-让 ScreenGrab 在截图完成回调中**同时回传选区的物理屏幕坐标**（虚拟屏幕物理像素），STranslate 升级后直接使用该精确坐标贴图，彻底删除 `ScreenshotSelectionResolver` 反推逻辑。
+让 ScreenGrab 在截图完成回调中**同时回传选区的物理屏幕坐标**（虚拟屏幕物理像素），jietuyao-v2 内部项目 升级后直接使用该精确坐标贴图，彻底删除 `ScreenshotSelectionResolver` 反推逻辑。
 
 ## 约束与兼容性
 - ScreenGrab 是公共 NuGet 包（当前 `1.0.15`），改动必须**向后兼容**：不能破坏现有 `OnCaptured`/`CaptureAsync`/`CaptureDialog` 调用方。
@@ -38,7 +38,7 @@ STranslate 图片翻译精简窗口截图后贴回屏幕时，**有概率**与�
 2. `ScreenGrabView` 增加带坐标的回调重载，`MouseUp` 回传 `correctedRegion`。
 3. `ScreenGrabber` 增加 `CaptureAsync`/`CaptureDialog`/`Capture` 的带坐标重载。
 4. 升版本号、发布 NuGet。
-5. （后续在 STranslate 仓库）升级包、改用新 API、删除 `ScreenshotSelectionResolver`。
+5. （后续在 jietuyao-v2 内部项目 仓库）升级包、改用新 API、删除 `ScreenshotSelectionResolver`。
 
 ---
 
@@ -128,7 +128,7 @@ else
 
 **文件**：`src/ScreenGrab/ScreenGrabber.cs`
 
-为三个公开方法各增加一个带坐标的重载，**保留原方法**。以下以 `CaptureAsync` 为例（STranslate 实际使用的是它）：
+为三个公开方法各增加一个带坐标的重载，**保留原方法**。以下以 `CaptureAsync` 为例（jietuyao-v2 内部项目 实际使用的是它）：
 
 ```csharp
 private static TaskCompletionSource<ScreenCaptureResult?>? _captureWithRegionTaskCompletionSource;
@@ -168,7 +168,7 @@ private static List<ScreenGrabView> CreateScreenGrabViewsWithRegion(
 
 对 `CaptureDialog` 增加同步重载 `CaptureWithRegionDialog`（用 `DispatcherFrame`，回传 `ScreenCaptureResult?`）；对 `Capture` 增加重载（设置 `OnCapturedWithRegion` 静态事件，或直接复用回调模式）。
 
-> `Capture`（无返回值的事件式）当前用静态 `OnCaptured` 事件，使用频率低。若 STranslate 不需要，可只实现 `CaptureAsync`/`CaptureDialog` 的带坐标重载，`Capture` 暂不动以缩小改动面。**建议**：本次只实现 `CaptureWithRegionAsync`（STranslate 唯一用到的），`CaptureDialog`/`Capture` 视需要再加。
+> `Capture`（无返回值的事件式）当前用静态 `OnCaptured` 事件，使用频率低。若 jietuyao-v2 内部项目 不需要，可只实现 `CaptureAsync`/`CaptureDialog` 的带坐标重载，`Capture` 暂不动以缩小改动面。**建议**：本次只实现 `CaptureWithRegionAsync`（jietuyao-v2 内部项目 唯一用到的），`CaptureDialog`/`Capture` 视需要再加。
 
 ### 3.1 字段命名注意
 新增的 `TaskCompletionSource<ScreenCaptureResult?>` 字段与现有 `_captureTaskCompletionSource`（`Bitmap?`）独立，避免泛型混淆。两个 TCS 不会同时使用（一次截图只走一条路径）。
@@ -214,19 +214,19 @@ git push origin 1.0.16
 
 ---
 
-## 后续（STranslate 仓库，待 ScreenGrab 1.0.16 发布后）
+## 后续（jietuyao-v2 内部项目 仓库，待 ScreenGrab 1.0.16 发布后）
 
-> 此部分供 STranslate 侧参考，不在 ScreenGrab 仓库执行。
+> 此部分供 jietuyao-v2 内部项目 侧参考，不在 ScreenGrab 仓库执行。
 
 1. `src/Directory.Packages.props` 把 `ScreenGrab` 升到 `1.0.16`。
-2. `src/STranslate/Core/Screenshot.cs`：
+2. `src/jietuyao-v2 内部项目/Core/Screenshot.cs`：
    - `GetScreenshotCaptureAsync` 改用 `ScreenGrabber.CaptureWithRegionAsync`，直接拿 `result.Region` 作为 `physicalBounds`，删除 `ResolvePhysicalBounds`。
    - `ScreenshotCaptureResult` 构造改为 `new ScreenshotCaptureResult(result.Bitmap, result.Region)`。
-3. 删除 `src/STranslate/Core/ScreenshotSelectionResolver.cs` 及其测试。
+3. 删除 `src/jietuyao-v2 内部项目/Core/ScreenshotSelectionResolver.cs` 及其测试。
 4. `ImageTranslateCompactWindow.PlaceForCapture` 现在总能拿到精确坐标，`PlaceNearCursorScreen`/`PlaceCenteredOnPrimaryScreen` 仅作为极端兜底（理论上不再触发）。
 5. 多 DPI 多显示器实测贴图零偏移。
 
 ## 风险与回退
 - **风险低**：ScreenGrab 侧是纯增量改动，坐标计算逻辑零修改，只透传已算好的值。
-- **回退**：若新版有问题，STranslate 回退包版本到 `1.0.15` 即可，反推逻辑仍在（直到 STranslate 侧删除前）。
+- **回退**：若新版有问题，jietuyao-v2 内部项目 回退包版本到 `1.0.15` 即可，反推逻辑仍在（直到 jietuyao-v2 内部项目 侧删除前）。
 - **关键不变量**：`correctedRegion` 必须与实际 `GetRegionOfScreenAsBitmap(correctedRegion)` 截出的像素一一对应——这是 ScreenGrab 既有行为，本次不触碰。

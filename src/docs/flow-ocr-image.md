@@ -7,24 +7,24 @@
 - 图片翻译已拆到独立文档：[flow-image-translation.md](flow-image-translation.md)。
 
 ## 关键入口
-- `STranslate/ViewModels/MainWindowViewModel.cs`
+- `jietuyao-v2 内部项目/ViewModels/MainWindowViewModel.cs`
   - `ScreenshotTranslateAsync()` / `ScreenshotTranslateHandlerAsync()`：截图翻译。
   - `OcrAsync()` / `OcrHandlerAsync()`：OCR 窗口入口。
   - `SilentOcrAsync()` / `SilentOcrHandlerAsync()`：静默 OCR。
   - `HandleCapturedText(string, TextSeparatorHandleScope)`：截图翻译和静默 OCR 的文本后处理。
-- `STranslate/ViewModels/OcrWindowViewModel.cs`
+- `jietuyao-v2 内部项目/ViewModels/OcrWindowViewModel.cs`
   - `ExecuteAsync(Bitmap)`：OCR 窗口主执行命令。
-- `STranslate/Core/Screenshot.cs`
+- `jietuyao-v2 内部项目/Core/Screenshot.cs`
   - `GetScreenshotAsync()`：截图前隐藏主窗口，调用 `ScreenGrabber`。
-- `STranslate/Core/OcrWordBuilder.cs`
+- `jietuyao-v2 内部项目/Core/OcrWordBuilder.cs`
   - 把带坐标的 `OcrContent` 转成图片文本选中所需的 `OcrWord`。
-- `STranslate/Core/QrCodeDecoder.cs`
+- `jietuyao-v2 内部项目/Core/QrCodeDecoder.cs`
   - 本地二维码解码，并限制可直接打开的链接协议为 `http` / `https`。
-- `STranslate/Helpers/QrCodeOverlayBuilder.cs`
+- `jietuyao-v2 内部项目/Helpers/QrCodeOverlayBuilder.cs`
   - 根据二维码定位点生成与原图坐标一致的内容覆盖层，并处理边界扩展与长文本截断。
-- `STranslate/Core/Utilities.cs`
+- `jietuyao-v2 内部项目/Core/Utilities.cs`
   - `PrepareOcrResult()`：当结构化 OCR 没有扁平内容时投影出 `OcrContents`。
-- `STranslate.Plugin/IOcrPlugin.cs`
+- `jietuyao-v2 内部项目.Plugin/IOcrPlugin.cs`
   - `IOcrPlugin`、`OcrRequest`、`OcrResult`、`OcrContent`、`BoxPoint`。
 
 ## 从入口到结果
@@ -96,16 +96,16 @@
 图片翻译窗口的服务提示、翻译失败和语言检测失败见 [flow-image-translation.md](flow-image-translation.md)。
 
 ## 关键文件
-- `STranslate/ViewModels/MainWindowViewModel.cs`
-- `STranslate/ViewModels/OcrWindowViewModel.cs`
-- `STranslate/Core/Screenshot.cs`
-- `STranslate/Core/OcrWordBuilder.cs`
-- `STranslate/Core/QrCodeDecoder.cs`
-- `STranslate/Helpers/QrCodeOverlayBuilder.cs`
-- `STranslate/Core/Utilities.cs`
-- `STranslate/Helpers/ModernWindowLifecycle.cs`
-- `STranslate.Plugin/IOcrPlugin.cs`
-- `Tests/STranslate.Tests/ModernWindowLifecycleTests.cs`
+- `jietuyao-v2 内部项目/ViewModels/MainWindowViewModel.cs`
+- `jietuyao-v2 内部项目/ViewModels/OcrWindowViewModel.cs`
+- `jietuyao-v2 内部项目/Core/Screenshot.cs`
+- `jietuyao-v2 内部项目/Core/OcrWordBuilder.cs`
+- `jietuyao-v2 内部项目/Core/QrCodeDecoder.cs`
+- `jietuyao-v2 内部项目/Helpers/QrCodeOverlayBuilder.cs`
+- `jietuyao-v2 内部项目/Core/Utilities.cs`
+- `jietuyao-v2 内部项目/Helpers/ModernWindowLifecycle.cs`
+- `jietuyao-v2 内部项目.Plugin/IOcrPlugin.cs`
+- `Tests/jietuyao-v2 内部项目.Tests/ModernWindowLifecycleTests.cs`
 
 ## 常见改动任务
 - 截图行为改造：在 `Screenshot.GetScreenshotAsync()` 处理窗口折叠、等待时机和截图工具调用。

@@ -13,10 +13,10 @@
 ## 最小构建与运行
 ```powershell
 # 最常用：直接运行
- dotnet run --project STranslate/STranslate.csproj
+ dotnet run --project jietuyao-v2 内部项目/jietuyao-v2 内部项目.csproj
 
 # 调试构建
- dotnet build STranslate.slnx --configuration Debug
+ dotnet build jietuyao.slnx --configuration Debug
 ```
 
 ## 文档导航（唯一入口）

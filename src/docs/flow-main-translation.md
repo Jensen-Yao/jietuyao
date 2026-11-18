@@ -7,7 +7,7 @@
 - 维护输入区识别状态、手动纠正源语种与历史有效语种快照。
 
 ## 关键入口
-- `STranslate/ViewModels/MainWindowViewModel.cs`
+- `jietuyao-v2 内部项目/ViewModels/MainWindowViewModel.cs`
   - `OnInputTextChanged()`：自动翻译防抖入口。
   - `InputClear()`：输入翻译入口，清空输入并进入临时输入翻译模式。
   - `TranslateAsync()`：主翻译命令。
@@ -15,23 +15,23 @@
   - `ExecuteTranslateAsync()`：缓存优先 + 实时翻译编排。
   - `ResolveTranslationLanguageContextAsync()`：解析实际参与翻译的源/目标语种。
   - `HandleCapturedText()`：统一处理取词入口文本的换行与分隔符。
-- `STranslate/Core/TranslationResultCoordinator.cs`
+- `jietuyao-v2 内部项目/Core/TranslationResultCoordinator.cs`
   - `BeginAutomaticOperation()` / `BeginOperation()`：创建翻译操作并分配递增标识。
   - 按界面结果对象维护当前有效操作，拒绝旧操作继续发布状态。
-- `STranslate/Core/TranslationOperation.cs`
+- `jietuyao-v2 内部项目/Core/TranslationOperation.cs`
   - 保存本次执行的输入、源/目标语种和取消令牌快照。
   - 使用独立临时结果执行主翻译、回译和词典查询，并把有效更新发布到界面结果。
-- `STranslate/Core/TextPreprocessing.cs`
+- `jietuyao-v2 内部项目/Core/TextPreprocessing.cs`
   - `PrepareAsync()`：捕获规则快照，在后台按顺序替换，生成 `PreparedTranslationInput`。
   - `CompiledTextReplacement` 分段展开捕获组，在分配完整结果之前限制输出长度。
-- `STranslate/Core/DirectTranslationRunner.cs`
+- `jietuyao-v2 内部项目/Core/DirectTranslationRunner.cs`
   - 现有替换翻译和图片分块翻译共用的预处理、空结果检查、语言检测与插件调用入口。
-- `STranslate/Helpers/LanguageDetector.cs`
+- `jietuyao-v2 内部项目/Helpers/LanguageDetector.cs`
   - `GetLanguageAsync()`：源语种判定与目标语种推导。
   - `GetTargetLanguage()`：根据实际源语种推导目标语种。
-- `STranslate/Core/SqlService.cs`
+- `jietuyao-v2 内部项目/Core/SqlService.cs`
   - `GetDataAsync()` / `InsertOrUpdateDataAsync()`：历史缓存读取与落盘。
-- `STranslate/Core/Utilities.cs`
+- `jietuyao-v2 内部项目/Core/Utilities.cs`
   - `CapturedTextHandler()`：取词文本后处理。
 
 ## 核心流程
@@ -204,14 +204,14 @@ if (!result.IsSuccess || !operation.IsCurrent(plugin.TransResult))
    - `IsInputBoxVisible` / `IsLanguageSelectControlVisible`：主窗口 XAML 直接绑定的实际可见状态。
 
 ## 关键文件
-- `STranslate/ViewModels/MainWindowViewModel.cs`
-- `STranslate/Core/TranslationResultCoordinator.cs`
-- `STranslate/Core/TranslationOperation.cs`
-- `STranslate/Helpers/LanguageDetector.cs`
-- `STranslate/Core/SqlService.cs`
-- `STranslate/Core/Utilities.cs`
-- `STranslate/Services/TranslateService.cs`
-- `STranslate.Plugin/ITranslatePlugin.cs`
+- `jietuyao-v2 内部项目/ViewModels/MainWindowViewModel.cs`
+- `jietuyao-v2 内部项目/Core/TranslationResultCoordinator.cs`
+- `jietuyao-v2 内部项目/Core/TranslationOperation.cs`
+- `jietuyao-v2 内部项目/Helpers/LanguageDetector.cs`
+- `jietuyao-v2 内部项目/Core/SqlService.cs`
+- `jietuyao-v2 内部项目/Core/Utilities.cs`
+- `jietuyao-v2 内部项目/Services/TranslateService.cs`
+- `jietuyao-v2 内部项目.Plugin/ITranslatePlugin.cs`
 
 ## 常见改动任务
 - 新增翻译结果后处理（如术语替换）：优先在 `operation.TranslateAsync()` 返回后、历史入库前处理。

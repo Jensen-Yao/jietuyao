@@ -6,19 +6,19 @@
 - 提供插件运行上下文 `PluginContext`，承载 HTTP、日志、通知、配置存储等能力。
 
 ## 关键入口
-- `STranslate/Core/PluginManager.cs`
+- `jietuyao-v2 内部项目/Core/PluginManager.cs`
   - `LoadPlugins()`：扫描目录、去重、加载程序集与插件类型。
   - `InstallPlugin()` / `UpgradePlugin()` / `UninstallPlugin()`：包安装与目录标记策略。
-- `STranslate/Core/ServiceManager.cs`
+- `jietuyao-v2 内部项目/Core/ServiceManager.cs`
   - `LoadServices()`：根据 `ServiceSettings` + 插件配置文件恢复服务实例。
   - `AddService()` / `RemoveService()`：服务实例新增删除。
-- `STranslate/Services/BaseService.cs`
+- `jietuyao-v2 内部项目/Services/BaseService.cs`
   - 统一管理服务集合、服务属性变更落盘、单启用约束、顺序变更。
-- `STranslate/ViewModels/Pages/TranslateViewModel.cs`
+- `jietuyao-v2 内部项目/ViewModels/Pages/TranslateViewModel.cs`
   - 翻译服务配置页命令，如启用项前移排序。
-- `STranslate/Core/PluginContext.cs`
+- `jietuyao-v2 内部项目/Core/PluginContext.cs`
   - 插件上下文能力注入与插件配置读写。
-- `STranslate.Plugin/Service.cs`
+- `jietuyao-v2 内部项目.Plugin/Service.cs`
   - `Initialize()` 调用 `Plugin.Init(Context)`，`Dispose()` 释放上下文与插件。
 
 ## 核心流程
@@ -78,14 +78,14 @@
 - 特殊服务 ID：`ReplaceSvcID`、`ImageTranslateSvcID`、`ImageTranslateOcrSvcID`；对应服务缺失时启动加载会自动重置。
 
 ## 关键文件
-- `STranslate/Core/PluginManager.cs`
-- `STranslate/Core/ServiceManager.cs`
-- `STranslate/Services/BaseService.cs`
-- `STranslate/ViewModels/Pages/TranslateViewModel.cs`
-- `STranslate/Core/PluginContext.cs`
-- `STranslate/Services/PluginInstance.cs`
-- `STranslate.Plugin/PluginMetaData.cs`
-- `STranslate.Plugin/Service.cs`
+- `jietuyao-v2 内部项目/Core/PluginManager.cs`
+- `jietuyao-v2 内部项目/Core/ServiceManager.cs`
+- `jietuyao-v2 内部项目/Services/BaseService.cs`
+- `jietuyao-v2 内部项目/ViewModels/Pages/TranslateViewModel.cs`
+- `jietuyao-v2 内部项目/Core/PluginContext.cs`
+- `jietuyao-v2 内部项目/Services/PluginInstance.cs`
+- `jietuyao-v2 内部项目.Plugin/PluginMetaData.cs`
+- `jietuyao-v2 内部项目.Plugin/Service.cs`
 
 ## 常见改动任务
 - 新增插件类型（例如新能力接口）：同步修改 `BaseService.OnPluginMetaDatasCollectionChanged` 与对应服务模块加载逻辑。

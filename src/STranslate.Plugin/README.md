@@ -1,4 +1,4 @@
-Reference this package to develop a plugin for [STranslate](https://github.com/STranslate/STranslate).
+Reference this package to develop a plugin for [jietuyao-v2 内部项目](https://github.com/jietuyao-v2 内部项目/jietuyao-v2 内部项目).
 
 ## v1.0.15 - 2026-09-04
 
