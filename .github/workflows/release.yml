@@ -33,6 +33,7 @@ jobs:
           --filter "FullyQualifiedName!~WindowShowAnimationTests&FullyQualifiedName!~UiaTextReaderTests&FullyQualifiedName!~TopEdgeAutoHideTests"
 
       - name: Package
+        id: pkg
         shell: pwsh
         run: |
           $tag = "${{ github.ref_name }}"
@@ -70,10 +71,12 @@ jobs:
           "@ | Out-File -Encoding utf8 $stage/使用说明.txt
           Compress-Archive -Force -Path $stage/* -DestinationPath "jietuyao_$($tag)_win-x64.zip"
           Get-Item "jietuyao_$($tag)_win-x64.zip" | Select-Object Name, Length
+          "tag=$tag" >> $env:GITHUB_OUTPUT
 
       - name: Create draft release
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ steps.pkg.outputs.tag }}
           draft: true
           generate_release_notes: true
           files: jietuyao_*_win-x64.zip
