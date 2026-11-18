@@ -335,6 +335,14 @@
                     </MenuItem>
 
                     <MenuItem
+                        Command="{Binding Source={StaticResource ViewModel}, Path=Data.ScreenshotEditorCommand}"
+                        Header="{DynamicResource Hotkey_Screenshot}"
+                        Visibility="{Binding Source={StaticResource ViewModel}, Path=Data.Settings.ShowScreenshotItemInNotifyIconMenu, Converter={cnvt:BoolToVisibilityConverter}}">
+                        <MenuItem.Icon>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Camera_20_Regular}" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem
                         Command="{Binding Source={StaticResource ViewModel}, Path=Data.ScreenshotTranslateCommand}"
                         Header="{DynamicResource Hotkey_ScreenshotTranslate}"
                         Visibility="{Binding Source={StaticResource ViewModel}, Path=Data.Settings.ShowScreenshotItemInNotifyIconMenu, Converter={cnvt:BoolToVisibilityConverter}}">

@@ -8,6 +8,8 @@ using Point = System.Windows.Point;
 using Color = System.Windows.Media.Color;
 using ColorConverter = System.Windows.Media.ColorConverter;
 using PixelFormat = System.Drawing.Imaging.PixelFormat;
+using Size = System.Windows.Size;
+using Pen = System.Windows.Media.Pen;
 
 namespace STranslate.Core;
 
@@ -25,6 +27,33 @@ public sealed class ScreenshotToolStyle
 }
 
 /// <summary>
+/// 选区输出样式（jietuyao v1 独家：圆角截图 / 描边 / 阴影 / 锁定纵横比）
+/// </summary>
+public sealed class SelectionStyleState
+{
+    /// <summary>圆角截图开关</summary>
+    public bool RoundedEnabled { get; set; }
+
+    /// <summary>圆角半径（物理像素）</summary>
+    public double RoundedRadius { get; set; } = 16;
+
+    /// <summary>描边/阴影模式：none / shadow / border</summary>
+    public string BorderMode { get; set; } = "none";
+
+    /// <summary>描边宽度 / 阴影大小</summary>
+    public double BorderSize { get; set; } = 21;
+
+    /// <summary>阴影颜色</summary>
+    public string ShadowColorHex { get; set; } = "#0078FF";
+
+    /// <summary>描边颜色</summary>
+    public string BorderColorHex { get; set; } = "#FF0000";
+
+    /// <summary>锁定纵横比（调整选区时保持比例）</summary>
+    public bool LockRatio { get; set; }
+}
+
+/// <summary>
 /// 截图编辑器会话：冻结图像、选区、标注、撤销与完成状态的唯一事实源，
 /// 由各显示器的编辑器窗口共享。
 /// </summary>
@@ -39,8 +68,8 @@ public sealed class ScreenshotEditorSession : IDisposable
     public ScreenshotEditorSession(Bitmap frozenImage, BitmapSource frozenSource, Rect virtualBounds,
         List<ScreenshotMonitor> monitors, ScreenshotWindowFinder windowFinder, ScreenshotEditOptions options)
     {
-        FrozenImage = frozenImage;
-        FrozenSource = frozenSource;
+        _frozenImage = frozenImage;
+        _frozenSource = frozenSource;
         VirtualBounds = virtualBounds;
         Monitors = monitors;
         WindowFinder = windowFinder;
@@ -49,12 +78,18 @@ public sealed class ScreenshotEditorSession : IDisposable
     }
 
     // ===== 冻结的桌面 =====
-    public Bitmap FrozenImage { get; }
-    public BitmapSource FrozenSource { get; }
+    private Bitmap _frozenImage;
+    private BitmapSource _frozenSource;
+
+    public Bitmap FrozenImage => _frozenImage;
+    public BitmapSource FrozenSource => _frozenSource;
     public Rect VirtualBounds { get; }
     public List<ScreenshotMonitor> Monitors { get; }
     public ScreenshotWindowFinder WindowFinder { get; }
     public ScreenshotEditOptions Options { get; }
+
+    /// <summary>选区输出样式（圆角/描边/阴影/锁定比例）</summary>
+    public SelectionStyleState SelectionStyle { get; internal set; } = new();
 
     // ===== 会话状态（物理像素）=====
     private Rect? _selection;
@@ -211,17 +246,26 @@ public sealed class ScreenshotEditorSession : IDisposable
     public void Cancel() => Finish(ScreenshotEditorAction.None);
 
     /// <summary>
-    /// 将选区内容导出为位图（所见即所得，RenderTargetBitmap 1:1 物理像素）
+    /// 将选区内容导出为位图（所见即所得，RenderTargetBitmap 1:1 物理像素）。
+    /// 含标注时附加选区样式效果（圆角/阴影/描边）；干净图永不加工。
     /// </summary>
     public Bitmap Flatten(Rect selection, bool withAnnotations)
     {
         var w = Math.Max(1, (int)Math.Round(selection.Width));
         var h = Math.Max(1, (int)Math.Round(selection.Height));
-        var visual = new DrawingVisual();
-        using (var dc = visual.RenderOpen())
+
+        var style = SelectionStyle;
+        var rounded = withAnnotations && style.RoundedEnabled && style.RoundedRadius > 0;
+
+        // 核心层：桌面 + 标注（可选圆角裁剪）
+        var coreVisual = new DrawingVisual();
+        using (var dc = coreVisual.RenderOpen())
         {
-            dc.DrawRectangle(new SolidColorBrush(Color.FromRgb(20, 20, 20)), null, new Rect(0, 0, w, h));
-            dc.PushClip(new RectangleGeometry(new Rect(0, 0, w, h)));
+            var clip = rounded
+                ? new RectangleGeometry(new Rect(0, 0, w, h), style.RoundedRadius, style.RoundedRadius)
+                : new RectangleGeometry(new Rect(0, 0, w, h));
+            clip.Freeze();
+            dc.PushClip(clip);
             dc.PushTransform(new TranslateTransform(-selection.X, -selection.Y));
             dc.DrawImage(FrozenSource, VirtualBounds);
             if (withAnnotations)
@@ -232,10 +276,80 @@ public sealed class ScreenshotEditorSession : IDisposable
             dc.Pop();
             dc.Pop();
         }
+        var coreRtb = RenderToRtb(coreVisual, w, h);
+
+        if (!withAnnotations || style.BorderMode == "none")
+            return RtbToGdi(coreRtb);
+
+        // 效果层：阴影 / 描边
+        try
+        {
+            var mode = style.BorderMode;
+            var size = Math.Clamp(style.BorderSize, 1, 50);
+            var pad = mode == "shadow" ? (int)Math.Ceiling(size * 0.75) : (int)Math.Ceiling(size / 2.0) + 1;
+            var totalW = w + pad * 2;
+            var totalH = h + pad * 2;
+
+            var image = new System.Windows.Controls.Image
+            {
+                Source = coreRtb,
+                Width = w,
+                Height = h,
+            };
+            if (mode == "shadow")
+            {
+                image.Effect = new System.Windows.Media.Effects.DropShadowEffect
+                {
+                    Color = (Color)ColorConverter.ConvertFromString(style.ShadowColorHex),
+                    BlurRadius = size,
+                    ShadowDepth = size / 3.0,
+                    Direction = 315,
+                    Opacity = 0.9,
+                };
+            }
+            image.Measure(new Size(w, h));
+            image.Arrange(new Rect(0, 0, w, h));
+            image.UpdateLayout();
+
+            var outer = new DrawingVisual();
+            using (var dc = outer.RenderOpen())
+            {
+                var brush = new VisualBrush(image) { Stretch = Stretch.None };
+                dc.DrawRectangle(brush, null, new Rect(pad, pad, w, h));
+
+                if (mode == "border")
+                {
+                    var borderPen = new Pen(
+                        new SolidColorBrush((Color)ColorConverter.ConvertFromString(style.BorderColorHex)), size);
+                    borderPen.Freeze();
+                    var rect = new Rect(pad, pad, w, h);
+                    var geometry = rounded
+                        ? new RectangleGeometry(rect, style.RoundedRadius, style.RoundedRadius)
+                        : new RectangleGeometry(rect);
+                    geometry.Freeze();
+                    dc.DrawGeometry(null, borderPen, geometry);
+                }
+            }
+            return RtbToGdi(RenderToRtb(outer, totalW, totalH));
+        }
+        catch
+        {
+            return RtbToGdi(coreRtb);
+        }
+    }
+
+    private static RenderTargetBitmap RenderToRtb(System.Windows.Media.Visual visual, int w, int h)
+    {
         var rtb = new RenderTargetBitmap(w, h, 96, 96, PixelFormats.Pbgra32);
         rtb.Render(visual);
         rtb.Freeze();
+        return rtb;
+    }
 
+    private static Bitmap RtbToGdi(RenderTargetBitmap rtb)
+    {
+        var w = rtb.PixelWidth;
+        var h = rtb.PixelHeight;
         var bytes = new byte[w * h * 4];
         rtb.CopyPixels(new Int32Rect(0, 0, w, h), bytes, w * 4, 0);
         var bitmap = new Bitmap(w, h, PixelFormat.Format32bppPArgb);
@@ -261,8 +375,26 @@ public sealed class ScreenshotEditorSession : IDisposable
         return FrozenImage.GetPixel(x, y);
     }
 
+    /// <summary>
+    /// 刷新背景：保持选区与标注不变，重新冻结屏幕内容（v1"刷新背景重截"）
+    /// </summary>
+    public void RefreshBackground()
+    {
+        var oldImage = _frozenImage;
+        var frozen = ScreenshotCapturer.CaptureVirtualDesktop(VirtualBounds);
+        _frozenImage = frozen;
+        _frozenSource = ScreenshotCapturer.ToBitmapSource(frozen);
+        WindowFinder.Snapshot(VirtualBounds);
+        RepaintNeeded?.Invoke();
+        // 旧位图延迟释放，避免与渲染竞态
+        _ = System.Windows.Application.Current?.Dispatcher?.BeginInvoke(() =>
+        {
+            try { oldImage.Dispose(); } catch { /* 已释放 */ }
+        }, System.Windows.Threading.DispatcherPriority.Background);
+    }
+
     public void Dispose()
     {
-        FrozenImage.Dispose();
+        _frozenImage.Dispose();
     }
 }

@@ -82,6 +82,36 @@ public partial class Settings : ObservableObject
     /// </summary>
     [ObservableProperty] public partial double PinDefaultOpacity { get; set; } = 1.0;
 
+    /// <summary>
+    /// 截图圆角半径（0=关闭，物理像素）
+    /// </summary>
+    [ObservableProperty] public partial double ScreenshotRoundedRadius { get; set; } = 16;
+
+    /// <summary>
+    /// 选区效果模式：none / shadow / border
+    /// </summary>
+    [ObservableProperty] public partial string ScreenshotBorderMode { get; set; } = "none";
+
+    /// <summary>
+    /// 描边宽度 / 阴影大小（1-50）
+    /// </summary>
+    [ObservableProperty] public partial double ScreenshotBorderSize { get; set; } = 21;
+
+    /// <summary>
+    /// 阴影颜色
+    /// </summary>
+    [ObservableProperty] public partial string ScreenshotShadowColor { get; set; } = "#0078FF";
+
+    /// <summary>
+    /// 描边颜色
+    /// </summary>
+    [ObservableProperty] public partial string ScreenshotBorderColor { get; set; } = "#FF0000";
+
+    /// <summary>
+    /// 截图时锁定纵横比
+    /// </summary>
+    [ObservableProperty] public partial bool ScreenshotLockRatio { get; set; } = false;
+
     [ObservableProperty] public partial bool HideInput { get; set; } = false;
 
     [ObservableProperty] public partial bool HideInputWithLangSelectControl { get; set; } = false;

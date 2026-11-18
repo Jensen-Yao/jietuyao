@@ -60,6 +60,16 @@ public sealed class ScreenshotEditorService(Settings settings, PinnedWindowContr
 
                 var session = new ScreenshotEditorSession(frozen, source, virtualBounds, monitors, finder, options);
                 session.ToolStyles = settings.ScreenshotToolStyles;
+                session.SelectionStyle = new SelectionStyleState
+                {
+                    RoundedEnabled = settings.ScreenshotRoundedRadius > 0,
+                    RoundedRadius = settings.ScreenshotRoundedRadius,
+                    BorderMode = settings.ScreenshotBorderMode,
+                    BorderSize = settings.ScreenshotBorderSize,
+                    ShadowColorHex = settings.ScreenshotShadowColor,
+                    BorderColorHex = settings.ScreenshotBorderColor,
+                    LockRatio = settings.ScreenshotLockRatio,
+                };
 
                 // 每个显示器一个全屏编辑窗口
                 var windows = monitors
@@ -81,6 +91,11 @@ public sealed class ScreenshotEditorService(Settings settings, PinnedWindowContr
 
                 session.Dispose();
                 settings.ScreenshotToolStyles = session.ToolStyles;
+                var style = session.SelectionStyle;
+                settings.ScreenshotRoundedRadius = style.RoundedEnabled ? style.RoundedRadius : 0;
+                settings.ScreenshotBorderMode = style.BorderMode;
+                settings.ScreenshotBorderSize = style.BorderSize;
+                settings.ScreenshotLockRatio = style.LockRatio;
 
                 // 保存/贴图属于 UI 动作，TCS 延续可能在线程池，调度回 UI 线程
                 if (result != null && result.Action is ScreenshotEditorAction.Save or ScreenshotEditorAction.Pin or ScreenshotEditorAction.Copy)

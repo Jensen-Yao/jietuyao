@@ -931,7 +931,7 @@ public sealed class AnnotationCanvas : FrameworkElement
         return SelectionHandle.None;
     }
 
-    private static Rect ResizeRect(Rect start, SelectionHandle handle, Point current)
+    private Rect ResizeRect(Rect start, SelectionHandle handle, Point current)
     {
         var flags = _flagMap.GetValueOrDefault(handle);
         var left = start.Left;
@@ -951,6 +951,20 @@ public sealed class AnnotationCanvas : FrameworkElement
             // 保持最小尺寸
             rect = new Rect(rect.Location,
                 new Size(Math.Max(MinSelectionSize, rect.Width), Math.Max(MinSelectionSize, rect.Height)));
+        }
+
+        // 锁定纵横比：宽度主导，锚定拖动侧的对侧（v1 保持纵横比）
+        if (Session.SelectionStyle.LockRatio && start.Width > MinSelectionSize && start.Height > MinSelectionSize)
+        {
+            var ratio = start.Width / start.Height;
+            var newH = Math.Max(MinSelectionSize, rect.Width / ratio);
+            var newW = newH * ratio;
+
+            var anchorX = flags.HasFlag(SelectionHandleFlag.Left) ? start.Right : start.Left;
+            var anchorY = flags.HasFlag(SelectionHandleFlag.Top) ? start.Bottom : start.Top;
+            var x = flags.HasFlag(SelectionHandleFlag.Left) ? anchorX - newW : anchorX;
+            var y = flags.HasFlag(SelectionHandleFlag.Top) ? anchorY - newH : anchorY;
+            rect = new Rect(x, y, newW, newH);
         }
         return rect;
     }

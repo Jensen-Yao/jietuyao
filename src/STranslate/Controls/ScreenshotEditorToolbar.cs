@@ -3,28 +3,29 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Shapes;
 using STranslate.Core;
-
 
 namespace STranslate.Controls;
 
 /// <summary>
-/// 截图编辑器浮动工具栏：工具行 + 动作行 + 工具样式面板
+/// 截图编辑器浮动工具栏：选区信息行 + 工具行 + 动作行 + 工具样式面板。
+/// 图标全部来自 jietuyao v1 的自有 SVG 资产（JietuyaoIcons）。
 /// </summary>
 public sealed class ScreenshotEditorToolbar : Border
 {
     private static readonly Brush ForegroundBrush = new SolidColorBrush(Color.FromRgb(235, 235, 235));
     private static readonly Brush AccentBrush = new SolidColorBrush(Color.FromRgb(0, 120, 215));
-    private static readonly Brush HoverBrush = new SolidColorBrush(Color.FromArgb(50, 255, 255, 255));
-    private static readonly Brush PanelBrush = new SolidColorBrush(Color.FromRgb(43, 43, 43));
+    private static readonly Color DimColor = Color.FromRgb(120, 120, 120);
 
     private readonly ScreenshotEditorSession _session;
     private readonly StackPanel _root;
+    private readonly StackPanel _infoRow;
     private readonly StackPanel _toolRow;
     private readonly StackPanel _actionRow;
     private readonly StackPanel _settingsPanel;
     private readonly Dictionary<ScreenshotTool, ToggleButton> _toolButtons = [];
+    private readonly Dictionary<string, ToggleButton> _infoToggles = new();
+    private Button _borderModeButton = null!;
 
     /// <summary>动作按钮点击（复制/保存/贴图/OCR/翻译/退出）</summary>
     public event Action<ScreenshotEditorAction>? ActionRequested;
@@ -41,39 +42,127 @@ public sealed class ScreenshotEditorToolbar : Border
         IsHitTestVisible = true;
 
         _root = new StackPanel { Orientation = Orientation.Vertical };
+        _infoRow = new StackPanel { Orientation = Orientation.Horizontal };
         _toolRow = new StackPanel { Orientation = Orientation.Horizontal };
         _actionRow = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(0, 6, 0, 0) };
         _settingsPanel = new StackPanel { Orientation = Orientation.Vertical, Margin = new Thickness(0, 6, 0, 0), Visibility = Visibility.Collapsed };
+        _root.Children.Add(_infoRow);
         _root.Children.Add(_toolRow);
         _root.Children.Add(_settingsPanel);
         _root.Children.Add(_actionRow);
         Child = _root;
 
+        BuildInfoRow();
         BuildToolRow();
         BuildActionRow();
         UpdateToolButtons();
+        UpdateInfoToggles();
         session.ToolChanged += () => Dispatcher.Invoke(() => { UpdateToolButtons(); RebuildSettingsPanel(); });
         session.Undo.Changed += () => Dispatcher.Invoke(UpdateUndoRedo);
+    }
+
+    // ===== 选区信息行（jietuyao v1 独家功能）=====
+    private void BuildInfoRow()
+    {
+        AddInfoToggle("rounded", "圆角截图", JietuyaoIcons.RoundedCorner,
+            () => _session.SelectionStyle.RoundedEnabled,
+            v => _session.SelectionStyle.RoundedEnabled = v);
+
+        _borderModeButton = CreateIconButton("阴影/描边（点击切换）", JietuyaoIconRenderer.Create(JietuyaoIcons.ShadowBorder, ForegroundBrush), () =>
+        {
+            var style = _session.SelectionStyle;
+            style.BorderMode = style.BorderMode switch
+            {
+                "none" => "shadow",
+                "shadow" => "border",
+                _ => "none"
+            };
+            UpdateInfoToggles();
+            RefreshSettingsPanel();
+        });
+        _infoRow.Children.Add(_borderModeButton);
+
+        AddInfoToggle("lockRatio", "锁定纵横比", JietuyaoIcons.LockRatio,
+            () => _session.SelectionStyle.LockRatio,
+            v => _session.SelectionStyle.LockRatio = v);
+
+        var refresh = CreateIconButton("刷新背景（重新截取屏幕内容）", JietuyaoIconRenderer.Create(JietuyaoIcons.RefreshBackground, ForegroundBrush), () =>
+        {
+            _session.RefreshBackground();
+        });
+        _infoRow.Children.Add(refresh);
+    }
+
+    private void AddInfoToggle(string key, string tooltip, JietuyaoIcons.IconDef icon,
+        Func<bool> getter, Action<bool> setter)
+    {
+        var button = new ToggleButton
+        {
+            Content = JietuyaoIconRenderer.Create(icon, ForegroundBrush),
+            ToolTip = tooltip,
+            Width = 32,
+            Height = 30,
+            Background = Brushes.Transparent,
+            BorderThickness = new Thickness(0),
+            Foreground = ForegroundBrush,
+        };
+        button.Click += (_, _) =>
+        {
+            setter(button.IsChecked == true);
+            UpdateInfoToggles();
+        };
+        _infoToggles[key] = button;
+        _infoRow.Children.Add(button);
+    }
+
+    private void UpdateInfoToggles()
+    {
+        var style = _session.SelectionStyle;
+        if (_infoToggles.TryGetValue("rounded", out var rounded))
+        {
+            rounded.IsChecked = style.RoundedEnabled;
+            rounded.Background = style.RoundedEnabled ? AccentBrush : Brushes.Transparent;
+        }
+        if (_infoToggles.TryGetValue("lockRatio", out var lockRatio))
+        {
+            lockRatio.IsChecked = style.LockRatio;
+            lockRatio.Background = style.LockRatio ? AccentBrush : Brushes.Transparent;
+        }
+        // 阴影/描边按钮着色：none=暗淡 shadow=蓝 border=红
+        var brush = style.BorderMode switch
+        {
+            "shadow" => new SolidColorBrush((Color)ColorConverter.ConvertFromString(style.ShadowColorHex)),
+            "border" => new SolidColorBrush((Color)ColorConverter.ConvertFromString(style.BorderColorHex)),
+            _ => new SolidColorBrush(DimColor),
+        };
+        brush.Freeze();
+        _borderModeButton.Content = JietuyaoIconRenderer.Create(JietuyaoIcons.ShadowBorder, brush);
+        _borderModeButton.ToolTip = style.BorderMode switch
+        {
+            "shadow" => "阴影效果（点击切为描边）",
+            "border" => "描边效果（点击关闭）",
+            _ => "阴影/描边（点击开启阴影）",
+        };
     }
 
     // ===== 工具行 =====
     private void BuildToolRow()
     {
-        AddToolButton(ScreenshotTool.Select, "选择/移动 (1)", CreateSelectIcon(false));
-        AddToolButton(ScreenshotTool.Pen, "画笔 (2)", CreatePenIcon());
-        AddToolButton(ScreenshotTool.Highlighter, "荧光笔 (3)", CreateHighlighterIcon());
-        AddToolButton(ScreenshotTool.Rectangle, "矩形 (4)", CreateShapeIcon(rectangle: true));
-        AddToolButton(ScreenshotTool.Ellipse, "椭圆 (5)", CreateShapeIcon(rectangle: false));
-        AddToolButton(ScreenshotTool.Arrow, "箭头 (6)", CreateArrowIcon());
-        AddToolButton(ScreenshotTool.Text, "文字 (7)", CreateGlyph("T", bold: true));
+        AddToolButton(ScreenshotTool.Select, "选择/移动 (1)", JietuyaoIconRenderer.Create(JietuyaoIcons.Select, ForegroundBrush));
+        AddToolButton(ScreenshotTool.Pen, "画笔 (2)", JietuyaoIconRenderer.Create(JietuyaoIcons.Pen, ForegroundBrush));
+        AddToolButton(ScreenshotTool.Highlighter, "荧光笔 (3)", JietuyaoIconRenderer.Create(JietuyaoIcons.Highlighter, ForegroundBrush));
+        AddToolButton(ScreenshotTool.Rectangle, "矩形 (4)", JietuyaoIconRenderer.Create(JietuyaoIcons.Rectangle, ForegroundBrush));
+        AddToolButton(ScreenshotTool.Ellipse, "椭圆 (5)", JietuyaoIconRenderer.Create(JietuyaoIcons.Ellipse, ForegroundBrush));
+        AddToolButton(ScreenshotTool.Arrow, "箭头 (6)", JietuyaoIconRenderer.Create(JietuyaoIcons.Arrow, ForegroundBrush));
+        AddToolButton(ScreenshotTool.Text, "文字 (7)", JietuyaoIconRenderer.Create(JietuyaoIcons.Text, ForegroundBrush));
         AddToolButton(ScreenshotTool.Number, "序号 (8)", CreateNumberIcon());
-        AddToolButton(ScreenshotTool.Eraser, "橡皮 (9)", CreateEraserIcon());
-        AddToolButton(ScreenshotTool.Cursor, "鼠标指针 (0)", CreateSelectIcon(true));
+        AddToolButton(ScreenshotTool.Eraser, "橡皮 (9)", JietuyaoIconRenderer.Create(JietuyaoIcons.Eraser, ForegroundBrush));
+        AddToolButton(ScreenshotTool.Cursor, "鼠标指针 (0)", JietuyaoIconRenderer.Create(JietuyaoIcons.Cursor, ForegroundBrush));
 
         _toolRow.Children.Add(CreateSeparator());
 
-        _undoButton = CreateActionButton("撤销 (Ctrl+Z)", CreateGlyph("↶", 15), () => _session.Undo.Undo());
-        _redoButton = CreateActionButton("重做 (Ctrl+Y)", CreateGlyph("↷", 15), () => _session.Undo.Redo());
+        _undoButton = CreateIconButton("撤销 (Ctrl+Z)", JietuyaoIconRenderer.Create(JietuyaoIcons.Undo, ForegroundBrush), () => _session.Undo.Undo());
+        _redoButton = CreateIconButton("重做 (Ctrl+Y)", JietuyaoIconRenderer.Create(JietuyaoIcons.Undo, ForegroundBrush, mirror: true), () => _session.Undo.Redo());
         _toolRow.Children.Add(_undoButton);
         _toolRow.Children.Add(_redoButton);
         UpdateUndoRedo();
@@ -82,16 +171,15 @@ public sealed class ScreenshotEditorToolbar : Border
 
         _settingsToggle = new ToggleButton
         {
-            Content = CreateGlyph("⚙", 14),
+            Content = JietuyaoIconRenderer.Create(JietuyaoIcons.ColorSettings, ForegroundBrush, 14),
             ToolTip = "工具样式",
             Width = 32,
             Height = 30,
             Background = Brushes.Transparent,
             BorderThickness = new Thickness(0),
             Foreground = ForegroundBrush,
-            FontSize = 14,
         };
-        _settingsToggle.Checked += (_, _) => _settingsPanel.Visibility = Visibility.Visible;
+        _settingsToggle.Checked += (_, _) => { _settingsPanel.Visibility = Visibility.Visible; RebuildSettingsPanel(); };
         _settingsToggle.Unchecked += (_, _) => _settingsPanel.Visibility = Visibility.Collapsed;
         _toolRow.Children.Add(_settingsToggle);
     }
@@ -99,6 +187,24 @@ public sealed class ScreenshotEditorToolbar : Border
     private Button? _undoButton;
     private Button? _redoButton;
     private ToggleButton? _settingsToggle;
+
+    /// <summary>序号图标：圆圈 + "1"</summary>
+    private static UIElement CreateNumberIcon()
+    {
+        var grid = new Grid();
+        grid.Children.Add(JietuyaoIconRenderer.Create(JietuyaoIcons.Number, ForegroundBrush, 16));
+        var text = new TextBlock
+        {
+            Text = "1",
+            FontSize = 9,
+            FontWeight = FontWeights.Bold,
+            Foreground = ForegroundBrush,
+            HorizontalAlignment = HorizontalAlignment.Center,
+            VerticalAlignment = VerticalAlignment.Center,
+        };
+        grid.Children.Add(text);
+        return grid;
+    }
 
     private void AddToolButton(ScreenshotTool tool, string tooltip, UIElement icon)
     {
@@ -136,8 +242,26 @@ public sealed class ScreenshotEditorToolbar : Border
         {
             button.IsChecked = _session.ActiveTool == tool;
             button.Background = button.IsChecked == true ? AccentBrush : Brushes.Transparent;
+            // 选中时图标反白（序号为复合图标，背景高亮已足够）
+            if (tool != ScreenshotTool.Number)
+                button.Content = JietuyaoIconRenderer.Create(IconForTool(tool), button.IsChecked == true ? Brushes.White : ForegroundBrush, 16);
         }
     }
+
+    private static JietuyaoIcons.IconDef IconForTool(ScreenshotTool tool) => tool switch
+    {
+        ScreenshotTool.Select => JietuyaoIcons.Select,
+        ScreenshotTool.Pen => JietuyaoIcons.Pen,
+        ScreenshotTool.Highlighter => JietuyaoIcons.Highlighter,
+        ScreenshotTool.Rectangle => JietuyaoIcons.Rectangle,
+        ScreenshotTool.Ellipse => JietuyaoIcons.Ellipse,
+        ScreenshotTool.Arrow => JietuyaoIcons.Arrow,
+        ScreenshotTool.Text => JietuyaoIcons.Text,
+        ScreenshotTool.Number => JietuyaoIcons.Number,
+        ScreenshotTool.Eraser => JietuyaoIcons.Eraser,
+        ScreenshotTool.Cursor => JietuyaoIcons.Cursor,
+        _ => JietuyaoIcons.Select,
+    };
 
     private void UpdateUndoRedo()
     {
@@ -150,13 +274,13 @@ public sealed class ScreenshotEditorToolbar : Border
     // ===== 动作行 =====
     private void BuildActionRow()
     {
-        _actionRow.Children.Add(CreateActionAccent("OCR (O)", CreateGlyph("A", 13), () => ActionRequested?.Invoke(ScreenshotEditorAction.Ocr)));
-        _actionRow.Children.Add(CreateActionAccent("翻译 (F)", CreateGlyph("文A", 12), () => ActionRequested?.Invoke(ScreenshotEditorAction.Translate)));
-        _actionRow.Children.Add(CreateActionAccent("贴图 (T)", CreatePinIcon(), () => ActionRequested?.Invoke(ScreenshotEditorAction.Pin)));
+        _actionRow.Children.Add(CreateActionButton("OCR (O)", JietuyaoIconRenderer.Create(JietuyaoIcons.Ocr, ForegroundBrush, 15), () => ActionRequested?.Invoke(ScreenshotEditorAction.Ocr)));
+        _actionRow.Children.Add(CreateActionButton("翻译 (F)", JietuyaoIconRenderer.Create(JietuyaoIcons.Translate, ForegroundBrush, 15), () => ActionRequested?.Invoke(ScreenshotEditorAction.Translate)));
+        _actionRow.Children.Add(CreateActionButton("贴图 (T)", JietuyaoIconRenderer.Create(JietuyaoIcons.Pin, ForegroundBrush, 15), () => ActionRequested?.Invoke(ScreenshotEditorAction.Pin)));
         _actionRow.Children.Add(CreateSeparator());
-        _actionRow.Children.Add(CreateActionButton("保存 (S)", CreateSaveIcon(), () => ActionRequested?.Invoke(ScreenshotEditorAction.Save)));
-        _actionRow.Children.Add(CreateActionButton("复制 (Enter/C)", CreateCopyIcon(), () => ActionRequested?.Invoke(ScreenshotEditorAction.Copy)));
-        _actionRow.Children.Add(CreateActionButton("退出 (Esc)", CreateGlyph("✕", 12), () => ActionRequested?.Invoke(ScreenshotEditorAction.None), isDanger: true));
+        _actionRow.Children.Add(CreateActionButton("保存 (S)", JietuyaoIconRenderer.Create(JietuyaoIcons.Save, ForegroundBrush, 15), () => ActionRequested?.Invoke(ScreenshotEditorAction.Save)));
+        _actionRow.Children.Add(CreateActionButton("复制 (Enter/C)", JietuyaoIconRenderer.Create(JietuyaoIcons.Copy, ForegroundBrush, 15), () => ActionRequested?.Invoke(ScreenshotEditorAction.Copy)));
+        _actionRow.Children.Add(CreateActionButton("退出 (Esc)", JietuyaoIconRenderer.Create(JietuyaoIcons.Close, ForegroundBrush, 13), () => ActionRequested?.Invoke(ScreenshotEditorAction.None)));
     }
 
     // ===== 样式面板 =====
@@ -166,7 +290,7 @@ public sealed class ScreenshotEditorToolbar : Border
         var tool = _session.ActiveTool;
         var style = _session.GetStyle(tool);
 
-        // 调色板（文字/序号以外的所有工具 + 文字/序号同样可用）
+        // 调色板
         var palette = new StackPanel { Orientation = Orientation.Horizontal };
         foreach (var hex in ScreenshotEditorSession.Palette)
         {
@@ -213,7 +337,38 @@ public sealed class ScreenshotEditorToolbar : Border
                 _settingsPanel.Children.Add(CreateSlider("橡皮大小", 8, 80, style.EraserSize, v => style.EraserSize = v, format: "F0"));
                 break;
         }
+
+        // ===== 选区效果区（v1 圆角/阴影/描边参数）=====
+        _settingsPanel.Children.Add(CreateSettingsSectionLabel("选区效果"));
+        var selectionStyle = _session.SelectionStyle;
+        var roundedToggle = CreateCheckBox("圆角截图", selectionStyle.RoundedEnabled, v =>
+        {
+            selectionStyle.RoundedEnabled = v;
+            UpdateInfoToggles();
+        });
+        _settingsPanel.Children.Add(roundedToggle);
+        _settingsPanel.Children.Add(CreateSlider("圆角半径", 0, 100, selectionStyle.RoundedRadius, v =>
+        {
+            selectionStyle.RoundedRadius = v;
+            if (v > 0) selectionStyle.RoundedEnabled = true;
+            UpdateInfoToggles();
+        }, format: "F0"));
+        _settingsPanel.Children.Add(CreateSlider("阴影/描边大小", 1, 50, selectionStyle.BorderSize, v => selectionStyle.BorderSize = v, format: "F0"));
     }
+
+    private void RefreshSettingsPanel()
+    {
+        if (_settingsPanel.Visibility == Visibility.Visible)
+            RebuildSettingsPanel();
+    }
+
+    private static UIElement CreateSettingsSectionLabel(string text) => new TextBlock
+    {
+        Text = text,
+        Foreground = new SolidColorBrush(Color.FromRgb(150, 150, 150)),
+        FontSize = 11,
+        Margin = new Thickness(2, 8, 0, 2),
+    };
 
     private static void RefreshSwatches(StackPanel palette, string activeHex)
     {
@@ -236,14 +391,14 @@ public sealed class ScreenshotEditorToolbar : Border
             Text = $"{label}: {value.ToString(format)}",
             Foreground = ForegroundBrush,
             VerticalAlignment = VerticalAlignment.Center,
-            Width = 84,
+            Width = 100,
         };
         var slider = new Slider
         {
             Minimum = min,
             Maximum = max,
             Value = value,
-            Width = 130,
+            Width = 120,
             VerticalAlignment = VerticalAlignment.Center,
             Foreground = ForegroundBrush,
             Background = new SolidColorBrush(Color.FromRgb(70, 70, 70)),
@@ -283,162 +438,7 @@ public sealed class ScreenshotEditorToolbar : Border
         VerticalAlignment = VerticalAlignment.Center,
     };
 
-    private static TextBlock CreateGlyph(string glyph, double size = 14, bool bold = false) => new()
-    {
-        Text = glyph,
-        FontSize = size,
-        FontWeight = bold ? FontWeights.Bold : FontWeights.Normal,
-        Foreground = ForegroundBrush,
-        FontFamily = new FontFamily("Segoe UI"),
-        HorizontalAlignment = HorizontalAlignment.Center,
-        VerticalAlignment = VerticalAlignment.Center,
-    };
-
-    private static UIElement CreateSelectIcon(bool filled) => new Path
-    {
-        Data = Geometry.Parse("M6 3 L6 19 L10.2 15.2 L12.8 21 L15 20 L12.4 14.4 L17.5 14 Z"),
-        Fill = filled ? Brushes.White : Brushes.Transparent,
-        Stroke = Brushes.White,
-        StrokeThickness = 1.2,
-        Width = 16,
-        Height = 16,
-        Stretch = Stretch.Uniform,
-    };
-
-    private static UIElement CreatePenIcon() => new Path
-    {
-        Data = Geometry.Parse("M4 20 L4.8 15.5 L15.5 4.8 L19.2 8.5 L8.5 19.2 Z M4.8 15.5 L8.5 19.2"),
-        Stroke = Brushes.White,
-        StrokeThickness = 1.2,
-        Fill = new SolidColorBrush(Color.FromArgb(40, 255, 255, 255)),
-        Width = 16,
-        Height = 16,
-        Stretch = Stretch.Uniform,
-    };
-
-    private static UIElement CreateHighlighterIcon() => new Path
-    {
-        Data = Geometry.Parse("M9 15 L4 20 M9 15 L12 3 L17 5 L13 15 Z M4 20 L15 20"),
-        Stroke = new SolidColorBrush(Color.FromRgb(255, 215, 0)),
-        StrokeThickness = 1.4,
-        Fill = new SolidColorBrush(Color.FromArgb(60, 255, 215, 0)),
-        Width = 16,
-        Height = 16,
-        Stretch = Stretch.Uniform,
-    };
-
-    private static UIElement CreateShapeIcon(bool rectangle)
-    {
-        if (rectangle)
-            return new Rectangle
-            {
-                Width = 14,
-                Height = 10,
-                Stroke = Brushes.White,
-                StrokeThickness = 1.4,
-                Fill = Brushes.Transparent,
-            };
-        return new Ellipse
-        {
-            Width = 13,
-            Height = 13,
-            Stroke = Brushes.White,
-            StrokeThickness = 1.4,
-            Fill = Brushes.Transparent,
-        };
-    }
-
-    private static UIElement CreateArrowIcon() => new Path
-    {
-        Data = Geometry.Parse("M5 19 L17 7 M17 7 L11 7 M17 7 L17 13"),
-        Stroke = Brushes.White,
-        StrokeThickness = 1.6,
-        Width = 16,
-        Height = 16,
-        Stretch = Stretch.Uniform,
-    };
-
-    private static UIElement CreateNumberIcon()
-    {
-        var grid = new Grid();
-        grid.Children.Add(new Ellipse
-        {
-            Width = 15,
-            Height = 15,
-            Stroke = Brushes.White,
-            StrokeThickness = 1.3,
-            Fill = Brushes.Transparent,
-        });
-        var text = CreateGlyph("1", 10, bold: true);
-        text.HorizontalAlignment = HorizontalAlignment.Center;
-        text.VerticalAlignment = VerticalAlignment.Center;
-        grid.Children.Add(text);
-        return grid;
-    }
-
-    private static UIElement CreateEraserIcon() => new Path
-    {
-        Data = Geometry.Parse("M8 18 L4 14 L12 6 L18 12 L12 18 Z M8 18 L16 18"),
-        Stroke = Brushes.White,
-        StrokeThickness = 1.2,
-        Fill = new SolidColorBrush(Color.FromArgb(40, 255, 255, 255)),
-        Width = 16,
-        Height = 16,
-        Stretch = Stretch.Uniform,
-    };
-
-    private static UIElement CreateCopyIcon()
-    {
-        var grid = new Grid();
-        var back = new Rectangle
-        {
-            Width = 12,
-            Height = 12,
-            Stroke = Brushes.White,
-            StrokeThickness = 1.2,
-            Margin = new Thickness(4, 0, 0, 0),
-            RadiusX = 2,
-            RadiusY = 2,
-        };
-        var front = new Rectangle
-        {
-            Width = 12,
-            Height = 12,
-            Stroke = Brushes.White,
-            StrokeThickness = 1.2,
-            Fill = new SolidColorBrush(Color.FromRgb(32, 32, 32)),
-            Margin = new Thickness(0, 0, 4, 0),
-            RadiusX = 2,
-            RadiusY = 2,
-        };
-        grid.Children.Add(back);
-        grid.Children.Add(front);
-        return grid;
-    }
-
-    private static UIElement CreateSaveIcon() => new Path
-    {
-        Data = Geometry.Parse("M4 4 H17 L20 7 V20 H4 Z M8 4 V9 H15 V4 M8 13 H16 V20"),
-        Stroke = Brushes.White,
-        StrokeThickness = 1.3,
-        Fill = new SolidColorBrush(Color.FromArgb(40, 255, 255, 255)),
-        Width = 15,
-        Height = 15,
-        Stretch = Stretch.Uniform,
-    };
-
-    private static UIElement CreatePinIcon() => new Path
-    {
-        Data = Geometry.Parse("M9 3 H15 V10 L17 13 H7 L9 10 Z M11 13 V18 M11 18 H13 V21 H11 Z"),
-        Stroke = Brushes.White,
-        StrokeThickness = 1.2,
-        Fill = new SolidColorBrush(Color.FromArgb(40, 255, 255, 255)),
-        Width = 14,
-        Height = 15,
-        Stretch = Stretch.Uniform,
-    };
-
-    private Button CreateActionButton(string tooltip, UIElement icon, Action action, bool isDanger = false)
+    private Button CreateIconButton(string tooltip, UIElement icon, Action action)
     {
         var button = new Button
         {
@@ -450,13 +450,11 @@ public sealed class ScreenshotEditorToolbar : Border
             BorderThickness = new Thickness(0),
             Foreground = ForegroundBrush,
         };
-        if (isDanger)
-            button.ToolTip = tooltip;
         button.Click += (_, _) => action();
         return button;
     }
 
-    private Button CreateActionAccent(string tooltip, UIElement icon, Action action)
+    private Button CreateActionButton(string tooltip, UIElement icon, Action action)
     {
         var button = new Button
         {
