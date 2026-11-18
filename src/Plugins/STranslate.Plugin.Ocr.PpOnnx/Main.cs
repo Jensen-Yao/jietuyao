@@ -359,6 +359,8 @@ public sealed class PpOcrEngine : IDisposable
     {
         var data = bitmap.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.ReadOnly, PixelFormat.Format24bppRgb);
         var tensor = new DenseTensor<float>([1, 3, height, width]);
+        // 注意：DenseTensor 单下标索引是 N 维索引而非扁平索引，必须经 Buffer 扁平写入
+        var buffer = tensor.Buffer.Span;
         try
         {
             var row = new byte[width * 3];
@@ -374,9 +376,9 @@ public sealed class PpOcrEngine : IDisposable
                     var b = row[x * 3] / 255f;
                     var g = row[x * 3 + 1] / 255f;
                     var r = row[x * 3 + 2] / 255f;
-                    tensor[rOff + x] = (r - Mean[0]) / Std[0];
-                    tensor[gOff + x] = (g - Mean[1]) / Std[1];
-                    tensor[bOff + x] = (b - Mean[2]) / Std[2];
+                    buffer[rOff + x] = (r - Mean[0]) / Std[0];
+                    buffer[gOff + x] = (g - Mean[1]) / Std[1];
+                    buffer[bOff + x] = (b - Mean[2]) / Std[2];
                 }
             }
         }

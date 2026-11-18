@@ -52,7 +52,7 @@ public static class ScreenshotOutput
     /// <summary>
     /// 构建 BITMAPV5HEADER DIB（32bpp BGRA，底-上扫描，直通 alpha）
     /// </summary>
-    private static byte[]? BuildDibV5(Bitmap bitmap)
+    internal static byte[]? BuildDibV5(Bitmap bitmap)
     {
         try
         {

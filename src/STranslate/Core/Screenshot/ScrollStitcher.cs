@@ -103,7 +103,7 @@ public static class ScrollStitcher
         var maxOverlap = Math.Min(previous.Length, currentHeight) - 2;
         var minOverlap = Math.Max(minMatch, currentHeight / 10);
         if (maxOverlap <= minOverlap)
-            return Math.Max(0, maxOverlap / 2);
+            return Math.Clamp((int)(currentHeight * 0.35), 0, Math.Max(0, maxOverlap));
 
         var bestOverlap = -1;
         var bestRun = 0;

@@ -116,13 +116,14 @@ public sealed class ClipboardHistoryStorage : IDisposable
 
     private static string ImagesRoot => Path.Combine(DataLocation.CacheDirectory, "clipboard_images");
 
-    public ClipboardHistoryStorage()
+    public ClipboardHistoryStorage(string? dbPath = null, string? imagesDirectory = null)
     {
-        Directory.CreateDirectory(DataLocation.CacheDirectory);
-        _imagesDirectory = ImagesRoot;
+        var effectiveDb = dbPath ?? DbPath;
+        Directory.CreateDirectory(Path.GetDirectoryName(effectiveDb) ?? DataLocation.CacheDirectory);
+        _imagesDirectory = imagesDirectory ?? ImagesRoot;
         Directory.CreateDirectory(_imagesDirectory);
 
-        _connection = new SqliteConnection($"Data Source={DbPath}");
+        _connection = new SqliteConnection($"Data Source={effectiveDb}");
         _connection.Open();
         using var command = _connection.CreateCommand();
         command.CommandText = """

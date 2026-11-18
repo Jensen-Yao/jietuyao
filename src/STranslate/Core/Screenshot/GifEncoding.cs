@@ -238,23 +238,15 @@ public sealed class GifFrameBuffer : IDisposable
         using var first = RenderComposited(startFrame);
         var firstClone = new Bitmap(first);
 
-        // 帧延迟 + 循环次数属性
-        var delayItem = (PropertyItem)Activator.CreateInstance(typeof(PropertyItem))!;
-        delayItem.Id = 0x5100; // PropertyTagFrameDelay
-        delayItem.Type = 4;
+        // 帧延迟 + 循环次数属性（.NET 下 PropertyItem 无公共构造，需未初始化创建）
         var delays = new int[count];
         for (var i = 0; i < count; i++)
             delays[i] = Math.Max(1, delayPerFrameCs);
         var delayBytes = new byte[delays.Length * 4];
         Buffer.BlockCopy(delays, 0, delayBytes, 0, delayBytes.Length);
-        delayItem.Value = delayBytes;
-        firstClone.SetPropertyItem(delayItem);
+        firstClone.SetPropertyItem(CreatePropertyItem(0x5100, delayBytes));
 
-        var loopItem = (PropertyItem)Activator.CreateInstance(typeof(PropertyItem))!;
-        loopItem.Id = 0x5101; // PropertyTagLoopCount
-        loopItem.Type = 4;
-        loopItem.Value = [0, 0, 0, 0]; // 无限循环
-        firstClone.SetPropertyItem(loopItem);
+        firstClone.SetPropertyItem(CreatePropertyItem(0x5101, [0, 0, 0, 0])); // 无限循环
 
         var codec = GetGifCodec() ?? throw new InvalidOperationException("GIF 编码器不可用");
 
@@ -277,29 +269,38 @@ public sealed class GifFrameBuffer : IDisposable
                 progress?.Invoke((double)(i - startFrame + 1) / count);
             }
 
-            using (var ep = new EncoderParameters(1))
-            {
-                ep.Param[0] = new EncoderParameter(System.Drawing.Imaging.Encoder.SaveFlag, (long)EncoderValue.Flush);
-                firstClone.SaveAdd(ep);
-            }
+            // 注：GDI+ 的 Flush SaveAdd 在部分流上抛“常规错误”，最后一帧 SaveAdd 后
+            // 直接释放流即可生成合法 GIF（文件尾由编码器补齐 0x3B）。
         }
         firstClone.Dispose();
     }
 
+    /// <summary>构造 GDI+ PropertyItem（.NET 无公共构造函数，走未初始化创建）</summary>
+    private static PropertyItem CreatePropertyItem(int id, byte[] value)
+    {
+        var item = (PropertyItem)System.Runtime.Serialization.FormatterServices.GetUninitializedObject(typeof(PropertyItem))!;
+        item.Id = id;
+        item.Type = 4; // LONG
+        item.Value = value;
+        return item;
+    }
+
     private static Bitmap Decode(byte[] jpeg)
     {
-        using var ms = new MemoryStream(jpeg);
-        var bitmap = new Bitmap(ms);
-        // 统一像素格式，GDI+ SaveAdd 需要一致
-        if (bitmap.PixelFormat == PixelFormat.Format24bppRgb)
-            return bitmap;
-        var converted = new Bitmap(bitmap.Width, bitmap.Height, PixelFormat.Format24bppRgb);
-        using (var g = Graphics.FromImage(converted))
+        // 注意：GDI+ Bitmap 惰性持有流引用，流提前释放会让后续 SaveAdd 抛
+        // “常规错误”。必须急切拷贝出与流解耦的独立位图。
+        Bitmap source;
+        using (var ms = new MemoryStream(jpeg))
         {
-            g.DrawImage(bitmap, 0, 0, bitmap.Width, bitmap.Height);
+            var loaded = new Bitmap(ms);
+            source = new Bitmap(loaded.Width, loaded.Height, PixelFormat.Format24bppRgb);
+            using (var g = Graphics.FromImage(source))
+            {
+                g.DrawImage(loaded, 0, 0, loaded.Width, loaded.Height);
+            }
+            loaded.Dispose();
         }
-        bitmap.Dispose();
-        return converted;
+        return source;
     }
 
     private static ImageCodecInfo? GetJpegCodec() =>
