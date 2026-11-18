@@ -1,0 +1,122 @@
+<ui:Page
+    x:Class="STranslate.Views.Pages.ScreenshotPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:ikw="http://schemas.inkore.net/lib/ui/wpf"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="http://schemas.inkore.net/lib/ui/wpf/modern"
+    xmlns:vm="clr-namespace:STranslate.ViewModels.Pages"
+    Title="Screenshot"
+    d:DataContext="{d:DesignInstance Type=vm:ScreenshotViewModel,
+                                     IsDesignTimeCreatable=False}"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+
+    <Grid>
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <ikw:SimpleStackPanel Margin="20,10,20,24" Spacing="6">
+
+                <TextBlock Style="{DynamicResource {x:Static ui:ThemeKeys.SubtitleTextBlockStyleKey}}" Text="{DynamicResource Jy_Screenshot}" />
+
+                <!-- 剪贴板历史 -->
+                <TextBlock Margin="2,14,0,2" Style="{DynamicResource {x:Static ui:ThemeKeys.SubtitleTextBlockStyleKey}}" Text="{DynamicResource Jy_ClipboardGroup}" />
+                <control:CardGroup xmlns:control="clr-namespace:STranslate.Controls">
+                    <ui:SettingsCard Description="{DynamicResource Jy_ClipboardEnabledDesc}" Header="{DynamicResource Jy_ClipboardEnabled}">
+                        <ui:SettingsCard.HeaderIcon>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.ClipboardPaste_24_Regular}" />
+                        </ui:SettingsCard.HeaderIcon>
+                        <ui:ToggleSwitch IsOn="{Binding Settings.ClipboardHistoryEnabled, Mode=TwoWay}" />
+                    </ui:SettingsCard>
+                    <ui:SettingsCard Description="{DynamicResource Jy_ClipboardLimitDesc}" Header="{DynamicResource Jy_ClipboardLimit}">
+                        <ui:SettingsCard.HeaderIcon>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.NumberRow_24_Regular}" />
+                        </ui:SettingsCard.HeaderIcon>
+                        <ui:NumberBox
+                            MinWidth="140"
+                            LargeChange="100"
+                            Maximum="100000"
+                            Minimum="0"
+                            SmallChange="50"
+                            SpinButtonPlacementMode="Compact"
+                            Value="{Binding Settings.ClipboardHistoryLimit, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    </ui:SettingsCard>
+                    <ui:SettingsCard Description="{DynamicResource Jy_ClipboardAutoPasteDesc}" Header="{DynamicResource Jy_ClipboardAutoPaste}">
+                        <ui:SettingsCard.HeaderIcon>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Keyboard_24_Regular}" />
+                        </ui:SettingsCard.HeaderIcon>
+                        <ui:ToggleSwitch IsOn="{Binding Settings.ClipboardHistoryAutoPaste, Mode=TwoWay}" />
+                    </ui:SettingsCard>
+                </control:CardGroup>
+
+                <!-- 滚动长截图 -->
+                <TextBlock Margin="2,14,0,2" Style="{DynamicResource {x:Static ui:ThemeKeys.SubtitleTextBlockStyleKey}}" Text="{DynamicResource Jy_ScrollGroup}" />
+                <control:CardGroup xmlns:control="clr-namespace:STranslate.Controls">
+                    <ui:SettingsCard Description="{DynamicResource Jy_ScrollCooldownDesc}" Header="{DynamicResource Jy_ScrollCooldown}">
+                        <ui:SettingsCard.HeaderIcon>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Timer_24_Regular}" />
+                        </ui:SettingsCard.HeaderIcon>
+                        <ui:NumberBox
+                            MinWidth="140"
+                            LargeChange="100"
+                            Maximum="2000"
+                            Minimum="120"
+                            SmallChange="20"
+                            SpinButtonPlacementMode="Compact"
+                            Value="{Binding Settings.ScrollCaptureCooldownMs, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    </ui:SettingsCard>
+                    <ui:SettingsCard Description="{DynamicResource Jy_ScrollIgnoreTopDesc}" Header="{DynamicResource Jy_ScrollIgnoreTop}">
+                        <ui:SettingsCard.HeaderIcon>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Cut_24_Regular}" />
+                        </ui:SettingsCard.HeaderIcon>
+                        <ui:NumberBox
+                            MinWidth="140"
+                            LargeChange="20"
+                            Maximum="2000"
+                            Minimum="0"
+                            SmallChange="5"
+                            SpinButtonPlacementMode="Compact"
+                            Value="{Binding Settings.ScrollIgnoreTopPx, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    </ui:SettingsCard>
+                </control:CardGroup>
+
+                <!-- 贴图 -->
+                <TextBlock Margin="2,14,0,2" Style="{DynamicResource {x:Static ui:ThemeKeys.SubtitleTextBlockStyleKey}}" Text="{DynamicResource Jy_PinGroup}" />
+                <control:CardGroup xmlns:control="clr-namespace:STranslate.Controls">
+                    <ui:SettingsCard Description="{DynamicResource Jy_PinOpacityDesc}" Header="{DynamicResource Jy_PinOpacity}">
+                        <ui:SettingsCard.HeaderIcon>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Lightbulb_24_Regular}" />
+                        </ui:SettingsCard.HeaderIcon>
+                        <Slider
+                            MinWidth="200"
+                            LargeChange="0.1"
+                            Maximum="1"
+                            Minimum="0.1"
+                            SmallChange="0.05"
+                            Value="{Binding Settings.PinDefaultOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    </ui:SettingsCard>
+                </control:CardGroup>
+
+                <!-- 编辑器效果说明 -->
+                <TextBlock Margin="2,14,0,2" Style="{DynamicResource {x:Static ui:ThemeKeys.SubtitleTextBlockStyleKey}}" Text="{DynamicResource Jy_EditorGroup}" />
+                <control:CardGroup xmlns:control="clr-namespace:STranslate.Controls">
+                    <ui:SettingsCard Description="{DynamicResource Jy_EditorEffectsDesc}" Header="{DynamicResource Jy_EditorEffects}">
+                        <ui:SettingsCard.HeaderIcon>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Edit_24_Regular}" />
+                        </ui:SettingsCard.HeaderIcon>
+                        <TextBlock
+                            MaxWidth="360"
+                            HorizontalAlignment="Right"
+                            FontSize="12"
+                            Foreground="{DynamicResource {x:Static ui:ThemeKeys.TextFillColorSecondaryBrushKey}}"
+                            Text="{DynamicResource Jy_EditorEffectsHint}"
+                            TextAlignment="Right"
+                            TextWrapping="Wrap" />
+                    </ui:SettingsCard>
+                </control:CardGroup>
+
+            </ikw:SimpleStackPanel>
+        </ScrollViewer>
+    </Grid>
+</ui:Page>

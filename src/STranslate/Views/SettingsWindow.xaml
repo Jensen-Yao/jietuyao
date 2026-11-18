@@ -127,6 +127,12 @@
                     </ui:NavigationViewItem.MenuItems>
                 </ui:NavigationViewItem>
 
+                <ui:NavigationViewItem Content="{DynamicResource Jy_Screenshot}" Tag="ScreenshotPage">
+                    <ui:NavigationViewItem.Icon>
+                        <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Camera_24_Regular}" />
+                    </ui:NavigationViewItem.Icon>
+                </ui:NavigationViewItem>
+
                 <ui:NavigationViewItem Content="{DynamicResource Standalone}" Tag="StandalonePage">
                     <ui:NavigationViewItem.Icon>
                         <ui:BitmapIcon ShowAsMonochrome="False" UriSource="/Resources/windows.png" />

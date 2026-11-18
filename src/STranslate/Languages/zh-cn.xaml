@@ -195,6 +195,26 @@
     <sys:String x:Key="Hotkey_ReplaceTranslateDescription">鼠标选中文本触发翻译并替换原文本的快捷键。</sys:String>
     <sys:String x:Key="Hotkey_ClipboardHistory">剪贴板历史</sys:String>
     <sys:String x:Key="Hotkey_ClipboardHistoryDescription">打开剪贴板历史窗口的快捷键。</sys:String>
+    <sys:String x:Key="Jy_Screenshot">截图耀</sys:String>
+    <sys:String x:Key="Jy_ClipboardGroup">剪贴板历史</sys:String>
+    <sys:String x:Key="Jy_ClipboardEnabled">启用剪贴板监听</sys:String>
+    <sys:String x:Key="Jy_ClipboardEnabledDesc">复制的内容自动进入历史（Ctrl+Alt+V 打开）</sys:String>
+    <sys:String x:Key="Jy_ClipboardLimit">历史上限</sys:String>
+    <sys:String x:Key="Jy_ClipboardLimitDesc">超出自动清理旧记录（置顶豁免），0 = 不限</sys:String>
+    <sys:String x:Key="Jy_ClipboardAutoPaste">自动粘贴</sys:String>
+    <sys:String x:Key="Jy_ClipboardAutoPasteDesc">选择条目后模拟 Ctrl+V 粘贴到当前窗口</sys:String>
+    <sys:String x:Key="Jy_ScrollGroup">滚动长截图</sys:String>
+    <sys:String x:Key="Jy_ScrollCooldown">连拍冷却（毫秒）</sys:String>
+    <sys:String x:Key="Jy_ScrollCooldownDesc">停止滚动后等待画面稳定再截取</sys:String>
+    <sys:String x:Key="Jy_ScrollIgnoreTop">顶部忽略像素</sys:String>
+    <sys:String x:Key="Jy_ScrollIgnoreTopDesc">跳过固定表头/工具栏区域（仅非首帧）</sys:String>
+    <sys:String x:Key="Jy_PinGroup">贴图</sys:String>
+    <sys:String x:Key="Jy_PinOpacity">默认不透明度</sys:String>
+    <sys:String x:Key="Jy_PinOpacityDesc">新贴图的初始不透明度（Ctrl+滚轮随时调）</sys:String>
+    <sys:String x:Key="Jy_EditorGroup">截图编辑器</sys:String>
+    <sys:String x:Key="Jy_EditorEffects">圆角 / 描边 / 阴影 / 锁定比例</sys:String>
+    <sys:String x:Key="Jy_EditorEffectsDesc">在编辑器工具栏即时调整</sys:String>
+    <sys:String x:Key="Jy_EditorEffectsHint">编辑器顶部信息行提供开关与参数面板，调整结果自动记忆，无需在此设置。</sys:String>
     <sys:String x:Key="Pin_Menu">贴图</sys:String>
     <sys:String x:Key="Pin_CenterAll">全部居中</sys:String>
     <sys:String x:Key="Pin_RestoreAll">全部还原</sys:String>

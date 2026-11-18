@@ -1,0 +1,73 @@
+name: release
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-release:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Build (Release)
+        run: dotnet build src/jietuyao.slnx -c Release
+
+      - name: Run tests
+        run: dotnet test src/Tests/STranslate.Tests/STranslate.Tests.csproj -c Release --nologo
+
+      - name: Package
+        shell: pwsh
+        run: |
+          $tag = "${{ github.ref_name }}"
+          if ([string]::IsNullOrEmpty($tag) -or $tag -eq "main") { $tag = "v0.0.0-dev.${{ github.run_number }}" }
+          $stage = "stage/jietuyao"
+          New-Item -ItemType Directory -Force -Path $stage | Out-Null
+          # 主程序 + 插件 + 语言 + 运行时
+          Copy-Item -Recurse -Force src/.artifacts/Release/* $stage/
+          # 使用说明（含离线 OCR 模型引导）
+          @"
+          jietuyao 截图耀 $tag
+          ====================
+
+          快速开始
+          --------
+          1. 解压后运行 jietuyao.exe
+          2. Alt+X 截图 / Ctrl+Alt+V 剪贴板历史 / Alt+D 划词翻译
+          3. 全部快捷键可在 设置 → 快捷键 修改
+
+          可选：本地离线 OCR
+          ------------------
+          下载 PaddleOCR 导出模型：
+            PP-OCRv6_det_small.onnx
+            PP-OCRv6_rec_small.onnx
+          放到 jietuyao.exe 同级 models\ 目录，
+          设置 → OCR → 启用 [PP-OCR (Local)]。
+
+          可选：连接 AI
+          -------------
+          设置 → 翻译 → 启用 [OpenAI]，
+          填任意 OpenAI 兼容端点（GLM / DeepSeek / Ollama / 自建）+ Key。
+
+          需 .NET 10 Desktop Runtime：
+          https://dotnet.microsoft.com/download/dotnet/10.0
+          "@ | Out-File -Encoding utf8 $stage/使用说明.txt
+          Compress-Archive -Force -Path $stage/* -DestinationPath "jietuyao_$($tag)_win-x64.zip"
+          Get-Item "jietuyao_$($tag)_win-x64.zip" | Select-Object Name, Length
+
+      - name: Create draft release
+        uses: softprops/action-gh-release@v2
+        with:
+          draft: true
+          generate_release_notes: true
+          files: jietuyao_*_win-x64.zip

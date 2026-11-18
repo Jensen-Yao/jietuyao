@@ -102,6 +102,7 @@ public partial class SettingsWindow
             nameof(TtsPage) => sp.GetRequiredService<TtsPage>(),
             nameof(VocabularyPage) => sp.GetRequiredService<VocabularyPage>(),
             nameof(StandalonePage) => sp.GetRequiredService<StandalonePage>(),
+            nameof(ScreenshotPage) => sp.GetRequiredService<ScreenshotPage>(),
             nameof(HistoryPage) => sp.GetRequiredService<HistoryPage>(),
             nameof(PluginPage) => sp.GetRequiredService<PluginPage>(),
             nameof(HotkeyPage) => sp.GetRequiredService<HotkeyPage>(),

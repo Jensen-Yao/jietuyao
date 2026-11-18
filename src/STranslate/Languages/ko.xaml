@@ -191,6 +191,26 @@
     <sys:String x:Key="Hotkey_ReplaceTranslateDescription">마우스로 선택한 텍스트를 번역하고 원본 텍스트를 치환하는 단축키입니다.</sys:String>
     <sys:String x:Key="Hotkey_ClipboardHistory">클립보드 기록</sys:String>
     <sys:String x:Key="Hotkey_ClipboardHistoryDescription">클립보드 기록 창을 여는 바로 가기 키입니다.</sys:String>
+    <sys:String x:Key="Jy_Screenshot">jietuyao</sys:String>
+    <sys:String x:Key="Jy_ClipboardGroup">Clipboard History</sys:String>
+    <sys:String x:Key="Jy_ClipboardEnabled">Enable clipboard monitor</sys:String>
+    <sys:String x:Key="Jy_ClipboardEnabledDesc">Copied content is captured automatically (Ctrl+Alt+V)</sys:String>
+    <sys:String x:Key="Jy_ClipboardLimit">History limit</sys:String>
+    <sys:String x:Key="Jy_ClipboardLimitDesc">Oldest entries are trimmed (pinned exempt), 0 = unlimited</sys:String>
+    <sys:String x:Key="Jy_ClipboardAutoPaste">Auto paste</sys:String>
+    <sys:String x:Key="Jy_ClipboardAutoPasteDesc">Simulate Ctrl+V into the active window after selecting an entry</sys:String>
+    <sys:String x:Key="Jy_ScrollGroup">Scrolling Capture</sys:String>
+    <sys:String x:Key="Jy_ScrollCooldown">Capture cooldown (ms)</sys:String>
+    <sys:String x:Key="Jy_ScrollCooldownDesc">Wait for the view to settle after scrolling stops</sys:String>
+    <sys:String x:Key="Jy_ScrollIgnoreTop">Ignore top pixels</sys:String>
+    <sys:String x:Key="Jy_ScrollIgnoreTopDesc">Skip fixed headers/toolbars (non-first frames)</sys:String>
+    <sys:String x:Key="Jy_PinGroup">Pin to Screen</sys:String>
+    <sys:String x:Key="Jy_PinOpacity">Default opacity</sys:String>
+    <sys:String x:Key="Jy_PinOpacityDesc">Initial opacity of new pins (Ctrl+Wheel to adjust anytime)</sys:String>
+    <sys:String x:Key="Jy_EditorGroup">Screenshot Editor</sys:String>
+    <sys:String x:Key="Jy_EditorEffects">Rounded / Border / Shadow / Lock ratio</sys:String>
+    <sys:String x:Key="Jy_EditorEffectsDesc">Adjust live in the editor toolbar</sys:String>
+    <sys:String x:Key="Jy_EditorEffectsHint">Toggles and parameters live on the editor info bar; changes are remembered automatically.</sys:String>
     <sys:String x:Key="Pin_Menu">고정</sys:String>
     <sys:String x:Key="Pin_CenterAll">모두 가운데</sys:String>
     <sys:String x:Key="Pin_RestoreAll">모두 복원</sys:String>
