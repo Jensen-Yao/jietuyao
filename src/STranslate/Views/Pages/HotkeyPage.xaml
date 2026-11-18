@@ -177,6 +177,17 @@
                             WindowTitle="{DynamicResource Hotkey_ScreenshotTranslate}" />
                     </ui:SettingsCard>
 
+                    <ui:SettingsCard Description="{DynamicResource Hotkey_ClipboardPinDescription}" Header="{DynamicResource Hotkey_ClipboardPin}">
+                        <ui:SettingsCard.HeaderIcon>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.ImageMultiple_24_Regular}" />
+                        </ui:SettingsCard.HeaderIcon>
+                        <control:HotkeyControl
+                            DefaultHotkey="{Binding HotkeySettings.ClipboardPinHotkey.Default}"
+                            Hotkey="{Binding HotkeySettings.ClipboardPinHotkey.Key}"
+                            IsRegistered="{Binding HotkeySettings.ClipboardPinHotkey.IsConflict}"
+                            WindowTitle="{DynamicResource Hotkey_ClipboardPin}" />
+                    </ui:SettingsCard>
+
                     <ui:SettingsCard Description="{DynamicResource Hotkey_ClipboardHistoryDescription}" Header="{DynamicResource Hotkey_ClipboardHistory}">
                         <ui:SettingsCard.HeaderIcon>
                             <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.ClipboardPaste_24_Regular}" />

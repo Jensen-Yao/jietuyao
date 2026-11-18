@@ -43,6 +43,8 @@
     <Project Path="Plugins/STranslate.Plugin.Ocr.WeChatBuiltIn/STranslate.Plugin.Ocr.WeChatBuiltIn.csproj" />
     <!-- jietuyao v2：本地 PP-OCR -->
     <Project Path="Plugins/STranslate.Plugin.Ocr.PpOnnx/STranslate.Plugin.Ocr.PpOnnx.csproj" />
+    <!-- jietuyao：Windows 系统本地 OCR（吸收自 SnipTrans） -->
+    <Project Path="Plugins/STranslate.Plugin.Ocr.WindowsOcr/STranslate.Plugin.Ocr.WindowsOcr.csproj" />
     <Project Path="Plugins/STranslate.Plugin.Ocr.Google/STranslate.Plugin.Ocr.Google.csproj" />
     <Project Path="Plugins/STranslate.Plugin.Ocr.Tencent/STranslate.Plugin.Ocr.Tencent.csproj" />
     <Project Path="Plugins/STranslate.Plugin.Ocr.Youdao/STranslate.Plugin.Ocr.Youdao.csproj" />

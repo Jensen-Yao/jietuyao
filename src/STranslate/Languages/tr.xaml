@@ -193,6 +193,8 @@
     <sys:String x:Key="Hotkey_MouseSelectionTranslationDescription">Fare seçimi anında çeviriyi etkinleştirir veya devre dışı bırakır.</sys:String>
     <sys:String x:Key="Hotkey_ReplaceTranslate">Değiştirerek Çeviri</sys:String>
     <sys:String x:Key="Hotkey_ReplaceTranslateDescription">Seçili metni çevirip orijinal metinle değiştirmek için kısayol tuşu.</sys:String>
+    <sys:String x:Key="Hotkey_ClipboardPin">Pano görselini sabitle</sys:String>
+    <sys:String x:Key="Hotkey_ClipboardPinDescription">Panodaki görseli ekrana sabitler (imleç yakınında)</sys:String>
     <sys:String x:Key="Hotkey_ClipboardHistory">Pano geçmişi</sys:String>
     <sys:String x:Key="Hotkey_ClipboardHistoryDescription">Pano geçmişi penceresini açan kısayol.</sys:String>
     <sys:String x:Key="Jy_Screenshot">jietuyao</sys:String>

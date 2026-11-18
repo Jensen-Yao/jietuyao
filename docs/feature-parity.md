@@ -71,6 +71,28 @@
 - **依赖**：SixLabors.ImageSharp 3.1.7 → 3.1.11（修复 NU1902/1903 漏洞通告）
 - i18n 深度化（编辑器工具栏/剪贴板窗口/录制工具条等代码构建文案的多语言化）列入 M11 候选
 
+## 八Ab、SnipTrans 融合记录（M11）
+
+> 背景：同作者 2026-08 同期做了两件产品——jietuyao（Python 全家桶：截图/GIF/长截图/剪贴板）
+> 与 SnipTrans（C# WPF 两天速成：ShareX 截图 + STranslate 翻译思路，主打"译图"）。
+> SnipTrans 本质是 v2 方向的首张草图；现已将其独有能力吸收进 jietuyao v2，二者合一。
+
+吸收清单（SnipTrans 独有 → v2 落点）：
+
+| SnipTrans 能力 | jietuyao v2 落点 |
+|---|---|
+| **译图**（逐行 OCR 边框 + 逐行翻译 + 背景采样自适应配色回填原图） | 截图编辑器新动作 **译图 (I)**：`ImageTranslateOverlay`（忠实移植渲染算法）+ `TranslatedImageController`（≤24 行、3 并发）+ 结果窗（复制/贴图/保存，Ctrl+C/T/S/Esc）；复用任意已启用 OCR（支持坐标者优先）与翻译插件 |
+| **Windows 本地 OCR**（Windows.Media.Ocr，零依赖零上传，词框聚行） | 新插件 **Windows OCR (Local)**（25 个内置插件）：行级 BoxPoints，语言跟随请求/系统，设置可指定 BCP-47 标签 |
+| **剪贴板图片贴屏热键** | 新全局热键 **Ctrl+Shift+3**（设置页可改/停用），托盘菜单同步，贴到光标附近；与既有热键零冲突 |
+| 原位预览+操作栏 | 不吸收：v2 编辑器内工具栏已更强（10 工具+撤销+旋转） |
+| Microsoft Edge 免密钥翻译等 5 服务 | 不吸收：v2 插件体系已覆盖（含微软内置插件） |
+| Mica/DPAPI/ShareX-Avalonia 内嵌 | 不吸收：与 v2 主题/存储/原生编辑器路线冲突，GPL 传染也需规避 |
+
+热键对照（无冲突）：SnipTrans `Ctrl+Shift+1/2`（截图/截图翻译）→ 已有 `Alt+X`/`Alt+S` 覆盖；
+`Ctrl+Shift+3`（贴剪贴板图）→ 原样引入为默认值。
+
+新增测试：`ImageTranslateOverlayTests`（译图渲染真实执行：字形/描边落墨、行外像素不变）。
+
 ## 八A、性能优化记录（M9）
 
 | 优化 | 内容 | 实测基线（已固化为回归上界） |

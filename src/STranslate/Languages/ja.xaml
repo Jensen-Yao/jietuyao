@@ -189,6 +189,8 @@
     <sys:String x:Key="Hotkey_MouseSelectionTranslationDescription">マウス選択の直接翻訳を有効または無効にします。</sys:String>
     <sys:String x:Key="Hotkey_ReplaceTranslate">置換翻訳</sys:String>
     <sys:String x:Key="Hotkey_ReplaceTranslateDescription">選択したテキストを翻訳し、元のテキストを置換するホットキー。</sys:String>
+    <sys:String x:Key="Hotkey_ClipboardPin">クリップボード画像を貼る</sys:String>
+    <sys:String x:Key="Hotkey_ClipboardPinDescription">クリップボード内の画像を画面に貼り付け（カーソル近く）</sys:String>
     <sys:String x:Key="Hotkey_ClipboardHistory">クリップボード履歴</sys:String>
     <sys:String x:Key="Hotkey_ClipboardHistoryDescription">クリップボード履歴ウィンドウを開くショートカット。</sys:String>
     <sys:String x:Key="Jy_Screenshot">jietuyao</sys:String>

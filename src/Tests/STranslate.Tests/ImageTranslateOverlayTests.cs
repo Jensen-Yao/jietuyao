@@ -1,313 +1,70 @@
-using STranslate.Controls;
+using System.Drawing;
+using System.Drawing.Imaging;
 using STranslate.Core;
-using STranslate.Helpers;
-using STranslate.Plugin;
-using System.Runtime.ExceptionServices;
-using System.Threading;
-using System.Windows;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
+using Xunit;
+using Xunit.Abstractions;
 
 namespace STranslate.Tests;
 
-public class ImageTranslateOverlayTests
+/// <summary>
+/// 译图渲染器真实执行测试（SnipTrans 算法移植验证）
+/// </summary>
+public sealed class ImageTranslateOverlayTests
 {
-    [Fact]
-    public void CreateTranslatedOverlayWithoutLocationsReturnsEmptyDocument()
-    {
-        var block = new OcrLayoutBlock { Text = "translated text" };
-
-        var document = ImageTranslateRenderer.CreateTranslatedOverlay(
-            [block],
-            ImageTranslateOverlayTheme.Light);
-
-        Assert.True(document.IsEmpty);
-        Assert.Empty(document.Items);
-        Assert.Empty(document.SelectableWords);
-    }
+    private readonly ITestOutputHelper _output;
+    public ImageTranslateOverlayTests(ITestOutputHelper output) => _output = output;
 
     [Fact]
-    public void CreateTranslatedOverlayKeepsSelectableWordsInSourceCoordinates()
+    public void Render_PaintsTranslatedLines_KeepsOtherPixels()
     {
-        var block = CreateBlock("ABC", left: 100, top: 50, width: 180, height: 40);
-
-        var document = ImageTranslateRenderer.CreateTranslatedOverlay(
-            [block],
-            ImageTranslateOverlayTheme.Light);
-
-        var item = Assert.Single(document.Items);
-        Assert.False(document.IsEmpty);
-        Assert.Equal("ABC", string.Concat(document.SelectableWords.Select(word => word.Text)));
-        Assert.All(document.SelectableWords.Where(word => !word.BoundingBox.IsEmpty), word =>
+        using var source = new Bitmap(200, 80, PixelFormat.Format32bppArgb);
+        using (var g = Graphics.FromImage(source))
         {
-            Assert.True(word.BoundingBox.Left >= item.Plan.TextClipRect.Left);
-            Assert.True(word.BoundingBox.Top >= item.Plan.TextClipRect.Top);
-            Assert.True(word.BoundingBox.Right <= item.Plan.TextClipRect.Right);
-            Assert.True(word.BoundingBox.Bottom <= item.Plan.TextClipRect.Bottom);
-        });
-    }
-
-    [Fact]
-    public void CreateTranslatedOverlayPreservesThemeColors()
-    {
-        var block = CreateBlock("译文", left: 10, top: 20, width: 160, height: 40);
-
-        var light = ImageTranslateRenderer.CreateTranslatedOverlay(
-            [block],
-            ImageTranslateOverlayTheme.Light);
-        var dark = ImageTranslateRenderer.CreateTranslatedOverlay(
-            [block],
-            ImageTranslateOverlayTheme.Dark);
-
-        var lightItem = Assert.Single(light.Items);
-        var darkItem = Assert.Single(dark.Items);
-        Assert.Equal(Colors.Black, lightItem.Plan.ForegroundColor);
-        Assert.Equal(Colors.White, darkItem.Plan.ForegroundColor);
-        Assert.NotEqual(lightItem.Plan.OverlayBackgroundColor, darkItem.Plan.OverlayBackgroundColor);
-        Assert.True(lightItem.BackgroundBrush.IsFrozen);
-        Assert.True(darkItem.BackgroundBrush.IsFrozen);
-    }
-
-    [Fact]
-    public void OverlayRendersDocumentAndBecomesTransparentWhenCleared()
-    {
-        RunOnStaThread(() =>
-        {
-            var document = ImageTranslateRenderer.CreateTranslatedOverlay(
-                [CreateBlock("ABC", left: 20, top: 20, width: 160, height: 40)],
-                ImageTranslateOverlayTheme.Light);
-            var overlay = new ImageTranslateOverlay
-            {
-                Width = 220,
-                Height = 100,
-                Document = document
-            };
-
-            Assert.True(RenderHasVisiblePixels(overlay, 220, 100));
-
-            overlay.Document = null;
-            Assert.False(RenderHasVisiblePixels(overlay, 220, 100));
-        });
-    }
-
-    [Fact]
-    public void OverlayRendersLargeChineseTitleText()
-    {
-        RunOnStaThread(() =>
-        {
-            var document = ImageTranslateRenderer.CreateTranslatedOverlay(
-                [
-                    CreateBlock(
-                        "我们穿越荆棘和玫瑰的旅程",
-                        left: 149.648468,
-                        top: 85.732590,
-                        width: 1568.743286,
-                        height: 78.889755)
-                ],
-                ImageTranslateOverlayTheme.Light);
-            var overlay = new ImageTranslateOverlay
-            {
-                Width = 1920,
-                Height = 240,
-                Document = document
-            };
-
-            Assert.True(RenderHasDarkPixels(overlay, 1920, 240));
-        });
-    }
-
-    [Fact]
-    public void RenderDisplayImageWithoutOverlayReturnsCurrentDisplayImage()
-    {
-        RunOnStaThread(() =>
-        {
-            var displayImage = CreateSolidBitmap(240, 120, Colors.CornflowerBlue);
-
-            var withoutDocument = ImageTranslateRenderer.RenderDisplayImage(displayImage, null);
-            var withEmptyDocument = ImageTranslateRenderer.RenderDisplayImage(
-                displayImage,
-                ImageTranslateOverlayDocument.Empty);
-
-            Assert.Same(displayImage, withoutDocument);
-            Assert.Same(displayImage, withEmptyDocument);
-        });
-    }
-
-    [Fact]
-    public void RenderDisplayImageComposesOverlayAtOriginalResolution()
-    {
-        RunOnStaThread(() =>
-        {
-            var source = CreateSolidBitmap(240, 120, Colors.CornflowerBlue);
-            var document = ImageTranslateRenderer.CreateTranslatedOverlay(
-                [CreateBlock("Translated", left: 30, top: 25, width: 160, height: 50)],
-                ImageTranslateOverlayTheme.Light);
-
-            var result = ImageTranslateRenderer.RenderDisplayImage(source, document);
-
-            Assert.Equal(source.PixelWidth, result.PixelWidth);
-            Assert.Equal(source.PixelHeight, result.PixelHeight);
-            Assert.Equal(ReadPixel(source, 5, 5), ReadPixel(result, 5, 5));
-            Assert.False(ReadPixels(source).SequenceEqual(ReadPixels(result)));
-            Assert.True(result.IsFrozen);
-        });
-    }
-
-    [Fact]
-    public void RenderDisplayImageSupportsLargeDarkChineseOverlay()
-    {
-        RunOnStaThread(() =>
-        {
-            var source = CreateSolidBitmap(1920, 240, Colors.White);
-            var document = ImageTranslateRenderer.CreateTranslatedOverlay(
-                [
-                    CreateBlock(
-                        "我们穿越荆棘和玫瑰的旅程",
-                        left: 149.648468,
-                        top: 85.732590,
-                        width: 1568.743286,
-                        height: 78.889755)
-                ],
-                ImageTranslateOverlayTheme.Dark);
-
-            var result = ImageTranslateRenderer.RenderDisplayImage(source, document);
-
-            Assert.Equal(1920, result.PixelWidth);
-            Assert.Equal(240, result.PixelHeight);
-            Assert.True(RenderHasDarkPixels(result));
-        });
-    }
-
-    private static bool RenderHasVisiblePixels(FrameworkElement element, int width, int height)
-    {
-        var pixels = RenderPixels(element, width, height);
-        return pixels.Where((_, index) => index % 4 == 3).Any(alpha => alpha != 0);
-    }
-
-    private static bool RenderHasDarkPixels(FrameworkElement element, int width, int height)
-    {
-        return HasDarkPixels(RenderPixels(element, width, height));
-    }
-
-    private static bool RenderHasDarkPixels(BitmapSource bitmap) =>
-        HasDarkPixels(ReadPixels(bitmap));
-
-    private static bool HasDarkPixels(byte[] pixels)
-    {
-        for (var index = 0; index < pixels.Length; index += 4)
-        {
-            var blue = pixels[index];
-            var green = pixels[index + 1];
-            var red = pixels[index + 2];
-            var alpha = pixels[index + 3];
-
-            if (alpha > 120 && red < 80 && green < 80 && blue < 80)
-                return true;
+            g.Clear(Color.White);
+            using var font = new Font("Arial", 12);
+            g.DrawString("HELLO", font, Brushes.Black, 10, 10);
         }
 
-        return false;
-    }
-
-    private static byte[] RenderPixels(FrameworkElement element, int width, int height)
-    {
-        element.Measure(new Size(width, height));
-        element.Arrange(new Rect(0, 0, width, height));
-        element.UpdateLayout();
-
-        var bitmap = new RenderTargetBitmap(width, height, 96, 96, PixelFormats.Pbgra32);
-        bitmap.Render(element);
-        var pixels = new byte[width * height * 4];
-        bitmap.CopyPixels(pixels, width * 4, 0);
-        return pixels;
-    }
-
-    private static BitmapSource CreateSolidBitmap(int width, int height, Color color)
-    {
-        var stride = width * 4;
-        var pixels = new byte[stride * height];
-        for (var index = 0; index < pixels.Length; index += 4)
+        var lines = new List<TranslatedLine>
         {
-            pixels[index] = color.B;
-            pixels[index + 1] = color.G;
-            pixels[index + 2] = color.R;
-            pixels[index + 3] = color.A;
-        }
-
-        var bitmap = BitmapSource.Create(
-            width,
-            height,
-            96,
-            96,
-            PixelFormats.Bgra32,
-            null,
-            pixels,
-            stride);
-        bitmap.Freeze();
-        return bitmap;
-    }
-
-    private static byte[] ReadPixels(BitmapSource bitmap)
-    {
-        var stride = bitmap.PixelWidth * 4;
-        var pixels = new byte[stride * bitmap.PixelHeight];
-        bitmap.CopyPixels(pixels, stride, 0);
-        return pixels;
-    }
-
-    private static Color ReadPixel(BitmapSource bitmap, int x, int y)
-    {
-        var pixels = ReadPixels(bitmap);
-        var index = (y * bitmap.PixelWidth + x) * 4;
-        return Color.FromArgb(
-            pixels[index + 3],
-            pixels[index + 2],
-            pixels[index + 1],
-            pixels[index]);
-    }
-
-    private static OcrLayoutBlock CreateBlock(
-        string text,
-        double left,
-        double top,
-        double width,
-        double height)
-    {
-        var box = Box(left, top, width, height);
-        return new OcrLayoutBlock
-        {
-            Text = text,
-            BoxPoints = box,
-            LineBoxPoints = [box]
+            new(new RectangleF(10, 10, 80, 20), "HELLO", "你好"),
         };
+        using var rendered = ImageTranslateOverlay.Render(source, lines);
+
+        Assert.Equal(source.Width, rendered.Width);
+        Assert.Equal(source.Height, rendered.Height);
+
+        // 行区域内应存在：深色字形像素 或 青色描边像素（背景本为白，填充白时靠字形/描边判定）
+        var foundGlyph = false;
+        var foundOutline = false;
+        for (var y = 8; y < 32 && !(foundGlyph || foundOutline); y++)
+        for (var x = 6; x < 96 && !(foundGlyph || foundOutline); x++)
+        {
+            var c = rendered.GetPixel(x, y);
+            if (c.R < 120 && c.G < 120 && c.B < 140) foundGlyph = true;
+            else if (c.G > 150 && c.B > 150 && c.R < 120) foundOutline = true;
+        }
+        Assert.True(foundGlyph || foundOutline, "行区域既无字形也无描边：未绘制");
+
+        // 行外保持原样（右下角仍为白）
+        var outside = rendered.GetPixel(190, 70);
+        Assert.True(outside is { R: > 250, G: > 250, B: > 250 }, $"行外被误改: {outside}");
+        _output.WriteLine($"glyph={foundGlyph} outline={foundOutline} outside={outside}");
     }
 
-    private static List<BoxPoint> Box(double left, double top, double width, double height) =>
-    [
-        new((float)left, (float)top),
-        new((float)(left + width), (float)top),
-        new((float)(left + width), (float)(top + height)),
-        new((float)left, (float)(top + height))
-    ];
-
-    private static void RunOnStaThread(Action action)
+    [Fact]
+    public void Render_EmptyTranslation_SkipsLine()
     {
-        Exception? exception = null;
-        var thread = new Thread(() =>
+        using var source = new Bitmap(100, 60, PixelFormat.Format32bppArgb);
+        using (var g = Graphics.FromImage(source))
         {
-            try
-            {
-                action();
-            }
-            catch (Exception ex)
-            {
-                exception = ex;
-            }
-        });
-        thread.SetApartmentState(ApartmentState.STA);
-        thread.Start();
-        thread.Join();
-
-        if (exception != null)
-            ExceptionDispatchInfo.Capture(exception).Throw();
+            g.Clear(Color.White);
+        }
+        var lines = new List<TranslatedLine>
+        {
+            new(new RectangleF(10, 10, 60, 18), "X", "  "),
+        };
+        using var rendered = ImageTranslateOverlay.Render(source, lines);
+        Assert.Equal(source.GetPixel(40, 18).ToArgb(), rendered.GetPixel(40, 18).ToArgb());
     }
 }

@@ -1,0 +1,4 @@
+{
+  "Name": "Windows 本地识别",
+  "Description": "系统内置 OCR（Windows.Media.Ocr），零依赖离线运行"
+}

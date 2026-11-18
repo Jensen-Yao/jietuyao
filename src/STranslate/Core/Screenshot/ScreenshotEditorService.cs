@@ -180,7 +180,7 @@ public sealed class ScreenshotEditorService(Settings settings, PinnedWindowContr
     {
         if (result == null)
             return;
-        if (result.Action is not (ScreenshotEditorAction.Save or ScreenshotEditorAction.Pin or ScreenshotEditorAction.Copy or ScreenshotEditorAction.LongScreenshot or ScreenshotEditorAction.GifRecord))
+        if (result.Action is not (ScreenshotEditorAction.Save or ScreenshotEditorAction.Pin or ScreenshotEditorAction.Copy or ScreenshotEditorAction.LongScreenshot or ScreenshotEditorAction.GifRecord or ScreenshotEditorAction.ImageOverlay))
             return;
 
         await App.Current.Dispatcher.InvokeAsync(() =>
@@ -210,8 +210,42 @@ public sealed class ScreenshotEditorService(Settings settings, PinnedWindowContr
                 case ScreenshotEditorAction.GifRecord:
                     GifRecorderController.Instance.Begin(result.PhysicalBounds);
                     break;
+                case ScreenshotEditorAction.ImageOverlay:
+                {
+                    // 译图：干净图（无标注）→ OCR → 逐行翻译 → 回填渲染 → 结果窗
+                    var clean = result.TakeClean();
+                    _ = RunImageOverlayAsync(clean);
+                    break;
+                }
             }
         });
+    }
+
+    private static async Task RunImageOverlayAsync(System.Drawing.Bitmap clean)
+    {
+        try
+        {
+            var outcome = await TranslatedImageController.CreateAsync(clean);
+            clean.Dispose();
+            if (outcome.Image is { } image)
+            {
+                var window = new Views.TranslatedImageWindow(image, outcome.Info);
+                window.Closed += (_, _) => image.Dispose();
+                window.Show();
+                window.Activate();
+            }
+            else
+            {
+                System.Windows.MessageBox.Show(outcome.Error, "jietuyao 译图",
+                    System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
+            }
+        }
+        catch (Exception ex)
+        {
+            clean.Dispose();
+            System.Windows.MessageBox.Show($"译图失败：{ex.Message}", "jietuyao 译图",
+                System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Warning);
+        }
     }
 }
 

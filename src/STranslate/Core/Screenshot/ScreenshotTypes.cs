@@ -71,6 +71,9 @@ public enum ScreenshotEditorAction
     /// <summary>GIF 录屏</summary>
     GifRecord,
 
+    /// <summary>译图（OCR+翻译回填原图，吸收自 SnipTrans）</summary>
+    ImageOverlay,
+
     /// <summary>直接关闭（已保存等场景）</summary>
     Close,
 }

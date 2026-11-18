@@ -1274,6 +1274,39 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
     }
 
     /// <summary>
+    /// 剪贴板图片贴屏（Ctrl+Shift+3，吸收自 SnipTrans）：读剪贴板图片贴到光标附近
+    /// </summary>
+    [RelayCommand]
+    private void PinClipboardImage()
+    {
+        if (!Clipboard.ContainsImage())
+            return;
+        try
+        {
+            var source = Clipboard.GetImage();
+            if (source == null)
+                return;
+            var bitmap = Core.ScreenshotCapturer.ToGdiBitmap(source);
+            var scale = System.Windows.PresentationSource.FromVisual(Application.Current.MainWindow)
+                ?.CompositionTarget?.TransformToDevice.M11 ?? 1.0;
+            if (Windows.Win32.PInvoke.GetCursorPos(out var cursor))
+            {
+                var x = Math.Clamp(cursor.X - bitmap.Width / 2, 0, Math.Max(0, (int)(SystemParameters.VirtualScreenWidth * scale) - bitmap.Width));
+                var y = Math.Clamp(cursor.Y + 16, 0, Math.Max(0, (int)(SystemParameters.VirtualScreenHeight * scale) - bitmap.Height));
+                Core.PinImageManager.Instance.Pin(bitmap, new System.Windows.Rect(x, y, bitmap.Width, bitmap.Height), 1.0);
+            }
+            else
+            {
+                Core.PinImageManager.Instance.Pin(bitmap, new System.Windows.Rect(120, 120, bitmap.Width, bitmap.Height), 1.0);
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogDebug(ex, "剪贴板贴屏失败");
+        }
+    }
+
+    /// <summary>
     /// jietuyao 截图编辑器（独立入口，热键 Alt+X）。
     /// 复制/保存/贴图已在编辑器服务内完成，这里只路由 OCR/翻译。
     /// </summary>

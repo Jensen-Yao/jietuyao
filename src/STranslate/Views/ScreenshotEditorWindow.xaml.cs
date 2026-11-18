@@ -175,6 +175,14 @@ public sealed partial class ScreenshotEditorWindow : Window
                 }
                 break;
 
+            case Key.I:
+                if (_session.Selection != null)
+                {
+                    _session.Finish(ScreenshotEditorAction.ImageOverlay);
+                    e.Handled = true;
+                }
+                break;
+
             case Key.O:
                 if (_session.Selection != null)
                 {

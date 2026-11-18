@@ -1,0 +1,4 @@
+{
+  "Name": "Windows OCR (Local)",
+  "Description": "Built-in system OCR (Windows.Media.Ocr), zero-dependency offline"
+}

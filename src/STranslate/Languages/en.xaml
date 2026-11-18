@@ -193,6 +193,8 @@
     <sys:String x:Key="Hotkey_MouseSelectionTranslationDescription">Enable or disable immediate mouse selection translation.</sys:String>
     <sys:String x:Key="Hotkey_ReplaceTranslate">Replace Translation</sys:String>
     <sys:String x:Key="Hotkey_ReplaceTranslateDescription">Shortcut key to translate the selected text and replace the original text.</sys:String>
+    <sys:String x:Key="Hotkey_ClipboardPin">Pin clipboard image</sys:String>
+    <sys:String x:Key="Hotkey_ClipboardPinDescription">Pin the image in your clipboard to the screen (near cursor)</sys:String>
     <sys:String x:Key="Hotkey_ClipboardHistory">Clipboard History</sys:String>
     <sys:String x:Key="Hotkey_ClipboardHistoryDescription">Hotkey to open the clipboard history window.</sys:String>
     <sys:String x:Key="Jy_Screenshot">jietuyao</sys:String>

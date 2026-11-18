@@ -193,6 +193,8 @@
     <sys:String x:Key="Hotkey_MouseSelectionTranslationDescription">开启或关闭鼠标划词直接翻译。</sys:String>
     <sys:String x:Key="Hotkey_ReplaceTranslate">替换翻译</sys:String>
     <sys:String x:Key="Hotkey_ReplaceTranslateDescription">鼠标选中文本触发翻译并替换原文本的快捷键。</sys:String>
+    <sys:String x:Key="Hotkey_ClipboardPin">贴出剪贴板图片</sys:String>
+    <sys:String x:Key="Hotkey_ClipboardPinDescription">把剪贴板中的图片贴到屏幕（光标附近）</sys:String>
     <sys:String x:Key="Hotkey_ClipboardHistory">剪贴板历史</sys:String>
     <sys:String x:Key="Hotkey_ClipboardHistoryDescription">打开剪贴板历史窗口的快捷键。</sys:String>
     <sys:String x:Key="Jy_Screenshot">截图耀</sys:String>

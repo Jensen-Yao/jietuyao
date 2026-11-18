@@ -43,6 +43,7 @@ public partial class HotkeySettings : ObservableObject, IDisposable
     public GlobalHotkey OcrHotkey { get; set; } = new("Alt + Shift + S");
     public GlobalHotkey ClipboardMonitorHotkey { get; set; } = new(Constant.EmptyHotkey);
     public GlobalHotkey ClipboardHistoryHotkey { get; set; } = new("Ctrl + Alt + V");
+    public GlobalHotkey ClipboardPinHotkey { get; set; } = new("Ctrl + Shift + 3");
 
     #region Software Hotkeys - MainWindow
 
@@ -96,6 +97,7 @@ public partial class HotkeySettings : ObservableObject, IDisposable
         CreateGlobalHotkeyData(OcrHotkey.Key, "Hotkey_Ocr", () => OcrHotkey.Key = Constant.EmptyHotkey),
         CreateGlobalHotkeyData(ClipboardMonitorHotkey.Key, "Hotkey_ClipboardMonitor", () => ClipboardMonitorHotkey.Key = Constant.EmptyHotkey),
         CreateGlobalHotkeyData(ClipboardHistoryHotkey.Key, "Hotkey_ClipboardHistory", () => ClipboardHistoryHotkey.Key = Constant.EmptyHotkey),
+        CreateGlobalHotkeyData(ClipboardPinHotkey.Key, "Hotkey_ClipboardPin", () => ClipboardPinHotkey.Key = Constant.EmptyHotkey),
 
         // MainWindow
         new RegisteredHotkeyData(OpenSettingsHotkey.Key, "Hotkey_OpenSettings", HotkeyType.MainWindow, () => OpenSettingsHotkey.Key = Constant.EmptyHotkey),
@@ -207,6 +209,7 @@ public partial class HotkeySettings : ObservableObject, IDisposable
             [nameof(OcrHotkey)] = "Alt + Shift + S",
             [nameof(ClipboardMonitorHotkey)] = "Alt + Shift + A",
             [nameof(ClipboardHistoryHotkey)] = "Ctrl + Alt + V",
+            [nameof(ClipboardPinHotkey)] = "Ctrl + Shift + 3",
             // Software Hotkeys - MainWindow
             [nameof(OpenSettingsHotkey)] = "Ctrl + OemComma",
             [nameof(OpenHistoryHotkey)] = "Ctrl + OemQuestion",
@@ -382,6 +385,7 @@ public partial class HotkeySettings : ObservableObject, IDisposable
         HandleGlobalLogic(nameof(OcrHotkey), retryOnConflict: true);
         HandleGlobalLogic(nameof(ClipboardMonitorHotkey), retryOnConflict: true);
         HandleGlobalLogic(nameof(ClipboardHistoryHotkey), retryOnConflict: true);
+        HandleGlobalLogic(nameof(ClipboardPinHotkey), retryOnConflict: true);
     }
 
     private void UnregisterHotkeys()
@@ -399,6 +403,7 @@ public partial class HotkeySettings : ObservableObject, IDisposable
         HotkeyMapper.RemoveHotkey(OcrHotkey.Key);
         HotkeyMapper.RemoveHotkey(ClipboardMonitorHotkey.Key);
         HotkeyMapper.RemoveHotkey(ClipboardHistoryHotkey.Key);
+        HotkeyMapper.RemoveHotkey(ClipboardPinHotkey.Key);
     }
 
     private void HandleGlobalLogic(string? propertyName, bool retryOnConflict = false)
@@ -479,6 +484,9 @@ public partial class HotkeySettings : ObservableObject, IDisposable
             case nameof(ClipboardHistoryHotkey):
                 RegisterHotkey(ClipboardHistoryHotkey, WithFullscreenCheck(() => MainWindowViewModel.ToggleClipboardHistoryCommand.Execute(null)), retryOnConflict);
                 break;
+            case nameof(ClipboardPinHotkey):
+                RegisterHotkey(ClipboardPinHotkey, WithFullscreenCheck(() => MainWindowViewModel.PinClipboardImageCommand.Execute(null)), retryOnConflict);
+                break;
 
         }
     }
@@ -542,6 +550,7 @@ public partial class HotkeySettings : ObservableObject, IDisposable
             case nameof(OcrHotkey): OcrHotkey.IsConflict = isConflict; break;
             case nameof(ClipboardMonitorHotkey): ClipboardMonitorHotkey.IsConflict = isConflict; break;
             case nameof(ClipboardHistoryHotkey): ClipboardHistoryHotkey.IsConflict = isConflict; break;
+            case nameof(ClipboardPinHotkey): ClipboardPinHotkey.IsConflict = isConflict; break;
         }
     }
 

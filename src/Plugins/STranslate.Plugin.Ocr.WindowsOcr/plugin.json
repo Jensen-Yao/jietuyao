@@ -1,0 +1,10 @@
+{
+  "PluginID": "b7e2c5f01a9d4e38b6c4d2e7f5a81093",
+  "Name": "Windows OCR (Local)",
+  "Description": "Zero-dependency local OCR via Windows.Media.Ocr (absorbed from SnipTrans)",
+  "Author": "Jensen-Yao",
+  "Version": "1.0.0",
+  "Website": "https://github.com/Jensen-Yao/jietuyao",
+  "ExecuteFileName": "STranslate.Plugin.Ocr.WindowsOcr.dll",
+  "IconPath": "icon.png"
+}
