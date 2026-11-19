@@ -17,7 +17,11 @@ public static class TranslatedImageController
     private const int MaxLines = 24;
     private const int Concurrency = 3;
 
-    public sealed record Result(Bitmap? Image, string Info, string Error);
+    public sealed record Result(Bitmap? Image, string Info, string Error)
+    {
+        public List<TranslatedLine> Lines { get; init; } = [];
+        public LangEnum Target { get; init; } = LangEnum.Auto;
+    }
 
     public static Task<Result> CreateAsync(Bitmap cleanImage) =>
         CreateAsync(cleanImage, ParseTarget(Ioc.Default.GetService<Settings>()?.ImageOverlayTargetLang));
@@ -51,20 +55,60 @@ public static class TranslatedImageController
             return new Result(null, string.Empty, "未识别到文本行");
 
         var capped = lines.Take(MaxLines).ToList();
-
-        // 目标语启发：原文 ASCII 为主 → 中；否则 → 英
         var target = targetOverride ?? InferTarget(string.Concat(capped.Take(6).Select(l => l.text)));
+        var translations = await TranslateLinesAsync(translator, capped.Select(l => l.text).ToList(), target);
+        var translated = capped.Select((l, i) => new TranslatedLine(l.bounds, l.text, translations[i])).ToList();
+        var output = ImageTranslateOverlay.Render(cleanImage, translated);
+        var info = $"{ocrSvc.DisplayName} → {traSvc.DisplayName} → {Describe(target)} | {capped.Count} 行";
+        return new Result(output, info, string.Empty) { Lines = translated, Target = target };
+    }
 
-        // 逐行并发翻译
-        var translations = new string[capped.Count];
+    /// <summary>工作台"重新生成"：用已有 OCR 行集按新目标语重翻译并重渲染（不重复识别）</summary>
+    public static async Task<Result> RenderWithTargetAsync(
+        System.Drawing.Bitmap original, IReadOnlyList<TranslatedLine> lines, LangEnum target)
+    {
+        var translateService = Ioc.Default.GetService<TranslateService>();
+        var traSvc = translateService?.Services.FirstOrDefault(s => s.IsEnabled);
+        if (traSvc?.Plugin is not ITranslatePlugin translator)
+            return new Result(null, string.Empty, "未启用翻译服务");
+
+        var capped = lines.Take(MaxLines).ToList();
+        var translations = await TranslateLinesAsync(translator, capped.Select(l => l.Original).ToList(), target);
+        var translated = capped.Select((l, i) => new TranslatedLine(l.Bounds, l.Original, translations[i])).ToList();
+        var output = ImageTranslateOverlay.Render(original, translated);
+        var info = $"{traSvc.DisplayName} → {Describe(target)} | {capped.Count} 行";
+        return new Result(output, info, string.Empty) { Lines = translated, Target = target };
+    }
+
+    /// <summary>纯文本翻译（工作台"翻译文本框内容"，吸收自 SnipTrans）</summary>
+    public static async Task<string> TranslateTextAsync(string text, LangEnum target)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+            return string.Empty;
+        var translateService = Ioc.Default.GetService<TranslateService>();
+        if (translateService?.Services.FirstOrDefault(s => s.IsEnabled)?.Plugin is not ITranslatePlugin translator)
+            return string.Empty;
+        var result = new TranslateResult();
+        await translator.TranslateAsync(new TranslateRequest(text, LangEnum.Auto, target), result);
+        return result.IsSuccess ? result.Text : string.Empty;
+    }
+
+    private static async Task<string[]> TranslateLinesAsync(ITranslatePlugin translator, IReadOnlyList<string> sources, LangEnum target)
+    {
+        var translations = new string[sources.Count];
         using var semaphore = new SemaphoreSlim(Concurrency);
-        var tasks = capped.Select(async (line, i) =>
+        var tasks = sources.Select(async (text, i) =>
         {
             await semaphore.WaitAsync();
             try
             {
+                if (string.IsNullOrWhiteSpace(text))
+                {
+                    translations[i] = string.Empty;
+                    return;
+                }
                 var result = new TranslateResult();
-                await translator.TranslateAsync(new TranslateRequest(line.text, LangEnum.Auto, target), result);
+                await translator.TranslateAsync(new TranslateRequest(text, LangEnum.Auto, target), result);
                 translations[i] = result.IsSuccess ? result.Text : string.Empty;
             }
             catch
@@ -77,12 +121,7 @@ public static class TranslatedImageController
             }
         });
         await Task.WhenAll(tasks);
-
-        // 渲染
-        var translated = capped.Select((l, i) => new TranslatedLine(l.bounds, l.text, translations[i])).ToList();
-        var output = ImageTranslateOverlay.Render(cleanImage, translated);
-        var info = $"{ocrSvc.DisplayName} → {traSvc.DisplayName} → {Describe(target)} | {capped.Count} 行";
-        return new Result(output, info, string.Empty);
+        return translations;
     }
 
     private static List<(RectangleF bounds, string text)> CollectLines(OcrResult result)

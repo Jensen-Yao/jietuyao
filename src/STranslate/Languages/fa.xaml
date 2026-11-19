@@ -216,6 +216,12 @@
     <sys:String x:Key="Jy_PinGroup">Pin to Screen</sys:String>
     <sys:String x:Key="Jy_PinOpacity">Default opacity</sys:String>
     <sys:String x:Key="Jy_PinOpacityDesc">Initial opacity of new pins (Ctrl+Wheel to adjust anytime)</sys:String>
+    <sys:String x:Key="Jy_IncludeCursor">شامل نشانگر در اسکرین‌شات</sys:String>
+    <sys:String x:Key="Jy_IncludeCursorDesc">نشانگر فعلی را در قاب می‌کشد</sys:String>
+    <sys:String x:Key="Jy_AutoCopyText">کپی خودکار ترجمه</sys:String>
+    <sys:String x:Key="Jy_AutoCopyTextDesc">بعد از تولید، ترجمه کپی شود</sys:String>
+    <sys:String x:Key="Jy_AutoPin">سنجاق خودکار</sys:String>
+    <sys:String x:Key="Jy_AutoPinDesc">بعد از تولید در جای اصلی سنجاق شود</sys:String>
     <sys:String x:Key="Jy_SmartGroup">جزئیات هوشمند</sys:String>
     <sys:String x:Key="Jy_RememberTool">به‌یادسپاری آخرین ابزار</sys:String>
     <sys:String x:Key="Jy_RememberToolDesc">اسکرین‌شوت بعدی با آخرین ابزار باز می‌شود</sys:String>

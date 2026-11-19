@@ -215,6 +215,12 @@
     <sys:String x:Key="Jy_PinGroup">Pin to Screen</sys:String>
     <sys:String x:Key="Jy_PinOpacity">Default opacity</sys:String>
     <sys:String x:Key="Jy_PinOpacityDesc">Initial opacity of new pins (Ctrl+Wheel to adjust anytime)</sys:String>
+    <sys:String x:Key="Jy_IncludeCursor">Включати курсор у знімок</sys:String>
+    <sys:String x:Key="Jy_IncludeCursorDesc">Малює поточний курсор у кадрі</sys:String>
+    <sys:String x:Key="Jy_AutoCopyText">Автокопія перекладу</sys:String>
+    <sys:String x:Key="Jy_AutoCopyTextDesc">Копіювати переклад після генерації</sys:String>
+    <sys:String x:Key="Jy_AutoPin">Автозакріплення</sys:String>
+    <sys:String x:Key="Jy_AutoPinDesc">Закріплювати на вихідній позиції</sys:String>
     <sys:String x:Key="Jy_SmartGroup">Розумні деталі</sys:String>
     <sys:String x:Key="Jy_RememberTool">Пам'ятати інструмент</sys:String>
     <sys:String x:Key="Jy_RememberToolDesc">Наступний знімок відкривається минулим інструментом</sys:String>

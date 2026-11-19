@@ -215,6 +215,12 @@
     <sys:String x:Key="Jy_PinGroup">Pin to Screen</sys:String>
     <sys:String x:Key="Jy_PinOpacity">Default opacity</sys:String>
     <sys:String x:Key="Jy_PinOpacityDesc">Initial opacity of new pins (Ctrl+Wheel to adjust anytime)</sys:String>
+    <sys:String x:Key="Jy_IncludeCursor">Включать курсор в скриншот</sys:String>
+    <sys:String x:Key="Jy_IncludeCursorDesc">Рисует текущий курсор в кадр</sys:String>
+    <sys:String x:Key="Jy_AutoCopyText">Автокопия перевода</sys:String>
+    <sys:String x:Key="Jy_AutoCopyTextDesc">Копировать весь перевод после генерации</sys:String>
+    <sys:String x:Key="Jy_AutoPin">Автозакрепление перевода</sys:String>
+    <sys:String x:Key="Jy_AutoPinDesc">Закреплять у исходной позиции</sys:String>
     <sys:String x:Key="Jy_SmartGroup">Умные детали</sys:String>
     <sys:String x:Key="Jy_RememberTool">Запоминать инструмент</sys:String>
     <sys:String x:Key="Jy_RememberToolDesc">Следующий скриншот открывается прошлым инструментом</sys:String>

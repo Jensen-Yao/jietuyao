@@ -101,6 +101,12 @@
                 <!-- 编辑器效果说明 -->
                 <TextBlock Margin="2,14,0,2" Style="{DynamicResource {x:Static ui:ThemeKeys.SubtitleTextBlockStyleKey}}" Text="{DynamicResource Jy_SmartGroup}" />
                 <control:CardGroup xmlns:control="clr-namespace:STranslate.Controls">
+                    <ui:SettingsCard Description="{DynamicResource Jy_IncludeCursorDesc}" Header="{DynamicResource Jy_IncludeCursor}">
+                        <ui:SettingsCard.HeaderIcon>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Cursor_24_Regular}" />
+                        </ui:SettingsCard.HeaderIcon>
+                        <ui:ToggleSwitch IsOn="{Binding Settings.CaptureIncludeCursor, Mode=TwoWay}" />
+                    </ui:SettingsCard>
                     <ui:SettingsCard Description="{DynamicResource Jy_RememberToolDesc}" Header="{DynamicResource Jy_RememberTool}">
                         <ui:SettingsCard.HeaderIcon>
                             <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.History_24_Regular}" />
@@ -130,6 +136,18 @@
                             DisplayMemberPath="Key"
                             SelectedValuePath="Value"
                             SelectedValue="{Binding Settings.ImageOverlayTargetLang, Mode=TwoWay}" />
+                    </ui:SettingsCard>
+                <ui:SettingsCard Description="{DynamicResource Jy_AutoCopyTextDesc}" Header="{DynamicResource Jy_AutoCopyText}">
+                        <ui:SettingsCard.HeaderIcon>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Copy_24_Regular}" />
+                        </ui:SettingsCard.HeaderIcon>
+                        <ui:ToggleSwitch IsOn="{Binding Settings.ImageOverlayAutoCopyText, Mode=TwoWay}" />
+                    </ui:SettingsCard>
+                    <ui:SettingsCard Description="{DynamicResource Jy_AutoPinDesc}" Header="{DynamicResource Jy_AutoPin}">
+                        <ui:SettingsCard.HeaderIcon>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Pin_24_Regular}" />
+                        </ui:SettingsCard.HeaderIcon>
+                        <ui:ToggleSwitch IsOn="{Binding Settings.ImageOverlayAutoPin, Mode=TwoWay}" />
                     </ui:SettingsCard>
                 </control:CardGroup>
 

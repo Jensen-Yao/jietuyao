@@ -215,6 +215,12 @@
     <sys:String x:Key="Jy_PinGroup">Pin to Screen</sys:String>
     <sys:String x:Key="Jy_PinOpacity">Default opacity</sys:String>
     <sys:String x:Key="Jy_PinOpacityDesc">Initial opacity of new pins (Ctrl+Wheel to adjust anytime)</sys:String>
+    <sys:String x:Key="Jy_IncludeCursor">截圖包含滑鼠指標</sys:String>
+    <sys:String x:Key="Jy_IncludeCursorDesc">凍結畫面時把目前滑鼠指標畫入截圖</sys:String>
+    <sys:String x:Key="Jy_AutoCopyText">譯圖後自動複製譯文</sys:String>
+    <sys:String x:Key="Jy_AutoCopyTextDesc">產生譯圖後自動複製全部譯文</sys:String>
+    <sys:String x:Key="Jy_AutoPin">譯圖後自動貼譯圖</sys:String>
+    <sys:String x:Key="Jy_AutoPinDesc">產生譯圖後自動貼到原截圖位置</sys:String>
     <sys:String x:Key="Jy_SmartGroup">靈動細節</sys:String>
     <sys:String x:Key="Jy_RememberTool">記住上次工具</sys:String>
     <sys:String x:Key="Jy_RememberToolDesc">下次截圖直接進入上次使用的標註工具</sys:String>

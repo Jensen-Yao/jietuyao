@@ -49,7 +49,7 @@ public static class ScreenshotCapturer
     /// <summary>
     /// 冻结整个虚拟桌面为一张位图（Format32bppPArgb，物理像素）
     /// </summary>
-    public static Bitmap CaptureVirtualDesktop(Rect virtualBounds)
+    public static Bitmap CaptureVirtualDesktop(Rect virtualBounds, bool includeCursor = false)
     {
         var width = (int)virtualBounds.Width;
         var height = (int)virtualBounds.Height;
@@ -66,7 +66,90 @@ public static class ScreenshotCapturer
             graphics.CopyFromScreen((int)b.Left, (int)b.Top, (int)(b.Left - virtualBounds.Left), (int)(b.Top - virtualBounds.Top),
                 new Size(w, h), CopyPixelOperation.SourceCopy);
         }
+        if (includeCursor)
+            DrawMouseCursor(graphics, virtualBounds);
         return bitmap;
+    }
+
+    /// <summary>把当前鼠标指针（含热点偏移）画入截图（吸收自 SnipTrans CaptureService）</summary>
+    private static void DrawMouseCursor(Graphics graphics, Rect virtualBounds)
+    {
+        try
+        {
+            var info = new NativeCursor.CURSORINFO { cbSize = System.Runtime.InteropServices.Marshal.SizeOf<NativeCursor.CURSORINFO>() };
+            if (!NativeCursor.GetCursorInfo(ref info) || info.flags != NativeCursor.CURSOR_SHOWING || info.hCursor == 0)
+                return;
+
+            var iconInfo = default(NativeCursor.ICONINFO);
+            if (!NativeCursor.GetIconInfo(info.hCursor, ref iconInfo))
+                return;
+
+            var x = info.ptScreenPos.X - iconInfo.xHotspot - (int)virtualBounds.Left;
+            var y = info.ptScreenPos.Y - iconInfo.yHotspot - (int)virtualBounds.Top;
+            var hdc = graphics.GetHdc();
+            try
+            {
+                NativeCursor.DrawIconEx(hdc, x, y, info.hCursor, 0, 0, 0, 0, 0x3);
+            }
+            finally
+            {
+                graphics.ReleaseHdc();
+            }
+            if (iconInfo.hbmMask != 0) NativeCursor.DeleteObject(iconInfo.hbmMask);
+            if (iconInfo.hbmColor != 0) NativeCursor.DeleteObject(iconInfo.hbmColor);
+        }
+        catch
+        {
+            // 指针绘制失败不影响截图本体
+        }
+    }
+
+    /// <summary>指针绘制专用友好签名（规避 CsWin32 原始指针形状）</summary>
+    private static class NativeCursor
+    {
+        public const int CURSOR_SHOWING = 1;
+
+        [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
+        public struct POINT
+        {
+            public int X;
+            public int Y;
+        }
+
+        [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
+        public struct CURSORINFO
+        {
+            public int cbSize;
+            public int flags;
+            public nint hCursor;
+            public POINT ptScreenPos;
+        }
+
+        [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
+        public struct ICONINFO
+        {
+            public bool fIcon;
+            public int xHotspot;
+            public int yHotspot;
+            public nint hbmMask;
+            public nint hbmColor;
+        }
+
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        [return: System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.Bool)]
+        public static extern bool GetCursorInfo(ref CURSORINFO pci);
+
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        [return: System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.Bool)]
+        public static extern bool GetIconInfo(nint hIcon, ref ICONINFO piconinfo);
+
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        [return: System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.Bool)]
+        public static extern bool DrawIconEx(nint hdc, int xLeft, int yTop, nint hIcon, int cxWidth, int cyHeight, int istepIfAniCur, nint hbrFlickerFreeDraw, int diFlags);
+
+        [System.Runtime.InteropServices.DllImport("gdi32.dll")]
+        [return: System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.Bool)]
+        public static extern bool DeleteObject(nint hObject);
     }
 
     /// <summary>

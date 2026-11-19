@@ -306,6 +306,28 @@ public partial class MainWindow : IDisposable
 
 
 
+    /// <summary>
+    /// 托盘菜单打开时同步显示当前热键（吸收自 SnipTrans TrayService）
+    /// </summary>
+    private void TrayMenu_Opening(object sender, RoutedEventArgs e)
+    {
+        if (sender is not System.Windows.Controls.ContextMenu menu || DataContext is not MainWindowViewModel vm)
+            return;
+        foreach (var item in menu.Items.OfType<System.Windows.Controls.MenuItem>())
+        {
+            if (item.Tag is not string spec || !spec.Contains('|'))
+                continue;
+            var parts = spec.Split('|');
+            if (parts.Length != 2)
+                continue;
+            var hotkey = vm.HotkeySettings.GetType().GetProperty(parts[0])?.GetValue(vm.HotkeySettings) as Core.Hotkey;
+            var label = Ioc.Default.GetService<Internationalization>()?.GetTranslation(parts[1]) ?? parts[1];
+            item.Header = hotkey is { Key: var k } && k != Core.Constant.EmptyHotkey
+                ? $"{label}    {k}"
+                : label;
+        }
+    }
+
     #region 托盘贴图子菜单（jietuyao v2）
 
 

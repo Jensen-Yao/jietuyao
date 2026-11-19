@@ -56,7 +56,7 @@ public sealed class ScreenshotEditorService(Settings settings, PinnedWindowContr
                 var finder = new ScreenshotWindowFinder();
                 finder.Snapshot(virtualBounds);
 
-                var frozen = ScreenshotCapturer.CaptureVirtualDesktop(virtualBounds);
+                var frozen = ScreenshotCapturer.CaptureVirtualDesktop(virtualBounds, settings.CaptureIncludeCursor);
                 var source = ScreenshotCapturer.ToBitmapSource(frozen);
 
                 var session = new ScreenshotEditorSession(frozen, source, virtualBounds, monitors, finder, options);
@@ -221,28 +221,29 @@ public sealed class ScreenshotEditorService(Settings settings, PinnedWindowContr
                 {
                     // 译图：干净图（无标注）→ OCR → 逐行翻译 → 回填渲染 → 结果窗
                     var clean = result.TakeClean();
-                    _ = RunImageOverlayAsync(clean);
+                    var bounds = result.PhysicalBounds;
+                    _ = RunImageOverlayAsync(clean, bounds);
                     break;
                 }
             }
         });
     }
 
-    private async Task RunImageOverlayAsync(System.Drawing.Bitmap clean)
+    private async Task RunImageOverlayAsync(System.Drawing.Bitmap clean, Rect physicalBounds)
     {
         try
         {
             var outcome = await TranslatedImageController.CreateAsync(clean, TranslatedImageController.ParseTarget(settings.ImageOverlayTargetLang));
-            clean.Dispose();
             if (outcome.Image is { } image)
             {
-                var window = new Views.TranslatedImageWindow(image, outcome.Info);
-                window.Closed += (_, _) => image.Dispose();
-                window.Show();
-                window.Activate();
+                // 工作台接管 clean/image 所有权（关闭时统一释放）
+                var workbench = new Views.TranslatedImageWorkbench(clean, image, outcome.Lines, outcome.Info, outcome.Target, physicalBounds);
+                workbench.Show();
+                workbench.Activate();
             }
             else
             {
+                clean.Dispose();
                 System.Windows.MessageBox.Show(outcome.Error, "jietuyao 译图",
                     System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
             }

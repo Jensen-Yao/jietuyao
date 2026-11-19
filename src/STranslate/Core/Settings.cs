@@ -157,6 +157,21 @@ public partial class Settings : ObservableObject
     /// </summary>
     [ObservableProperty] public partial string LastScreenshotTool { get; set; } = "Select";
 
+    /// <summary>
+    /// 译图生成后自动复制译文（吸收自 SnipTrans）
+    /// </summary>
+    [ObservableProperty] public partial bool ImageOverlayAutoCopyText { get; set; } = false;
+
+    /// <summary>
+    /// 译图生成后自动贴译图（吸收自 SnipTrans）
+    /// </summary>
+    [ObservableProperty] public partial bool ImageOverlayAutoPin { get; set; } = false;
+
+    /// <summary>
+    /// 截图包含鼠标指针（吸收自 SnipTrans）
+    /// </summary>
+    [ObservableProperty] public partial bool CaptureIncludeCursor { get; set; } = false;
+
     [ObservableProperty] public partial bool HideInput { get; set; } = false;
 
     [ObservableProperty] public partial bool HideInputWithLangSelectControl { get; set; } = false;
