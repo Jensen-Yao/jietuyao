@@ -31,10 +31,10 @@ public partial class HotkeySettings : ObservableObject, IDisposable
     #region Setting Items
 
     public GlobalHotkey OpenWindowHotkey { get; set; } = new("Alt + G");
-    public GlobalHotkey InputTranslateHotkey { get; set; } = new(Constant.EmptyHotkey);
+    public GlobalHotkey InputTranslateHotkey { get; set; } = new("Alt + Q");
     public GlobalHotkey CrosswordTranslateHotkey { get; set; } = new("Alt + D");
     public GlobalHotkey ScreenshotTranslateHotkey { get; set; } = new("Alt + S");
-    public GlobalHotkey ScreenshotHotkey { get; set; } = new("Alt + X");
+    public GlobalHotkey ScreenshotHotkey { get; set; } = new("Alt + A");
     public GlobalHotkey ImageTranslateHotkey { get; set; } = new("Alt + Shift + X");
     public GlobalHotkey ReplaceTranslateHotkey { get; set; } = new(Constant.EmptyHotkey);
     public GlobalHotkey MouseSelectionTranslationHotkey { get; set; } = new(Constant.EmptyHotkey);
@@ -199,10 +199,10 @@ public partial class HotkeySettings : ObservableObject, IDisposable
         {
             // Global Hotkeys
             [nameof(OpenWindowHotkey)] = "Alt + G",
-            [nameof(InputTranslateHotkey)] = "Alt + A",
+            [nameof(InputTranslateHotkey)] = "Alt + Q",
             [nameof(CrosswordTranslateHotkey)] = "Alt + D",
             [nameof(ScreenshotTranslateHotkey)] = "Alt + S",
-            [nameof(ScreenshotHotkey)] = "Alt + X",
+            [nameof(ScreenshotHotkey)] = "Alt + A",
             [nameof(ImageTranslateHotkey)] = "Alt + Shift + X",
             [nameof(ReplaceTranslateHotkey)] = "Alt + F",
             [nameof(MouseSelectionTranslationHotkey)] = "Alt + Shift + D",
@@ -236,6 +236,15 @@ public partial class HotkeySettings : ObservableObject, IDisposable
                 continue;
 
             hotkey.SetDefault(defaultKey);
+        }
+
+        // 一次性迁移：早期版本 Alt+A 被输入翻译占用、截图在 Alt+X。
+        // 命中"未改动的旧默认组合"时把 Alt+A 归还给截图（jietuyao v1 肌肉记忆）。
+        if (ScreenshotHotkey.Key == "Alt + X" && InputTranslateHotkey.Key == "Alt + A")
+        {
+            ScreenshotHotkey.Key = "Alt + A";
+            InputTranslateHotkey.Key = "Alt + Q";
+            Save();
         }
     }
 

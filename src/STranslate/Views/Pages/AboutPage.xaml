@@ -201,18 +201,8 @@
                         <ui:SettingsCard Margin="0,0,-10,0" Header="{DynamicResource Website}">
                             <ikw:SimpleStackPanel Orientation="Horizontal" Spacing="2">
                                 <ui:HyperlinkButton Content="{DynamicResource OfficialWebsite}" NavigateUri="{x:Static core:Constant.WebsiteUri}" />
-                                <ui:HyperlinkButton Content="{DynamicResource Group}" NavigateUri="{x:Static core:Constant.GroupUri}" />
                                 <ui:HyperlinkButton Content="Github" NavigateUri="{x:Static core:Constant.GithubUri}" />
                                 <ui:HyperlinkButton Content="Issue" NavigateUri="{x:Static core:Constant.ReportUri}" />
-                            </ikw:SimpleStackPanel>
-                        </ui:SettingsCard>
-
-                        <ui:SettingsCard Margin="0,0,-10,0" Header="{DynamicResource Thanks}">
-                            <ikw:SimpleStackPanel Orientation="Horizontal" Spacing="2">
-                                <ui:HyperlinkButton Content="Flow Launcher" NavigateUri="{x:Static core:Constant.FlowLauncherUri}" />
-                                <ui:HyperlinkButton Content="UI.WPF.Modern" NavigateUri="{x:Static core:Constant.UiWpfMordenUri}" />
-                                <ui:HyperlinkButton Content="Bob" NavigateUri="{x:Static core:Constant.BobUri}" />
-                                <ui:HyperlinkButton Content="Icons8" NavigateUri="{x:Static core:Constant.Icons8Uri}" />
                             </ikw:SimpleStackPanel>
                         </ui:SettingsCard>
                     </ui:SettingsExpander.Items>
