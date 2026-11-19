@@ -150,6 +150,12 @@ public static class JietuyaoIcons
         new IconPath("M20 6L9 17L4 12", 2.5, false)
         ]);
 
+    /// <summary>马赛克：2×2 色块网格（手绘补齐，非 v1 SVG）</summary>
+    public static readonly IconDef Mosaic = new(2.0, 2.0, 20.0, 20.0,
+        [
+        new IconPath("M2 2 H9 V9 H2 Z M11 2 H18 V9 H11 Z M2 11 H9 V18 H2 Z M11 11 H18 V18 H11 Z", 0, false)
+        ]);
+
     public static readonly IconDef ColorSettings = new(0.0, 0.0, 24.0, 24.0,
         [
         new IconPath("M12 4A7 7 0 0 0 5 11C5 14.9 7.7 17 10 17H11.5            A1.5 1.5 0 0 1 13 18.5C13 19.9 14 21 15.5 21            A3.5 3.5 0 0 0 19 17.5C19 10.5 16 4 12 4Z", 1.8, false),
